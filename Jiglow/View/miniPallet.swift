@@ -16,6 +16,7 @@ class miniPallet: UICollectionViewCell {
     @IBOutlet private weak var secondTile: UIView!
     @IBOutlet private weak var thirdTile: UIView!
     @IBOutlet private weak var bottomTile: UIView!
+    @IBOutlet weak var cornerView: UIView!
     
     var topTileColor: UIColor?
     var secondTileColor: UIColor?
@@ -31,6 +32,8 @@ class miniPallet: UICollectionViewCell {
         super.layoutSubviews()
         tileStack.clipsToBounds = true
         tileStack.layer.cornerRadius = 8
+        cornerView.layer.cornerRadius = 10
+        cornerView.clipsToBounds = true
         
     }
     func updateColor(top: UIColor, second:UIColor, third: UIColor, bottom: UIColor) {

@@ -27,7 +27,6 @@
 		49D5B00123C62C9700D9B146 /* ColorDetailControler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D5B00023C62C9700D9B146 /* ColorDetailControler.swift */; };
 		49D5B00323C7327200D9B146 /* Pallet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49D5B00223C7327200D9B146 /* Pallet.xib */; };
 		49D5B00523C7340000D9B146 /* Pallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D5B00423C7340000D9B146 /* Pallet.swift */; };
-		49D5B00D23C78DF100D9B146 /* contentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D5B00C23C78DF100D9B146 /* contentView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,7 +52,6 @@
 		49D5B00023C62C9700D9B146 /* ColorDetailControler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorDetailControler.swift; sourceTree = "<group>"; };
 		49D5B00223C7327200D9B146 /* Pallet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Pallet.xib; sourceTree = "<group>"; };
 		49D5B00423C7340000D9B146 /* Pallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pallet.swift; sourceTree = "<group>"; };
-		49D5B00C23C78DF100D9B146 /* contentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = contentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +65,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4934473123D0BADA00324F4A /* Ressources */ = {
+			isa = PBXGroup;
+			children = (
+				49C58A1623C25645006A9D2D /* AppDelegate.swift */,
+				49C58A1823C25645006A9D2D /* SceneDelegate.swift */,
+			);
+			path = Ressources;
+			sourceTree = "<group>";
+		};
 		49C58A0A23C25645006A9D2D = {
 			isa = PBXGroup;
 			children = (
@@ -86,13 +93,11 @@
 		49C58A1523C25645006A9D2D /* Jiglow */ = {
 			isa = PBXGroup;
 			children = (
-				49C58A1623C25645006A9D2D /* AppDelegate.swift */,
-				49C58A1823C25645006A9D2D /* SceneDelegate.swift */,
+				4934473123D0BADA00324F4A /* Ressources */,
 				49C58A3023C3ABE7006A9D2D /* Model */,
 				49C58A2D23C3ABC2006A9D2D /* Controller */,
 				49C58A3723C4F3D3006A9D2D /* View */,
 				49C58A2223C25646006A9D2D /* Assets.xcassets */,
-				49C58A2423C25646006A9D2D /* LaunchScreen.storyboard */,
 				49C58A2723C25646006A9D2D /* Info.plist */,
 				49C58A1F23C25645006A9D2D /* Jiglow.xcdatamodeld */,
 			);
@@ -112,7 +117,6 @@
 		49C58A3023C3ABE7006A9D2D /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				49C58A2E23C3ABE0006A9D2D /* Tile.swift */,
 				49C58A3323C4E1AB006A9D2D /* ColorSlider.swift */,
 				49C58A3123C3C404006A9D2D /* GradientButton.swift */,
 				49C58A3523C4E7AE006A9D2D /* ColorLabel.swift */,
@@ -123,15 +127,16 @@
 		49C58A3723C4F3D3006A9D2D /* View */ = {
 			isa = PBXGroup;
 			children = (
-				49D5B00423C7340000D9B146 /* Pallet.swift */,
 				49C58A1C23C25645006A9D2D /* Main.storyboard */,
-				4934472D23D096F000324F4A /* miniPallet.swift */,
 				4934472E23D096F000324F4A /* miniPallet.xib */,
+				4934472D23D096F000324F4A /* miniPallet.swift */,
 				49C58A4223C505C5006A9D2D /* SliderCallOut.xib */,
 				49C58A3E23C4F6F2006A9D2D /* SliderCallout.swift */,
 				49D5B00223C7327200D9B146 /* Pallet.xib */,
+				49D5B00423C7340000D9B146 /* Pallet.swift */,
 				4934472923D03D6E00324F4A /* Tile.xib */,
-				49D5B00C23C78DF100D9B146 /* contentView.swift */,
+				49C58A2E23C3ABE0006A9D2D /* Tile.swift */,
+				49C58A2423C25646006A9D2D /* LaunchScreen.storyboard */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -219,7 +224,6 @@
 				49C58A1723C25645006A9D2D /* AppDelegate.swift in Sources */,
 				49C58A3F23C4F6F2006A9D2D /* SliderCallout.swift in Sources */,
 				49C58A2F23C3ABE0006A9D2D /* Tile.swift in Sources */,
-				49D5B00D23C78DF100D9B146 /* contentView.swift in Sources */,
 				49C58A1923C25645006A9D2D /* SceneDelegate.swift in Sources */,
 				4934472F23D096F000324F4A /* miniPallet.swift in Sources */,
 				49C58A2123C25645006A9D2D /* Jiglow.xcdatamodeld in Sources */,
