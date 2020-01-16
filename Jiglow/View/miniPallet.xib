@@ -89,7 +89,11 @@
             <viewLayoutGuide key="safeArea" id="ccI-8B-0bV"/>
             <size key="customSize" width="266" height="316"/>
             <connections>
+                <outlet property="bottomTile" destination="Yep-NQ-20A" id="vpa-e4-HfI"/>
+                <outlet property="secondTile" destination="MGa-hT-cax" id="cmR-vH-uOb"/>
+                <outlet property="thirdTile" destination="9XB-yc-K8n" id="1h5-xa-pBb"/>
                 <outlet property="tileStack" destination="mQs-Vf-RGm" id="TcA-9h-Rfh"/>
+                <outlet property="topTile" destination="dYT-ZB-dVh" id="h2A-Rc-mHw"/>
             </connections>
             <point key="canvasLocation" x="1.4492753623188408" y="-29.464285714285712"/>
         </collectionViewCell>

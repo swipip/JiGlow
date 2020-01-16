@@ -35,6 +35,8 @@ class ViewController: UIViewController {
     var longPressGestureStack: UILongPressGestureRecognizer?
     var longPressGestureReset: UILongPressGestureRecognizer?
     
+    public var miniPallets = [miniPallet]()
+    
     //MARK: - Layout
     
     override func viewDidLoad() {
@@ -88,53 +90,50 @@ class ViewController: UIViewController {
         
     }
     @IBAction func stackTouched(_ sender: Any) {
-        
-        performSegue(withIdentifier: "mainToCollection", sender: self)
-        
     }
     @objc func tapHandler(sender: AnyObject) {
-            if let safeSender = sender as? UITapGestureRecognizer{
-                switch self.tile {
-                case nil:
-                    self.tile = safeSender.view! as? Tile
-                    animateSliders(tile: self.tile!)
-                    self.tile?.transformTile(tile: self.tile! ,initialWidth: tileWidth)
-                case safeSender.view:
-                    self.tile?.transformTile(tile: self.tile! ,initialWidth: tileWidth)
-                    self.tile = nil
-                default:
-                    self.tile?.transformTile(tile: self.tile! ,initialWidth: tileWidth)
-                    btnColorOne = tile!.contentView.backgroundColor!
-                    self.tile = safeSender.view as? Tile
-                    animateSliders(tile: self.tile!)
-                    self.tile?.transformTile(tile: self.tile! ,initialWidth: tileWidth)
-                    btnColorTwo = tile!.contentView.backgroundColor!
-                    btnReset.animateGradient(startColor: btnColorOne, endColor: btnColorTwo)
-                }
+        if let safeSender = sender as? UITapGestureRecognizer{
+            switch self.tile {
+            case nil:
+                self.tile = safeSender.view! as? Tile
+                animateSliders(tile: self.tile!)
+                self.tile?.transformTile(tile: self.tile! ,initialWidth: tileWidth)
+            case safeSender.view:
+                self.tile?.transformTile(tile: self.tile! ,initialWidth: tileWidth)
+                self.tile = nil
+            default:
+                self.tile?.transformTile(tile: self.tile! ,initialWidth: tileWidth)
+                btnColorOne = tile!.contentView.backgroundColor!
+                self.tile = safeSender.view as? Tile
+                animateSliders(tile: self.tile!)
+                self.tile?.transformTile(tile: self.tile! ,initialWidth: tileWidth)
+                btnColorTwo = tile!.contentView.backgroundColor!
+                btnReset.animateGradient(startColor: btnColorOne, endColor: btnColorTwo)
             }
         }
-        @objc func longPressHandler(sender: AnyObject) {
-            if let safeSender = sender as? UILongPressGestureRecognizer {
-                if safeSender.state == .began {
-                    
-                    let notificationFeedbackGenerator = UINotificationFeedbackGenerator()
-                    notificationFeedbackGenerator.prepare()
-                    notificationFeedbackGenerator.notificationOccurred(.success)
-                    
-                    tile = safeSender.view! as? Tile
-                    
-                    if let safeTile = tile {
-                        safeTile.hexaCode = safeTile.contentView.backgroundColor?.toHexString()
-                        safeTile.redCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.red)! * 255))
-                        safeTile.greenCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.green)! * 255))
-                        safeTile.blueCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.blue)! * 255))
-                        //
-                        safeTile.transformTile(tile: safeTile, initialWidth: tileWidth)
-                    }
-                    performSegue(withIdentifier: "mainToColorDetail", sender: Any?.self)
+    }
+    @objc func longPressHandler(sender: AnyObject) {
+        if let safeSender = sender as? UILongPressGestureRecognizer {
+            if safeSender.state == .began {
+                
+                let notificationFeedbackGenerator = UINotificationFeedbackGenerator()
+                notificationFeedbackGenerator.prepare()
+                notificationFeedbackGenerator.notificationOccurred(.success)
+                
+                tile = safeSender.view! as? Tile
+                
+                if let safeTile = tile {
+                    safeTile.hexaCode = safeTile.contentView.backgroundColor?.toHexString()
+                    safeTile.redCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.red)! * 255))
+                    safeTile.greenCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.green)! * 255))
+                    safeTile.blueCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.blue)! * 255))
+                    //
+                    safeTile.transformTile(tile: safeTile, initialWidth: tileWidth)
                 }
+                performSegue(withIdentifier: "mainToColorDetail", sender: Any?.self)
             }
         }
+    }
     //MARK: - Pallet SetUp
     func palletSetUp() {
         
@@ -168,56 +167,63 @@ class ViewController: UIViewController {
         pallet.bottomTile.addGestureRecognizer(longPressGestureBottomTile!)
         
     }
-    
+    //MARK: - Segue Preparation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "mainToColorDetail" {
-            if let viewController = segue.destination as? ColorDetailControler {
-                viewController.delegate = self
-                if let safeTile = tile {
-                    viewController.mainColor = safeTile.contentView.backgroundColor ?? .black
-                    viewController.hexaCode = safeTile.hexaCode
-                    viewController.redCode = safeTile.redCode
-                    viewController.greenCode = safeTile.greenCode
-                    viewController.blueCode = safeTile.blueCode
-                    switch safeTile.rank {
-                    case 1:
-                        viewController.leftColor = pallet.secondTile.contentView.backgroundColor
-                        viewController.middleColor = pallet.thirdTile.contentView.backgroundColor
-                        viewController.rightColor = pallet.bottomTile.contentView.backgroundColor
-                    case 2:
-                        viewController.leftColor = pallet.topTile.contentView.backgroundColor
-                        viewController.middleColor = pallet.thirdTile.contentView.backgroundColor
-                        viewController.rightColor = pallet.bottomTile.contentView.backgroundColor
-                    case 3:
-                        viewController.leftColor = pallet.topTile.contentView.backgroundColor
-                        viewController.middleColor = pallet.secondTile.contentView.backgroundColor
-                        viewController.rightColor = pallet.bottomTile.contentView.backgroundColor
-                    case 4:
-                        viewController.leftColor = pallet.topTile.contentView.backgroundColor
-                        viewController.middleColor = pallet.secondTile.contentView.backgroundColor
-                        viewController.rightColor = pallet.thirdTile.contentView.backgroundColor
-                    default:
-                        break
-                    }
+            prepareForDetails(with: segue, with: sender)
+        }else if segue.identifier == "mainToCollection" {
+            prepareForCollection(with: segue, with: sender)
+        }
+    }
+    func prepareForCollection(with segue: UIStoryboardSegue,with sender: Any?) {
+        if let viewController = segue.destination as? CollectionController {
+            
+            let newMiniPallet = miniPallet()
+            newMiniPallet.topTileColor = pallet.topTile.contentView.backgroundColor!
+            
+            //                print("prepare for segue :\(pallet.topTile.contentView.backgroundColor)")
+            newMiniPallet.secondTileColor = pallet.secondTile.contentView.backgroundColor!
+            newMiniPallet.thirdTileColor = pallet.thirdTile.contentView.backgroundColor!
+            newMiniPallet.bottomTileColor = pallet.bottomTile.contentView.backgroundColor!
+            
+            miniPallets.append(newMiniPallet)
+            
+            viewController.miniPallets = self.miniPallets
+        }
+    }
+    func prepareForDetails(with segue: UIStoryboardSegue,with sender: Any?){
+        if let viewController = segue.destination as? ColorDetailControler {
+            viewController.delegate = self
+            if let safeTile = tile {
+                viewController.mainColor = safeTile.contentView.backgroundColor ?? .black
+                viewController.hexaCode = safeTile.hexaCode
+                viewController.redCode = safeTile.redCode
+                viewController.greenCode = safeTile.greenCode
+                viewController.blueCode = safeTile.blueCode
+                switch safeTile.rank {
+                case 1:
+                    viewController.leftColor = pallet.secondTile.contentView.backgroundColor
+                    viewController.middleColor = pallet.thirdTile.contentView.backgroundColor
+                    viewController.rightColor = pallet.bottomTile.contentView.backgroundColor
+                case 2:
+                    viewController.leftColor = pallet.topTile.contentView.backgroundColor
+                    viewController.middleColor = pallet.thirdTile.contentView.backgroundColor
+                    viewController.rightColor = pallet.bottomTile.contentView.backgroundColor
+                case 3:
+                    viewController.leftColor = pallet.topTile.contentView.backgroundColor
+                    viewController.middleColor = pallet.secondTile.contentView.backgroundColor
+                    viewController.rightColor = pallet.bottomTile.contentView.backgroundColor
+                case 4:
+                    viewController.leftColor = pallet.topTile.contentView.backgroundColor
+                    viewController.middleColor = pallet.secondTile.contentView.backgroundColor
+                    viewController.rightColor = pallet.thirdTile.contentView.backgroundColor
+                default:
+                    break
                 }
             }
         }
     }
-    @objc func onSliderValChanged(slider: UISlider, event: UIEvent) {
-        if let touchEvent = event.allTouches?.first {
-            switch touchEvent.phase {
-            case .ended:
-                UIView.animate(withDuration: 0.66 ,delay: 0.0, animations: {
-                    self.testView?.alpha = 0
-                }) { (finished: Bool) in
-                    self.testView?.removeFromSuperview()
-                    self.testView = nil
-                }
-            default:
-                break
-            }
-        }
-    }
+    //MARK: - IBActions
     @IBAction func sliderSlide(_ sender: UISlider) {
         
         let sliderCoordinates = superView.convert(sender.frame, from:sliderRed)
@@ -243,7 +249,7 @@ class ViewController: UIViewController {
             animateSliderCallOut(sender: testView!, xCoordinate: xCoordinate)
             tile?.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
             tile?.hexaLabel.prepareColor(red: red, green: green, blue: blue)
-
+            
         case "sldGreen":
             green = CGFloat(sender.value)
             testView?.calloutLabel.text = String(Int(sender.value * 255))
@@ -251,7 +257,7 @@ class ViewController: UIViewController {
             animateSliderCallOut(sender: testView!, xCoordinate: xCoordinate)
             tile?.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
             tile?.hexaLabel.prepareColor(red: red, green: green, blue: blue)
-
+            
             
         case "sldBlue":
             self.blue = CGFloat(sender.value)
@@ -265,12 +271,6 @@ class ViewController: UIViewController {
         }
         
     }
-    func animateSliderCallOut(sender: UIView, xCoordinate: CGFloat) {
-        UIView.animate(withDuration: 0.5, animations: {
-            sender.frame = CGRect(x: xCoordinate, y: (sender.frame.origin.y), width: CGFloat(50), height: CGFloat(30))
-            
-        }, completion: nil)
-    }
     @IBAction func resetClicked(_ sender: UIButton) {
         pallet.topTile.contentView.backgroundColor = .lightGray
         pallet.secondTile.contentView.backgroundColor = .gray
@@ -278,6 +278,28 @@ class ViewController: UIViewController {
         pallet.bottomTile.contentView.backgroundColor = .black
         
         btnReset.animateGradient(startColor: .darkGray, endColor: .lightGray)
+    }
+    //MARK: - Animations
+    @objc func onSliderValChanged(slider: UISlider, event: UIEvent) {
+        if let touchEvent = event.allTouches?.first {
+            switch touchEvent.phase {
+            case .ended:
+                UIView.animate(withDuration: 0.66 ,delay: 0.0, animations: {
+                    self.testView?.alpha = 0
+                }) { (finished: Bool) in
+                    self.testView?.removeFromSuperview()
+                    self.testView = nil
+                }
+            default:
+                break
+            }
+        }
+    }
+    func animateSliderCallOut(sender: UIView, xCoordinate: CGFloat) {
+        UIView.animate(withDuration: 0.5, animations: {
+            sender.frame = CGRect(x: xCoordinate, y: (sender.frame.origin.y), width: CGFloat(50), height: CGFloat(30))
+            
+        }, completion: nil)
     }
     func animateSliders(tile: Tile) {
         

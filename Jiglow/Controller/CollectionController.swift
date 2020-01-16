@@ -1,31 +1,10 @@
-//
-//  CollectionController.swift
-//  Jiglow
-//
-//  Created by Gautier Billard on 16/01/2020.
-//  Copyright © 2020 Gautier Billard. All rights reserved.
-//
-
 import UIKit
 
 class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource {
     
-    
     private let spacing:CGFloat = 10.0
     
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        5
-    }
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ReusableCell", for: indexPath) as! miniPallet
-        
-        return cell
-    }
-    
+    var miniPallets = [miniPallet]()
 
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -33,6 +12,8 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        print("collection show up :\(miniPallets[0].topTileColor)")
         
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -52,7 +33,29 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
         layout.minimumInteritemSpacing = spacing
         self.collectionView?.collectionViewLayout = layout
         
+//        collectionView.reloadData()
         
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.setNavigationBarHidden(true, animated
+            : true)
+    }
+    
+    //MARK: - Delegate functions
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print(miniPallets.count)
+        return miniPallets.count
+    }
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ReusableCell", for: indexPath) as! miniPallet
+        
+        cell.updateColor(top: miniPallets[indexPath.row].topTileColor!, second: miniPallets[indexPath.row].secondTileColor!, third: miniPallets[indexPath.row].thirdTileColor!, bottom: miniPallets[indexPath.row].bottomTileColor!)
+        
+        return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let numberOfItemsPerRow:CGFloat = 3
@@ -68,10 +71,6 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
             return CGSize(width: 0, height: 0)
         }
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        navigationController?.setNavigationBarHidden(true, animated: true)
-    }
 
 }
 //MARK: - Extensions
@@ -82,7 +81,7 @@ extension UINavigationController {
         let gradient = CAGradientLayer()
         let bounds = self.navigationBar.bounds
         gradient.frame = bounds
-        gradient.colors = [UIColor.orange.cgColor, UIColor.systemOrange.cgColor]
+        gradient.colors = [UIColor.red.cgColor, UIColor.systemOrange.cgColor]
         gradient.startPoint = CGPoint(x: 0, y: 0)
         gradient.endPoint = CGPoint(x: 0, y: 1)
         

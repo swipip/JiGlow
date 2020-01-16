@@ -94,8 +94,8 @@
             filePath = "Jiglow/Controller/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "317"
-            endingLineNumber = "317"
+            startingLineNumber = "339"
+            endingLineNumber = "339"
             landmarkName = "colorDetailDelegateDidDisapear()"
             landmarkType = "7">
          </BreakpointContent>
@@ -151,16 +151,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "69342648-4438-4F08-BE69-170D5764F161"
-            shouldBeEnabled = "Yes"
+            uuid = "07749ED6-FFA2-4222-8102-1ACB6C1F4143"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Jiglow/Controller/ViewController.swift"
+            filePath = "Jiglow/View/miniPallet.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "92"
-            endingLineNumber = "92"
-            landmarkName = "stackTouched(_:)"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
+            landmarkName = "updateColor(top:second:third:bottom:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
