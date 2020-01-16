@@ -61,12 +61,16 @@ class ViewController: UIViewController {
         
         btnStack.addGestureRecognizer(longPressGestureStack!)
         
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        
     }
     override func viewDidAppear(_ animated: Bool) {
         pallet.topTile.roundCorners(corners: [.topRight, .topLeft], radius: 18)
         pallet.bottomTile.roundCorners(corners: [.bottomRight, .bottomLeft], radius: 18)
         pallet.layer.shadowRadius = 5.23
         pallet.layer.shadowOpacity = 0.23
+        
+        tileWidth = pallet.topTile.frame.width
     }
     //MARK: - Gestures Handlers
     @objc func stackLongPress(sender: UILongPressGestureRecognizer) {
@@ -74,6 +78,7 @@ class ViewController: UIViewController {
         if sender.state == .began{
             
             btnStack.animateSizeOn()
+            performSegue(withIdentifier: "mainToCollection", sender: self)
             
         }else if sender.state == .ended{
             
@@ -84,7 +89,7 @@ class ViewController: UIViewController {
     }
     @IBAction func stackTouched(_ sender: Any) {
         
-        //segue to collectionView
+        performSegue(withIdentifier: "mainToCollection", sender: self)
         
     }
     @objc func tapHandler(sender: AnyObject) {
@@ -92,43 +97,39 @@ class ViewController: UIViewController {
                 switch self.tile {
                 case nil:
                     self.tile = safeSender.view! as? Tile
-                    tileWidth = CGFloat(sender.view.frame.width)
                     animateSliders(tile: self.tile!)
-                    self.tile?.transformTile(tile: self.tile! ,width: tileWidth)
+                    self.tile?.transformTile(tile: self.tile! ,initialWidth: tileWidth)
                 case safeSender.view:
-                    self.tile?.transformTile(tile: self.tile! ,width: tileWidth)
+                    self.tile?.transformTile(tile: self.tile! ,initialWidth: tileWidth)
                     self.tile = nil
                 default:
-                    self.tile?.transformTile(tile: self.tile! ,width: tileWidth)
+                    self.tile?.transformTile(tile: self.tile! ,initialWidth: tileWidth)
                     btnColorOne = tile!.contentView.backgroundColor!
                     self.tile = safeSender.view as? Tile
                     animateSliders(tile: self.tile!)
-                    self.tile?.transformTile(tile: self.tile! ,width: tileWidth)
+                    self.tile?.transformTile(tile: self.tile! ,initialWidth: tileWidth)
                     btnColorTwo = tile!.contentView.backgroundColor!
                     btnReset.animateGradient(startColor: btnColorOne, endColor: btnColorTwo)
                 }
             }
         }
         @objc func longPressHandler(sender: AnyObject) {
-        
             if let safeSender = sender as? UILongPressGestureRecognizer {
-                
                 if safeSender.state == .began {
+                    
                     let notificationFeedbackGenerator = UINotificationFeedbackGenerator()
                     notificationFeedbackGenerator.prepare()
                     notificationFeedbackGenerator.notificationOccurred(.success)
                     
                     tile = safeSender.view! as? Tile
-                    tileWidth = CGFloat(sender.view.frame.width)
                     
                     if let safeTile = tile {
-    //                    print(safeTile.rank)
                         safeTile.hexaCode = safeTile.contentView.backgroundColor?.toHexString()
                         safeTile.redCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.red)! * 255))
-    //                    print(safeTile.redCode)
                         safeTile.greenCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.green)! * 255))
                         safeTile.blueCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.blue)! * 255))
-                        safeTile.transformTile(tile: safeTile, width: tileWidth)
+                        //
+                        safeTile.transformTile(tile: safeTile, initialWidth: tileWidth)
                     }
                     performSegue(withIdentifier: "mainToColorDetail", sender: Any?.self)
                 }
@@ -234,7 +235,6 @@ class ViewController: UIViewController {
             
             superView.addSubview(testView!)
         }
-        
         switch sender.accessibilityIdentifier {
         case "sldRed":
             red = CGFloat(sender.value)
@@ -265,14 +265,12 @@ class ViewController: UIViewController {
         }
         
     }
-    
     func animateSliderCallOut(sender: UIView, xCoordinate: CGFloat) {
         UIView.animate(withDuration: 0.5, animations: {
             sender.frame = CGRect(x: xCoordinate, y: (sender.frame.origin.y), width: CGFloat(50), height: CGFloat(30))
             
         }, completion: nil)
     }
-    
     @IBAction func resetClicked(_ sender: UIButton) {
         pallet.topTile.contentView.backgroundColor = .lightGray
         pallet.secondTile.contentView.backgroundColor = .gray
@@ -294,6 +292,7 @@ class ViewController: UIViewController {
         }, completion: nil)
     }
 }
+//MARK: - General functions
 public func addParallaxToView(vw: UIView) {
     let amount = 17
     
@@ -312,7 +311,9 @@ public func addParallaxToView(vw: UIView) {
 //MARK: - Extensions
 extension ViewController: ColorDetailControlerDelegate{
     func colorDetailDelegateDidDisapear() {
-        tile?.transformTile(tile: tile!, width: tileWidth)
+        if (tile?.frame.width)! > tileWidth{
+            tile?.transformTile(tile: tile!, initialWidth: tileWidth)
+        }
         tile = nil
     }
 }

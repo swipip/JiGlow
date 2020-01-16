@@ -30,8 +30,8 @@
             filePath = "Jiglow/View/Pallet.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "57"
-            endingLineNumber = "57"
+            startingLineNumber = "58"
+            endingLineNumber = "58"
             landmarkName = "commonInit()"
             landmarkType = "7">
          </BreakpointContent>
@@ -46,8 +46,8 @@
             filePath = "Jiglow/View/Pallet.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "79"
-            endingLineNumber = "79"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
             landmarkName = "setUpTiles()"
             landmarkType = "7">
          </BreakpointContent>
@@ -64,7 +64,103 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "55"
             endingLineNumber = "55"
-            landmarkName = "transformTile(tile:width:)"
+            landmarkName = "transformTile(tile:initialWidth:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E7063B7D-A98D-44BB-B5D1-65A2D0DBAD40"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Jiglow/View/Pallet.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
+            landmarkName = "addTileToView(with:height:topAnchor:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BC8C3B06-6B3F-4EF6-B45A-96F8CA1C6179"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Jiglow/Controller/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "317"
+            endingLineNumber = "317"
+            landmarkName = "colorDetailDelegateDidDisapear()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4900B559-D362-4C30-AF5F-55941FB72AD6"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Jiglow/Model/Tile.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "63"
+            endingLineNumber = "63"
+            landmarkName = "transformTile(tile:initialWidth:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "4900B559-D362-4C30-AF5F-55941FB72AD6 - 8800077514a379eb"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Jiglow.Tile.transformTile(tile: Jiglow.Tile, initialWidth: CoreGraphics.CGFloat) -&gt; ()"
+                  moduleName = "Jiglow"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/gautierbillard/Documents/Swift%20Course/Tests/Jiglow/Jiglow/Model/Tile.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "64"
+                  endingLineNumber = "64"
+                  offsetFromSymbolStart = "1503">
+               </Location>
+               <Location
+                  uuid = "4900B559-D362-4C30-AF5F-55941FB72AD6 - 63da8c9ca10d561f"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 () -&gt; () in Jiglow.Tile.transformTile(tile: Jiglow.Tile, initialWidth: CoreGraphics.CGFloat) -&gt; ()"
+                  moduleName = "Jiglow"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/gautierbillard/Documents/Swift%20Course/Tests/Jiglow/Jiglow/Model/Tile.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "65"
+                  endingLineNumber = "65"
+                  offsetFromSymbolStart = "44">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "69342648-4438-4F08-BE69-170D5764F161"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Jiglow/Controller/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "92"
+            endingLineNumber = "92"
+            landmarkName = "stackTouched(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -47,6 +47,7 @@ class Pallet: UIView {
         
         bottomTile.contentView.backgroundColor = .systemBlue
         bottomTile.hexaLabel.text = bottomTile.contentView.backgroundColor!.toHexString()
+        
     }
     func commonInit() {
         Bundle.main.loadNibNamed("Pallet", owner: self, options: nil)

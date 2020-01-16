@@ -51,8 +51,8 @@ class Tile: UIView {
     
     //MARK: - Custom Methods
     
-    func transformTile(tile: Tile, width: CGFloat) {
-        if (self.frame.width) > CGFloat(width) {
+    func transformTile(tile: Tile, initialWidth: CGFloat) {
+        if (self.frame.width) > CGFloat(initialWidth) {
             UIView.animate(withDuration: 0.2, delay: 0,options: UIView.AnimationOptions.curveEaseOut,animations: {
                 tile.transform = CGAffineTransform(scaleX: 1, y: 1)
                 tile.contentView.layer.cornerRadius = 0
