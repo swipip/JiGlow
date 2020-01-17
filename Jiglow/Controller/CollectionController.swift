@@ -13,8 +13,6 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        print("collection show up :\(miniPallets[0].topTileColor)")
-        
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -55,21 +53,18 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
         
         cell.updateColor(top: miniPallets[indexPath.row].topTileColor!, second: miniPallets[indexPath.row].secondTileColor!, third: miniPallets[indexPath.row].thirdTileColor!, bottom: miniPallets[indexPath.row].bottomTileColor!)
         
-//        cell.layer.shadowRadius = 2
-//        cell.layer.shadowOpacity = 0.2
-        
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let numberOfItemsPerRow:CGFloat = 2
-        let spacingBetweenCells:CGFloat = 16
+        let spacingBetweenCells:CGFloat = 10
         
         let totalSpacing = (2 * self.spacing) + ((numberOfItemsPerRow - 1) * spacingBetweenCells) //Amount of total spacing in a row
         
         if let collection = self.collectionView{
             let width = (collection.bounds.width - totalSpacing)/numberOfItemsPerRow
             print(width)
-            return CGSize(width: width, height: width * 1.3)
+            return CGSize(width: width, height: width * 1.21)
         }else{
             return CGSize(width: 0, height: 0)
         }
