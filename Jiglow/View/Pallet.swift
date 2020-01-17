@@ -1,22 +1,19 @@
-//
-//  Pallet.swift
-//  Jiglow
-//
-//  Created by Gautier Billard on 09/01/2020.
-//  Copyright © 2020 Gautier Billard. All rights reserved.
-//
-
 import UIKit
-
-class Pallet: UIView {
-
+protocol PalletDelegate {
+    func longPressOccured()
+}
+class Pallet: UIView, TileDelegate {    
+    
     @IBOutlet var contentView: UIView!
     var topTile: Tile!
     var secondTile: Tile!
     var thirdTile: Tile!
     var bottomTile: Tile!
+    var activeTile: Tile?
     
     var Tiles = [Int: Tile]()
+    
+    var delegate: PalletDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -28,7 +25,6 @@ class Pallet: UIView {
         super.awakeFromNib()
 
     }
-    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         fatalError("init(coder:) has not been implemented")
@@ -54,6 +50,11 @@ class Pallet: UIView {
         addSubview(contentView)
         contentView.frame = self.bounds
         setUpTiles()
+        
+        topTile.delegate = self
+        secondTile.delegate = self
+        thirdTile.delegate = self
+        bottomTile.delegate = self
 
     }
     func setUpTiles() {
@@ -91,5 +92,35 @@ class Pallet: UIView {
             tile.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             tile.heightAnchor.constraint(equalToConstant: CGFloat(height))
         ])
+    }
+    //MARK: - Delegate methods
+    func didTapTile() {
+        //A tile got tapped
+        for i in 1...4 {
+            if Tiles[i]?.tileIsActive == true {
+                if activeTile == Tiles[i] {
+                    activeTile?.transformOff()
+                    activeTile?.tileIsActive = false
+                    activeTile = nil
+                }else{
+                    activeTile = Tiles[i]
+                    activeTile?.transformOn()
+                    activeTile?.tileIsActive = false
+                }
+            }else if Tiles[i]?.tileIsActive == false{
+                Tiles[i]?.transformOff()
+            }
+        }
+    }
+    func didLongPress() {
+        for tile in Tiles{
+            if tile.value.tileIsActive == true{
+                activeTile = tile.value
+                activeTile?.transformOn()
+            }else{
+                tile.value.transformOff()
+            }
+        }
+        delegate?.longPressOccured()
     }
 }

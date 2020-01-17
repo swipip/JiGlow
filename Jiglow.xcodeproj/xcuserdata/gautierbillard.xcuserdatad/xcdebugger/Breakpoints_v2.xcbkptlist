@@ -30,9 +30,9 @@
             filePath = "Jiglow/View/Pallet.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "58"
-            endingLineNumber = "58"
-            landmarkName = "commonInit()"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
+            landmarkName = "setUpTiles()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -46,9 +46,9 @@
             filePath = "Jiglow/View/Pallet.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "80"
-            endingLineNumber = "80"
-            landmarkName = "setUpTiles()"
+            startingLineNumber = "90"
+            endingLineNumber = "90"
+            landmarkName = "addTileToView(with:height:topAnchor:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -78,26 +78,8 @@
             filePath = "Jiglow/View/Pallet.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "94"
-            endingLineNumber = "94"
-            landmarkName = "addTileToView(with:height:topAnchor:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "BC8C3B06-6B3F-4EF6-B45A-96F8CA1C6179"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Jiglow/Controller/ViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "339"
-            endingLineNumber = "339"
-            landmarkName = "colorDetailDelegateDidDisapear()"
-            landmarkType = "7">
+            startingLineNumber = "127"
+            endingLineNumber = "127">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -158,8 +140,8 @@
             filePath = "Jiglow/View/miniPallet.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "36"
-            endingLineNumber = "36"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
             landmarkName = "updateColor(top:second:third:bottom:)"
             landmarkType = "7">
          </BreakpointContent>

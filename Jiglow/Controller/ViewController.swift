@@ -1,6 +1,6 @@
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, PalletDelegate {
     
     //MARK: - Outlets
     
@@ -21,7 +21,7 @@ class ViewController: UIViewController {
     var btnColorOne: UIColor = .orange
     var btnColorTwo: UIColor = .systemYellow
     
-    var tile: Tile?
+//    var tile: Tile?
     var descriptionLabel: ColorLabel?
     var subviewCallOut = SliderCallout()
     var testView: SliderCallout?
@@ -54,6 +54,8 @@ class ViewController: UIViewController {
         
         palletSetUp()
         
+        pallet.delegate = self
+        
         addParallaxToView(vw: pallet)
         
         longPressGestureStack = UILongPressGestureRecognizer(target: self, action: #selector(stackLongPress))
@@ -78,65 +80,17 @@ class ViewController: UIViewController {
     @objc func stackLongPress(sender: UILongPressGestureRecognizer) {
         
         if sender.state == .began{
-            
             btnStack.animateSizeOn()
             performSegue(withIdentifier: "mainToCollection", sender: self)
-            
         }else if sender.state == .ended{
-            
             btnStack.animateSizeOff()
-            
         }
         
     }
-    @IBAction func stackTouched(_ sender: Any) {
-    }
-    @objc func tapHandler(sender: AnyObject) {
-        if let safeSender = sender as? UITapGestureRecognizer{
-            switch self.tile {
-            case nil:
-                self.tile = safeSender.view! as? Tile
-                animateSliders(tile: self.tile!)
-                self.tile?.transformTile(tile: self.tile! ,initialWidth: tileWidth)
-            case safeSender.view:
-                self.tile?.transformTile(tile: self.tile! ,initialWidth: tileWidth)
-                self.tile = nil
-            default:
-                self.tile?.transformTile(tile: self.tile! ,initialWidth: tileWidth)
-                btnColorOne = tile!.contentView.backgroundColor!
-                self.tile = safeSender.view as? Tile
-                animateSliders(tile: self.tile!)
-                self.tile?.transformTile(tile: self.tile! ,initialWidth: tileWidth)
-                btnColorTwo = tile!.contentView.backgroundColor!
-                btnReset.animateGradient(startColor: btnColorOne, endColor: btnColorTwo)
-            }
-        }
-    }
-    @objc func longPressHandler(sender: AnyObject) {
-        if let safeSender = sender as? UILongPressGestureRecognizer {
-            if safeSender.state == .began {
-                
-                let notificationFeedbackGenerator = UINotificationFeedbackGenerator()
-                notificationFeedbackGenerator.prepare()
-                notificationFeedbackGenerator.notificationOccurred(.success)
-                
-                tile = safeSender.view! as? Tile
-                
-                if let safeTile = tile {
-                    safeTile.hexaCode = safeTile.contentView.backgroundColor?.toHexString()
-                    safeTile.redCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.red)! * 255))
-                    safeTile.greenCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.green)! * 255))
-                    safeTile.blueCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.blue)! * 255))
-                    //
-                    safeTile.transformTile(tile: safeTile, initialWidth: tileWidth)
-                }
-                performSegue(withIdentifier: "mainToColorDetail", sender: Any?.self)
-            }
-        }
-    }
+//    @IBAction func stackTouched(_ sender: Any) {
+//    }
     //MARK: - Pallet SetUp
     func palletSetUp() {
-        
         view.addSubview(pallet)
         pallet.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -145,27 +99,6 @@ class ViewController: UIViewController {
             pallet.widthAnchor.constraint(equalToConstant: 264),
             pallet.heightAnchor.constraint(equalToConstant: 277)
         ])
-        
-        let topTileTouch = UITapGestureRecognizer(target: self, action: #selector(tapHandler))
-        let secondTileTouch = UITapGestureRecognizer(target: self, action: #selector(tapHandler))
-        let thirdTileTouch = UITapGestureRecognizer(target: self, action: #selector(tapHandler))
-        let bottomTileTouch = UITapGestureRecognizer(target: self, action: #selector(tapHandler))
-        
-        pallet.topTile.addGestureRecognizer(topTileTouch)
-        pallet.secondTile.addGestureRecognizer(secondTileTouch)
-        pallet.thirdTile.addGestureRecognizer(thirdTileTouch)
-        pallet.bottomTile.addGestureRecognizer(bottomTileTouch)
-        
-        longPressGestureTopTile = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.longPressHandler))
-        longPressGestureSecondTile = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.longPressHandler))
-        longPressGestureThirdTile = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.longPressHandler))
-        longPressGestureBottomTile = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.longPressHandler))
-        
-        pallet.topTile.addGestureRecognizer(longPressGestureTopTile!)
-        pallet.secondTile.addGestureRecognizer(longPressGestureSecondTile!)
-        pallet.thirdTile.addGestureRecognizer(longPressGestureThirdTile!)
-        pallet.bottomTile.addGestureRecognizer(longPressGestureBottomTile!)
-        
     }
     //MARK: - Segue Preparation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -194,7 +127,7 @@ class ViewController: UIViewController {
     func prepareForDetails(with segue: UIStoryboardSegue,with sender: Any?){
         if let viewController = segue.destination as? ColorDetailControler {
             viewController.delegate = self
-            if let safeTile = tile {
+            if let safeTile = pallet.activeTile {
                 viewController.mainColor = safeTile.contentView.backgroundColor ?? .black
                 viewController.hexaCode = safeTile.hexaCode
                 viewController.redCode = safeTile.redCode
@@ -247,16 +180,16 @@ class ViewController: UIViewController {
             testView?.calloutLabel.text = String(Int(sender.value * 255))
             testView?.calloutLabel.animateOn(toColor: UIColor(displayP3Red: CGFloat(sender.value), green: 0, blue: 0, alpha: 1))
             animateSliderCallOut(sender: testView!, xCoordinate: xCoordinate)
-            tile?.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
-            tile?.hexaLabel.prepareColor(red: red, green: green, blue: blue)
+            pallet.activeTile?.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
+            pallet.activeTile?.hexaLabel.prepareColor(red: red, green: green, blue: blue)
             
         case "sldGreen":
             green = CGFloat(sender.value)
             testView?.calloutLabel.text = String(Int(sender.value * 255))
             testView?.calloutLabel.animateOn(toColor: UIColor(displayP3Red: 0, green: CGFloat(sender.value), blue: 0, alpha: 1))
             animateSliderCallOut(sender: testView!, xCoordinate: xCoordinate)
-            tile?.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
-            tile?.hexaLabel.prepareColor(red: red, green: green, blue: blue)
+            pallet.activeTile?.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
+            pallet.activeTile?.hexaLabel.prepareColor(red: red, green: green, blue: blue)
             
             
         case "sldBlue":
@@ -264,8 +197,8 @@ class ViewController: UIViewController {
             testView?.calloutLabel.text = String(Int(sender.value * 255))
             testView?.calloutLabel.animateOn(toColor: UIColor(displayP3Red: 0, green: 0, blue: CGFloat(sender.value), alpha: 1))
             animateSliderCallOut(sender: testView!, xCoordinate: xCoordinate)
-            self.tile?.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
-            tile?.hexaLabel.prepareColor(red: red, green: green, blue: blue)
+            pallet.activeTile?.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
+            pallet.activeTile?.hexaLabel.prepareColor(red: red, green: green, blue: blue)
         default:
             print("error")
         }
@@ -313,6 +246,22 @@ class ViewController: UIViewController {
             self.sliderBlue.setValue(Float(self.blue), animated: true)
         }, completion: nil)
     }
+    //MARK: - Delegate Methods
+    func longPressOccured() {
+        //Vibrate
+        let notificationFeedbackGenerator = UINotificationFeedbackGenerator()
+        notificationFeedbackGenerator.prepare()
+        notificationFeedbackGenerator.notificationOccurred(.success)
+        //Logic
+        if let safeTile = pallet.activeTile {
+            safeTile.hexaCode = safeTile.contentView.backgroundColor?.toHexString()
+            safeTile.redCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.red)! * 255))
+            safeTile.greenCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.green)! * 255))
+            safeTile.blueCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.blue)! * 255))
+            //
+        }
+        performSegue(withIdentifier: "mainToColorDetail", sender: Any?.self)
+    }
 }
 //MARK: - General functions
 public func addParallaxToView(vw: UIView) {
@@ -333,10 +282,9 @@ public func addParallaxToView(vw: UIView) {
 //MARK: - Extensions
 extension ViewController: ColorDetailControlerDelegate{
     func colorDetailDelegateDidDisapear() {
-        if (tile?.frame.width)! > tileWidth{
-            tile?.transformTile(tile: tile!, initialWidth: tileWidth)
-        }
-        tile = nil
+        pallet.activeTile?.transformOff()
+        pallet.activeTile?.tileIsActive = false
+        pallet.activeTile = nil
     }
 }
 extension UIColor {

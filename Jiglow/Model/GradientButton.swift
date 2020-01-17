@@ -11,6 +11,8 @@ import UIKit
 
 class GradientButton: UIButton {
     
+    var color: UIColor?
+    
     private let gradientLayer = CAGradientLayer()
     
     private let tapTicResponse = UINotificationFeedbackGenerator()

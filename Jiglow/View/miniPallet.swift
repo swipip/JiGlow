@@ -20,8 +20,15 @@ class miniPallet: UICollectionViewCell {
         super.awakeFromNib()
 
     }
-    
+    @objc func tapHandler() {
+        print("tapped")
+    }
     override func layoutSubviews() {
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapHandler))
+        
+        cornerView.addGestureRecognizer(tapGesture)
+        
         super.layoutSubviews()
         tileStack.clipsToBounds = true
         tileStack.layer.cornerRadius = 5
