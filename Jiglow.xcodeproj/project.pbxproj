@@ -109,10 +109,10 @@
 		49C58A2D23C3ABC2006A9D2D /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				498E32D723D1E4E500D1203E /* SwipeController.swift */,
 				49C58A1A23C25645006A9D2D /* ViewController.swift */,
 				49D5B00023C62C9700D9B146 /* ColorDetailControler.swift */,
 				4934472B23D08D8F00324F4A /* CollectionController.swift */,
+				498E32D723D1E4E500D1203E /* SwipeController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";

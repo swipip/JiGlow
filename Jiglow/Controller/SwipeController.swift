@@ -3,6 +3,7 @@ import UIKit
 
 protocol SwipeControllerDelegate {
     func didFinishedAnimateReload()
+    func panDidEnd()
 }
 
 class SwipeController {
@@ -80,7 +81,6 @@ class SwipeController {
     func handlePanEnded(velocity: CGPoint, recognizer: UIPanGestureRecognizer){
         if Float(differenceFromXOrigin!) >= Float(swipeLimit) {
             
-            notification()
             notified = false
             squares[1].rotate()
             
@@ -92,6 +92,16 @@ class SwipeController {
             squares[1].setAnchorPoint(CGPoint(x: 0.5,y: 0.5))
             squares[1].removeFromSuperview()
             squares[0].transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
+            //
+            let middleX = motherView.getCenter().x
+//            print("middle x \(middleX) current \(currentS.x)")
+            if currentS.x > middleX {
+                notification(type: .success)
+                self.delegate?.panDidEnd()
+            }else{
+                notification(type: .error)
+            }
+            //
             animateReload(view: squares[0])
             
         }else if Float(differenceFromXOrigin!) < Float(swipeLimit) {
@@ -118,7 +128,7 @@ class SwipeController {
         case .ended:
             handlePanEnded(velocity: velocity, recognizer: recognizer)
         case .changed:
-            notification()
+//            notification()
             changeRotationDirection(recognizer: recognizer)
         default:
             print("error")
@@ -129,13 +139,13 @@ class SwipeController {
         }
         recognizer.setTranslation(CGPoint.zero, in: motherView)
     }
-    func notification(){
+    func notification(type: UINotificationFeedbackGenerator.FeedbackType){
         let feedBack = UINotificationFeedbackGenerator()
         feedBack.prepare()
         if differenceFromXOrigin! > CGFloat(swipeLimit) && notified == false{
             notified = true
             //                print("vibrate at:\(differenceFromXOrigin) and notified : \(notified)")
-            feedBack.notificationOccurred(.success)
+            feedBack.notificationOccurred(type)
         }
     }
     func handleSwipe(with recognizer: UISwipeGestureRecognizer) {

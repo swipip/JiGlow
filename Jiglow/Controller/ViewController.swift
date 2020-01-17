@@ -1,9 +1,7 @@
 import UIKit
 
 class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,UIGestureRecognizerDelegate {
-    func didFinishedAnimateReload() {
-        palletSetUp()
-    }
+
     //MARK: - Outlets
     
     @IBOutlet weak var sliderRed: UISlider!
@@ -78,11 +76,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         
     }
     @objc func panHandler(recognizer: UIPanGestureRecognizer){
-        //        print("triggered")
         swipeController?.handlePan(recognizer: recognizer)
-        if recognizer.state == .ended {
-            saveTile()
-        }
     }
     override func viewDidLayoutSubviews() {
         layoutPallet()
@@ -103,7 +97,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         
         tileWidth = pallet.topTile.frame.width
         
-        originS = CGPoint(x: self.view.center.x , y: view.convert(view.center, to: swipeController!.squares[1]).y+30)
+        originS = CGPoint(x: self.view.center.x , y: self.view.center.y - pallet.frame.height/2 - 20)
         swipeController!.squares[0].alpha = 0.0
         
         swipeController!.originS = self.originS
@@ -140,9 +134,6 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         let palletPan = UIPanGestureRecognizer(target: self, action: #selector(panHandler(recognizer:)))
         newPallet.addGestureRecognizer(palletPan)
         
-    }
-    @objc func taphandle(){
-        print("pallet tapped")
     }
     //MARK: - Segue Preparation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -227,6 +218,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
             animateSliderCallOut(sender: testView!, xCoordinate: xCoordinate)
             pallet.activeTile?.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
             pallet.activeTile?.hexaLabel.prepareColor(red: red, green: green, blue: blue)
+            pallet.activeTile?.hexaLabel.text = pallet.activeTile?.contentView.backgroundColor?.toHexString()
             
         case "sldGreen":
             green = CGFloat(sender.value)
@@ -235,7 +227,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
             animateSliderCallOut(sender: testView!, xCoordinate: xCoordinate)
             pallet.activeTile?.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
             pallet.activeTile?.hexaLabel.prepareColor(red: red, green: green, blue: blue)
-            
+            pallet.activeTile?.hexaLabel.text = pallet.activeTile?.contentView.backgroundColor?.toHexString()
             
         case "sldBlue":
             self.blue = CGFloat(sender.value)
@@ -244,6 +236,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
             animateSliderCallOut(sender: testView!, xCoordinate: xCoordinate)
             pallet.activeTile?.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
             pallet.activeTile?.hexaLabel.prepareColor(red: red, green: green, blue: blue)
+            pallet.activeTile?.hexaLabel.text = pallet.activeTile?.contentView.backgroundColor?.toHexString()
         default:
             print("error")
         }
@@ -290,6 +283,8 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         green = (tile.contentView.backgroundColor?.rgb()!.green)!
         blue = (tile.contentView.backgroundColor?.rgb()!.blue)!
         
+        tile.hexaLabel.text = tile.contentView.backgroundColor?.toHexString()
+        
         UIView.animate(withDuration: 0.63, delay: 0,options: UIView.AnimationOptions.curveEaseOut, animations: {
             self.sliderRed.setValue(Float(self.red), animated: true)
             self.sliderGreen.setValue(Float(self.green), animated: true)
@@ -297,6 +292,13 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         }, completion: nil)
     }
     //MARK: - Delegate Methods
+    func panDidEnd() {
+        saveTile()
+    }
+    
+    func didFinishedAnimateReload() {
+        palletSetUp()
+    }
     func shortPressOccured() {
         if pallet.activeTile != nil{
             animateSliders(tile: pallet.activeTile!)
