@@ -1,13 +1,6 @@
-//
-//  Tile.swift
-//  Jiglow
-//
-//  Created by Gautier Billard on 06/01/2020.
-//  Copyright © 2020 Gautier Billard. All rights reserved.
-//
-
 import Foundation
 import UIKit
+
 protocol TileDelegate {
     func didTapTile()
     func didLongPress()
@@ -62,6 +55,8 @@ class Tile: UIView {
         longTapTile.minimumPressDuration = 0.2
         contentView.addGestureRecognizer(longTapTile)
         
+        self.hexaLabel.alpha = 0.0
+        
     }
     //MARK: - Custom Methods
     func transformOn() {
@@ -76,9 +71,21 @@ class Tile: UIView {
             self.contentView.layer.cornerRadius = 0
         },completion: nil)
     }
+    func animateLabelAlphaOn(){
+        UIView.animate(withDuration: 0.2, animations: {
+            self.hexaLabel.alpha = 1.0
+        }, completion: nil)
+    }
+    func animateLabelAlphaOff(){
+        UIView.animate(withDuration: 0.2, animations: {
+            self.hexaLabel.alpha = 0.0
+        }, completion: nil)
+    }
 //MARK: - Delegate Methods
     @objc func tapHandler() {
         tileIsActive  = true
+        self.hexaLabel.prepareColor(red: (contentView.backgroundColor?.rgb()?.red)!, green: (contentView.backgroundColor?.rgb()?.green)!, blue: (contentView.backgroundColor?.rgb()?.blue)!)
+        animateLabelAlphaOn()
         delegate?.didTapTile()
     }
     @objc func longTapHandler(sender: AnyObject) {

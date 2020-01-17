@@ -1,5 +1,6 @@
 import UIKit
 protocol PalletDelegate {
+    func shortPressOccured()
     func longPressOccured()
 }
 class Pallet: UIView, TileDelegate {    
@@ -10,6 +11,7 @@ class Pallet: UIView, TileDelegate {
     var thirdTile: Tile!
     var bottomTile: Tile!
     var activeTile: Tile?
+    var rotated:(on: Bool,dir: rotatedCases) = (false,.right)
     
     var Tiles = [Int: Tile]()
     
@@ -101,6 +103,7 @@ class Pallet: UIView, TileDelegate {
                 if activeTile == Tiles[i] {
                     activeTile?.transformOff()
                     activeTile?.tileIsActive = false
+                    activeTile?.animateLabelAlphaOff()
                     activeTile = nil
                 }else{
                     activeTile = Tiles[i]
@@ -109,8 +112,10 @@ class Pallet: UIView, TileDelegate {
                 }
             }else if Tiles[i]?.tileIsActive == false{
                 Tiles[i]?.transformOff()
+                Tiles[i]?.animateLabelAlphaOff()
             }
         }
+        delegate?.shortPressOccured()
     }
     func didLongPress() {
         for tile in Tiles{
@@ -122,5 +127,41 @@ class Pallet: UIView, TileDelegate {
             }
         }
         delegate?.longPressOccured()
+    }
+    //MARK: - Rotation Handlers
+    func rotateSquare(angle: CGFloat){
+        
+        UIView.animate(withDuration: 0.2, animations: {
+           self.transform = self.transform.rotated(by: angle)
+        })
+        
+    }
+    enum rotatedCases {
+        case right, left
+    }
+    func rotate() {
+        
+        if self.rotated.on == false {
+            // view is not in rotated state
+            if self.rotated.dir == .right {
+                
+                self.rotateSquare(angle: CGFloat(Double.pi / 32))
+                
+            }else{
+
+                self.rotateSquare(angle: -CGFloat(Double.pi / 32))
+                
+            }
+        }else{
+            //view is not in a rotated state
+            if self.rotated.dir == .right{
+                self.rotateSquare(angle: -CGFloat(Double.pi / 32))
+                self.rotated.on = false
+            }else{
+                self.rotateSquare(angle: +CGFloat(Double.pi / 32))
+                self.rotated.on = false
+            }
+        }
+       
     }
 }

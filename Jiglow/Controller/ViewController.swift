@@ -1,7 +1,9 @@
 import UIKit
 
-class ViewController: UIViewController, PalletDelegate {
-    
+class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,UIGestureRecognizerDelegate {
+    func didFinishedAnimateReload() {
+        palletSetUp()
+    }
     //MARK: - Outlets
     
     @IBOutlet weak var sliderRed: UISlider!
@@ -25,7 +27,7 @@ class ViewController: UIViewController, PalletDelegate {
     var descriptionLabel: ColorLabel?
     var subviewCallOut = SliderCallout()
     var testView: SliderCallout?
-    let pallet = Pallet()
+    var pallet = Pallet()
     var tileWidth: CGFloat = 0.0
     
     var longPressGestureTopTile: UILongPressGestureRecognizer?
@@ -37,10 +39,16 @@ class ViewController: UIViewController, PalletDelegate {
     
     public var miniPallets = [miniPallet]()
     
+    var swipeController: SwipeController?
+    var originS: CGPoint?
+    var currentS = CGPoint()
     //MARK: - Layout
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        swipeController = SwipeController(view: self.view)
+        swipeController?.delegate = self
         
         btnReset.setButton()
         btnCamera.layer.cornerRadius = 25
@@ -53,6 +61,9 @@ class ViewController: UIViewController, PalletDelegate {
         sliderBlue.addTarget(self, action: #selector(onSliderValChanged(slider:event:)), for: .valueChanged)
         
         palletSetUp()
+        palletSetUp()
+        
+        pallet = (swipeController?.squares[1])!
         
         pallet.delegate = self
         
@@ -67,14 +78,34 @@ class ViewController: UIViewController, PalletDelegate {
         
         navigationController?.setNavigationBarHidden(true, animated: false)
         
+        let palletPan = UIPanGestureRecognizer(target: self, action: #selector(panHandler(recognizer:)))
+        pallet.addGestureRecognizer(palletPan)
+        
+    }
+    @objc func panHandler(recognizer: UIPanGestureRecognizer){
+        swipeController?.handlePan(recognizer: recognizer)
+        print("triggered")
+    }
+    override func viewDidLayoutSubviews() {
+        
+
     }
     override func viewDidAppear(_ animated: Bool) {
+        print(swipeController?.squares.count)
+        print(pallet)
         pallet.topTile.roundCorners(corners: [.topRight, .topLeft], radius: 18)
         pallet.bottomTile.roundCorners(corners: [.bottomRight, .bottomLeft], radius: 18)
         pallet.layer.shadowRadius = 5.23
         pallet.layer.shadowOpacity = 0.23
         
         tileWidth = pallet.topTile.frame.width
+        
+        originS = CGPoint(x: self.view.center.x , y: view.convert(view.center, to: swipeController!.squares[1]).y+30)
+        swipeController!.squares[0].alpha = 0.0
+
+        swipeController!.originS = self.originS
+        swipeController!.currentS = self.currentS
+        
     }
     //MARK: - Gestures Handlers
     @objc func stackLongPress(sender: UILongPressGestureRecognizer) {
@@ -87,18 +118,26 @@ class ViewController: UIViewController, PalletDelegate {
         }
         
     }
-//    @IBAction func stackTouched(_ sender: Any) {
-//    }
+
     //MARK: - Pallet SetUp
     func palletSetUp() {
-        view.addSubview(pallet)
-        pallet.translatesAutoresizingMaskIntoConstraints = false
+        
+        let newPallet = Pallet()
+        
+        swipeController?.squares.append(newPallet)
+        
+        view.addSubview(newPallet)
+        newPallet.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            pallet.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            pallet.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 80),
-            pallet.widthAnchor.constraint(equalToConstant: 264),
-            pallet.heightAnchor.constraint(equalToConstant: 277)
+            newPallet.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            newPallet.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 80),
+            newPallet.widthAnchor.constraint(equalToConstant: 264),
+            newPallet.heightAnchor.constraint(equalToConstant: 277)
         ])
+        
+    }
+    @objc func taphandle(){
+        print("pallet tapped")
     }
     //MARK: - Segue Preparation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -211,6 +250,11 @@ class ViewController: UIViewController, PalletDelegate {
         pallet.bottomTile.contentView.backgroundColor = .black
         
         btnReset.animateGradient(startColor: .darkGray, endColor: .lightGray)
+        
+        pallet.activeTile?.transformOff()
+        pallet.activeTile?.animateLabelAlphaOff()
+        pallet.activeTile?.tileIsActive = false
+        pallet.activeTile = nil
     }
     //MARK: - Animations
     @objc func onSliderValChanged(slider: UISlider, event: UIEvent) {
@@ -247,6 +291,11 @@ class ViewController: UIViewController, PalletDelegate {
         }, completion: nil)
     }
     //MARK: - Delegate Methods
+    func shortPressOccured() {
+        if pallet.activeTile?.tileIsActive == true{
+            animateSliders(tile: pallet.activeTile!)
+        }
+    }
     func longPressOccured() {
         //Vibrate
         let notificationFeedbackGenerator = UINotificationFeedbackGenerator()

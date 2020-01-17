@@ -11,6 +11,7 @@
 		4934472C23D08D8F00324F4A /* CollectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4934472B23D08D8F00324F4A /* CollectionController.swift */; };
 		4934472F23D096F000324F4A /* miniPallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4934472D23D096F000324F4A /* miniPallet.swift */; };
 		4934473023D096F000324F4A /* miniPallet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4934472E23D096F000324F4A /* miniPallet.xib */; };
+		498E32D823D1E4E500D1203E /* SwipeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498E32D723D1E4E500D1203E /* SwipeController.swift */; };
 		49C58A1723C25645006A9D2D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C58A1623C25645006A9D2D /* AppDelegate.swift */; };
 		49C58A1923C25645006A9D2D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C58A1823C25645006A9D2D /* SceneDelegate.swift */; };
 		49C58A1B23C25645006A9D2D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C58A1A23C25645006A9D2D /* ViewController.swift */; };
@@ -34,6 +35,7 @@
 		4934472B23D08D8F00324F4A /* CollectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionController.swift; sourceTree = "<group>"; };
 		4934472D23D096F000324F4A /* miniPallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = miniPallet.swift; sourceTree = "<group>"; };
 		4934472E23D096F000324F4A /* miniPallet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = miniPallet.xib; sourceTree = "<group>"; };
+		498E32D723D1E4E500D1203E /* SwipeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeController.swift; sourceTree = "<group>"; };
 		49C58A1323C25645006A9D2D /* Jiglow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Jiglow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49C58A1623C25645006A9D2D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		49C58A1823C25645006A9D2D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 		49C58A2D23C3ABC2006A9D2D /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				498E32D723D1E4E500D1203E /* SwipeController.swift */,
 				49C58A1A23C25645006A9D2D /* ViewController.swift */,
 				49D5B00023C62C9700D9B146 /* ColorDetailControler.swift */,
 				4934472B23D08D8F00324F4A /* CollectionController.swift */,
@@ -224,6 +227,7 @@
 				49C58A1723C25645006A9D2D /* AppDelegate.swift in Sources */,
 				49C58A3F23C4F6F2006A9D2D /* SliderCallout.swift in Sources */,
 				49C58A2F23C3ABE0006A9D2D /* Tile.swift in Sources */,
+				498E32D823D1E4E500D1203E /* SwipeController.swift in Sources */,
 				49C58A1923C25645006A9D2D /* SceneDelegate.swift in Sources */,
 				4934472F23D096F000324F4A /* miniPallet.swift in Sources */,
 				49C58A2123C25645006A9D2D /* Jiglow.xcdatamodeld in Sources */,
