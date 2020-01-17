@@ -23,7 +23,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     var btnColorOne: UIColor = .orange
     var btnColorTwo: UIColor = .systemYellow
     
-//    var tile: Tile?
+    //    var tile: Tile?
     var descriptionLabel: ColorLabel?
     var subviewCallOut = SliderCallout()
     var testView: SliderCallout?
@@ -63,9 +63,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         palletSetUp()
         palletSetUp()
         
-        pallet = (swipeController?.squares[1])!
         
-        pallet.delegate = self
         
         addParallaxToView(vw: pallet)
         
@@ -78,34 +76,38 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         
         navigationController?.setNavigationBarHidden(true, animated: false)
         
-        let palletPan = UIPanGestureRecognizer(target: self, action: #selector(panHandler(recognizer:)))
-        pallet.addGestureRecognizer(palletPan)
-        
     }
     @objc func panHandler(recognizer: UIPanGestureRecognizer){
+        //        print("triggered")
         swipeController?.handlePan(recognizer: recognizer)
-        print("triggered")
+        if recognizer.state == .ended {
+            saveTile()
+        }
     }
     override func viewDidLayoutSubviews() {
-        
-
+        layoutPallet()
     }
     override func viewDidAppear(_ animated: Bool) {
-        print(swipeController?.squares.count)
-        print(pallet)
-        pallet.topTile.roundCorners(corners: [.topRight, .topLeft], radius: 18)
-        pallet.bottomTile.roundCorners(corners: [.bottomRight, .bottomLeft], radius: 18)
-        pallet.layer.shadowRadius = 5.23
-        pallet.layer.shadowOpacity = 0.23
+        //        layoutPallet()
+    }
+    func layoutPallet(){
+        //        print(swipeController?.squares.count)
+        pallet = (swipeController?.squares[1])!
+        pallet.delegate = self
+        for pallet in swipeController!.squares{
+            pallet.topTile.roundCorners(corners: [.topRight, .topLeft], radius: 18)
+            pallet.bottomTile.roundCorners(corners: [.bottomRight, .bottomLeft], radius: 18)
+            pallet.layer.shadowRadius = 5.23
+            pallet.layer.shadowOpacity = 0.23
+        }
         
         tileWidth = pallet.topTile.frame.width
         
         originS = CGPoint(x: self.view.center.x , y: view.convert(view.center, to: swipeController!.squares[1]).y+30)
         swipeController!.squares[0].alpha = 0.0
-
+        
         swipeController!.originS = self.originS
         swipeController!.currentS = self.currentS
-        
     }
     //MARK: - Gestures Handlers
     @objc func stackLongPress(sender: UILongPressGestureRecognizer) {
@@ -118,7 +120,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         }
         
     }
-
+    
     //MARK: - Pallet SetUp
     func palletSetUp() {
         
@@ -135,6 +137,9 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
             newPallet.heightAnchor.constraint(equalToConstant: 277)
         ])
         
+        let palletPan = UIPanGestureRecognizer(target: self, action: #selector(panHandler(recognizer:)))
+        newPallet.addGestureRecognizer(palletPan)
+        
     }
     @objc func taphandle(){
         print("pallet tapped")
@@ -148,20 +153,21 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         }
     }
     func prepareForCollection(with segue: UIStoryboardSegue,with sender: Any?) {
-        if let viewController = segue.destination as? CollectionController {
-            
-            let newMiniPallet = miniPallet()
-            newMiniPallet.topTileColor = pallet.topTile.contentView.backgroundColor!
-            
-            //                print("prepare for segue :\(pallet.topTile.contentView.backgroundColor)")
-            newMiniPallet.secondTileColor = pallet.secondTile.contentView.backgroundColor!
-            newMiniPallet.thirdTileColor = pallet.thirdTile.contentView.backgroundColor!
-            newMiniPallet.bottomTileColor = pallet.bottomTile.contentView.backgroundColor!
-            
-            miniPallets.append(newMiniPallet)
-            
-            viewController.miniPallets = self.miniPallets
-        }
+                if let viewController = segue.destination as? CollectionController {
+                    viewController.miniPallets = self.miniPallets
+                }
+    }
+    func saveTile(){
+        let newMiniPallet = miniPallet()
+        newMiniPallet.topTileColor = pallet.topTile.contentView.backgroundColor!
+        
+        //                print("prepare for segue :\(pallet.topTile.contentView.backgroundColor)")
+        newMiniPallet.secondTileColor = pallet.secondTile.contentView.backgroundColor!
+        newMiniPallet.thirdTileColor = pallet.thirdTile.contentView.backgroundColor!
+        newMiniPallet.bottomTileColor = pallet.bottomTile.contentView.backgroundColor!
+        
+        miniPallets.append(newMiniPallet)
+        
     }
     func prepareForDetails(with segue: UIStoryboardSegue,with sender: Any?){
         if let viewController = segue.destination as? ColorDetailControler {
@@ -292,7 +298,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     }
     //MARK: - Delegate Methods
     func shortPressOccured() {
-        if pallet.activeTile?.tileIsActive == true{
+        if pallet.activeTile != nil{
             animateSliders(tile: pallet.activeTile!)
         }
     }
