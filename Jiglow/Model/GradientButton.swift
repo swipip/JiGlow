@@ -31,7 +31,7 @@ class GradientButton: UIButton {
         self.layer.shadowRadius = 5
         
     }
-    func animateGradient(startColor: UIColor, endColor: UIColor){
+    func animateGradient(startColor: UIColor, endColor: UIColor = .systemOrange){
         let gradientAnimation = CABasicAnimation(keyPath: "colors")
         gradientAnimation.duration = 0.5
         gradientAnimation.toValue = [startColor.cgColor, endColor.cgColor]

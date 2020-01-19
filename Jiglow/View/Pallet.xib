@@ -16,44 +16,7 @@
         <view contentMode="scaleToFill" id="iN0-l3-epB">
             <rect key="frame" x="0.0" y="0.0" width="414" height="372"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-            <subviews>
-                <view tag="1" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wHf-44-AHv" customClass="Tile" customModule="Jiglow" customModuleProvider="target">
-                    <rect key="frame" x="10" y="10" width="394" height="140"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <gestureRecognizers/>
-                </view>
-                <view tag="2" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EMM-Qy-wWm" customClass="Tile" customModule="Jiglow" customModuleProvider="target">
-                    <rect key="frame" x="10" y="150" width="394" height="102.5"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                </view>
-                <view tag="3" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ff0-r3-N7w" customClass="Tile" customModule="Jiglow" customModuleProvider="target">
-                    <rect key="frame" x="10" y="252.5" width="394" height="74.5"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                </view>
-                <view tag="4" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dEd-kK-IoR" customClass="Tile" customModule="Jiglow" customModuleProvider="target">
-                    <rect key="frame" x="10" y="327" width="394" height="54.5"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                </view>
-            </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-            <constraints>
-                <constraint firstItem="dEd-kK-IoR" firstAttribute="height" secondItem="ff0-r3-N7w" secondAttribute="height" multiplier="0.73" id="0jP-qI-DYi"/>
-                <constraint firstItem="dEd-kK-IoR" firstAttribute="width" secondItem="ff0-r3-N7w" secondAttribute="width" id="1MK-9k-exk"/>
-                <constraint firstItem="dEd-kK-IoR" firstAttribute="centerX" secondItem="ff0-r3-N7w" secondAttribute="centerX" id="8VC-qi-b0q"/>
-                <constraint firstItem="EMM-Qy-wWm" firstAttribute="top" secondItem="wHf-44-AHv" secondAttribute="bottom" id="E4p-8r-XDo"/>
-                <constraint firstItem="ff0-r3-N7w" firstAttribute="top" secondItem="EMM-Qy-wWm" secondAttribute="bottom" id="Ehw-bq-NsI"/>
-                <constraint firstItem="EMM-Qy-wWm" firstAttribute="centerX" secondItem="wHf-44-AHv" secondAttribute="centerX" id="IBt-Mh-DdT"/>
-                <constraint firstItem="wHf-44-AHv" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="0.376471" id="JeC-zT-fbi"/>
-                <constraint firstItem="wHf-44-AHv" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="bX7-K0-GfM"/>
-                <constraint firstItem="EMM-Qy-wWm" firstAttribute="width" secondItem="wHf-44-AHv" secondAttribute="width" id="cSz-1a-W1j"/>
-                <constraint firstItem="ff0-r3-N7w" firstAttribute="centerX" secondItem="EMM-Qy-wWm" secondAttribute="centerX" id="ezf-lf-O8V"/>
-                <constraint firstItem="EMM-Qy-wWm" firstAttribute="height" secondItem="wHf-44-AHv" secondAttribute="height" multiplier="0.73" id="gpS-Ci-d1Q"/>
-                <constraint firstItem="dEd-kK-IoR" firstAttribute="top" secondItem="ff0-r3-N7w" secondAttribute="bottom" id="jH4-ka-H1O"/>
-                <constraint firstItem="ff0-r3-N7w" firstAttribute="width" secondItem="EMM-Qy-wWm" secondAttribute="width" id="n2e-ET-Ua2"/>
-                <constraint firstItem="wHf-44-AHv" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="10" id="pPK-f6-LVK"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="wHf-44-AHv" secondAttribute="trailing" constant="10" id="sz5-Ib-vbJ"/>
-                <constraint firstItem="ff0-r3-N7w" firstAttribute="height" secondItem="EMM-Qy-wWm" secondAttribute="height" multiplier="0.73" id="w1q-r6-J1F"/>
-            </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <point key="canvasLocation" x="-519" y="-23"/>

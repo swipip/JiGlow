@@ -90,8 +90,8 @@ class Pallet: UIView, TileDelegate {
         tile.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             tile.topAnchor.constraint(equalTo: contentView.topAnchor, constant: CGFloat(constraint)),
-            tile.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            tile.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            tile.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 0),
+            tile.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -0),
             tile.heightAnchor.constraint(equalToConstant: CGFloat(height))
         ])
     }

@@ -2,7 +2,7 @@ import UIKit
 
 class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource {
     
-    private let spacing:CGFloat = 10.0
+    private let spacing:CGFloat = 2.0
     
     var miniPallets = [miniPallet]()
 
@@ -20,10 +20,10 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
         
         navBar = navigationController!.navigationBar
         navigationController?.setNavigationBarHidden(false, animated: true)
-        navigationController?.applyGradient(color1: .lightGray, color2: .gray)
-        navBar?.tintColor = .white
         navBar?.backItem?.title = ""
-        navBar?.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        navBar?.tintColor = .black
+//        navigationController?.applyGradient(color1: .lightGray, color2: .gray)
+//        navBar?.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
@@ -36,8 +36,8 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        navigationController?.setNavigationBarHidden(true, animated
-            : true)
+//        navigationController?.setNavigationBarHidden(true, animated
+//            : true)
     }
     
     //MARK: - Delegate functions

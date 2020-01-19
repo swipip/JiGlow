@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--JiGlow-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Jiglow" customModuleProvider="target" sceneMemberID="viewController">
@@ -16,7 +16,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BackGroundJiGlow" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3Sr-f2-cb9">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3Sr-f2-cb9">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="37" translatesAutoresizingMaskIntoConstraints="NO" id="F4y-0O-LPV">
@@ -114,7 +114,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="OII-vE-326"/>
                     </view>
-                    <navigationItem key="navigationItem" id="EfG-xe-f1S"/>
+                    <navigationItem key="navigationItem" title="JiGlow" id="EfG-xe-f1S">
+                        <barButtonItem key="rightBarButtonItem" image="person.circle" catalog="system" id="hLn-CN-85g"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="btnCamera" destination="8li-Rz-TIf" id="f7Z-wd-TOA"/>
                         <outlet property="btnReset" destination="71o-8g-jsV" id="zsy-l9-J8I"/>
@@ -263,23 +265,23 @@
                                 </constraints>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="3S1-DP-DyU">
-                                <rect key="frame" x="0.0" y="558" width="375" height="8"/>
+                                <rect key="frame" x="0.0" y="553" width="375" height="13"/>
                                 <subviews>
                                     <view tag="2" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ovF-Sw-Nal">
-                                        <rect key="frame" x="0.0" y="0.0" width="125" height="8"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="125" height="13"/>
                                         <color key="backgroundColor" systemColor="systemYellowColor" red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </view>
                                     <view tag="3" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1HB-5z-NJX">
-                                        <rect key="frame" x="125" y="0.0" width="125" height="8"/>
+                                        <rect key="frame" x="125" y="0.0" width="125" height="13"/>
                                         <color key="backgroundColor" systemColor="systemTealColor" red="0.35294117650000001" green="0.7843137255" blue="0.98039215690000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </view>
                                     <view tag="4" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jWu-xU-kRJ">
-                                        <rect key="frame" x="250" y="0.0" width="125" height="8"/>
+                                        <rect key="frame" x="250" y="0.0" width="125" height="13"/>
                                         <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </view>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="8" id="7AT-ZU-US2"/>
+                                    <constraint firstAttribute="height" constant="13" id="7AT-ZU-US2"/>
                                 </constraints>
                             </stackView>
                         </subviews>
@@ -330,8 +332,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="BackGroundJiGlow" width="932" height="2016"/>
         <image name="camera.fill" catalog="system" width="64" height="48"/>
+        <image name="person.circle" catalog="system" width="64" height="60"/>
         <image name="rectangle.stack.fill" catalog="system" width="64" height="60"/>
     </resources>
 </document>
