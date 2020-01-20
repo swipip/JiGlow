@@ -25,7 +25,7 @@ class Pallet: UIView, TileDelegate {
     }
     override class func awakeFromNib() {
         super.awakeFromNib()
-
+        
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -57,10 +57,10 @@ class Pallet: UIView, TileDelegate {
         secondTile.delegate = self
         thirdTile.delegate = self
         bottomTile.delegate = self
-
+        
     }
     func setUpTiles() {
-        let height = 125.0
+        let height = Double(0.14 * UIScreen.main.bounds.size.height)
         var compoundedHeight = 0.0
         for index in 1...4 {
             Tiles[index] = Tile()
@@ -84,6 +84,7 @@ class Pallet: UIView, TileDelegate {
             
             compoundedHeight += height/Double(index)
         }
+        NSLayoutConstraint.activate([contentView.heightAnchor.constraint(equalToConstant: CGFloat(compoundedHeight))])
     }
     func addTileToView(with tile: Tile, height: Double, topAnchor constraint: Double) {
         contentView.addSubview(tile)
@@ -91,7 +92,8 @@ class Pallet: UIView, TileDelegate {
         NSLayoutConstraint.activate([
             tile.topAnchor.constraint(equalTo: contentView.topAnchor, constant: CGFloat(constraint)),
             tile.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 0),
-            tile.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -0),
+            tile.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 0),
+            //            tile.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0)
             tile.heightAnchor.constraint(equalToConstant: CGFloat(height))
         ])
     }
@@ -132,7 +134,7 @@ class Pallet: UIView, TileDelegate {
     func rotateSquare(angle: CGFloat){
         
         UIView.animate(withDuration: 0.2, animations: {
-           self.transform = self.transform.rotated(by: angle)
+            self.transform = self.transform.rotated(by: angle)
         })
         
     }
@@ -148,7 +150,7 @@ class Pallet: UIView, TileDelegate {
                 self.rotateSquare(angle: CGFloat(Double.pi / 32))
                 
             }else{
-
+                
                 self.rotateSquare(angle: -CGFloat(Double.pi / 32))
                 
             }
@@ -162,6 +164,6 @@ class Pallet: UIView, TileDelegate {
                 self.rotated.on = false
             }
         }
-       
+        
     }
 }

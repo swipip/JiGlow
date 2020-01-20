@@ -81,10 +81,10 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     }
     override func viewDidLayoutSubviews() {
         layoutPallet()
-        
     }
     override func viewDidAppear(_ animated: Bool) {
         addParallaxToView(vw: pallet)
+        
     }
     func layoutPallet(){
         pallet = (swipeController?.squares[1])!
@@ -104,6 +104,11 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         
         swipeController!.originS = self.originS
         swipeController!.currentS = self.currentS
+        
+        NSLayoutConstraint.activate([
+            slidersStackView.topAnchor.constraint(equalTo: (swipeController?.squares[0].bottomAnchor)!, constant: 80)
+               ])
+        
     }
     //MARK: - Gestures Handlers
     @objc func stackLongPress(sender: UILongPressGestureRecognizer) {
@@ -124,15 +129,15 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         
         swipeController?.squares.append(newPallet)
         
+        let width = UIScreen.main.bounds.size.width * 0.614
+        
         view.addSubview(newPallet)
         newPallet.translatesAutoresizingMaskIntoConstraints = false
         let margins = view.layoutMarginsGuide
         NSLayoutConstraint.activate([
-//            newPallet.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            newPallet.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             newPallet.topAnchor.constraint(equalTo: margins.topAnchor, constant: 30),
-            newPallet.bottomAnchor.constraint(equalTo: sliderRed.topAnchor, constant: 15),
-            newPallet.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 50),
-            newPallet.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: -50),
+            newPallet.widthAnchor.constraint(equalToConstant: width)
         ])
         
         let palletPan = UIPanGestureRecognizer(target: self, action: #selector(panHandler(recognizer:)))
@@ -171,9 +176,9 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
             if let safeTile = pallet.activeTile {
                 viewController.mainColor = safeTile.contentView.backgroundColor ?? .black
                 viewController.hexaCode = safeTile.hexaCode
-                viewController.redCode = safeTile.redCode
-                viewController.greenCode = safeTile.greenCode
-                viewController.blueCode = safeTile.blueCode
+                viewController.redCode = Int(safeTile.redCode!)
+                viewController.greenCode = Int(safeTile.greenCode!)
+                viewController.blueCode = Int(safeTile.blueCode!)
                 switch safeTile.rank {
                 case 1:
                     viewController.leftColor = pallet.secondTile.contentView.backgroundColor
@@ -220,7 +225,9 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
             case "sldRed":
                 red = CGFloat(sender.value)
                 sliderCallOut?.calloutLabel.text = String(Int(sender.value * 255))
-                sliderRed.minimumTrackTintColor = .red
+                
+                sliderRed.minimumTrackTintColor = UIColor(displayP3Red: red, green: 0.5 * red, blue: 0.5 * red, alpha: 1)
+                
                 animateSliderCallOut(sender: sliderCallOut!, xCoordinate: xCoordinate)
                 localPallet.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
                 localPallet.hexaLabel.prepareColor(red: red, green: green, blue: blue)
@@ -230,7 +237,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
             case "sldGreen":
                 green = CGFloat(sender.value)
                 sliderCallOut?.calloutLabel.text = String(Int(sender.value * 255))
-                //                sliderCallOut?.calloutLabel.animateOn(toColor: UIColor(displayP3Red: 0, green: CGFloat(sender.value), blue: 0, alpha: 1))
+                sliderRed.minimumTrackTintColor = UIColor(displayP3Red: 0.5*green, green: green, blue: 0.5 * red, alpha: 1)
                 animateSliderCallOut(sender: sliderCallOut!, xCoordinate: xCoordinate)
                 localPallet.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
                 localPallet.hexaLabel.prepareColor(red: red, green: green, blue: blue)
@@ -240,7 +247,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
             case "sldBlue":
                 self.blue = CGFloat(sender.value)
                 sliderCallOut?.calloutLabel.text = String(Int(sender.value * 255))
-                //                sliderCallOut?.calloutLabel.animateOn(toColor: UIColor(displayP3Red: 0, green: 0, blue: CGFloat(sender.value), alpha: 1))
+                sliderRed.minimumTrackTintColor = UIColor(displayP3Red: blue * 0.5, green: 0.5 * blue, blue: blue, alpha: 1)
                 animateSliderCallOut(sender: sliderCallOut!, xCoordinate: xCoordinate)
                 localPallet.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
                 localPallet.hexaLabel.prepareColor(red: red, green: green, blue: blue)
@@ -265,9 +272,21 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         pallet.activeTile = nil
     }
     //MARK: - Animations
+    func animateSlidersMinTint(slider: UISlider, color: UIColor){
+        
+//        let tintAnimation = CABasicAnimation(keyPath: "minTrackTintColor")
+//        tintAnimation.duration = 1
+//        tintAnimation.toValue = color.cgColor
+//        tintAnimation.autoreverses = false
+////        tintAnimation.timingFunction =
+//        slider.layer.add(tintAnimation, forKey: nil)
+        
+    }
     @objc func onSliderValChanged(slider: UISlider, event: UIEvent) {
         if let touchEvent = event.allTouches?.first {
             switch touchEvent.phase {
+            case .began:
+                animateSlidersMinTint(slider: sliderRed, color: .systemRed)
             case .ended:
                 UIView.animate(withDuration: 0.66 ,delay: 0.0, animations: {
                     self.sliderCallOut?.alpha = 0
@@ -275,6 +294,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
                     self.sliderCallOut?.removeFromSuperview()
                     self.sliderCallOut = nil
                 }
+                slider.minimumTrackTintColor = .systemGray
             default:
                 break
             }
@@ -321,9 +341,9 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         //Logic
         if let safeTile = pallet.activeTile {
             safeTile.hexaCode = safeTile.contentView.backgroundColor?.toHexString()
-            safeTile.redCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.red)! * 255))
-            safeTile.greenCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.green)! * 255))
-            safeTile.blueCode = String(describing: Int((safeTile.contentView.backgroundColor?.rgb()!.blue)! * 255))
+            safeTile.redCode = Int((safeTile.contentView.backgroundColor?.rgb()!.red)! * 255)
+            safeTile.greenCode = Int((safeTile.contentView.backgroundColor?.rgb()!.green)! * 255)
+            safeTile.blueCode = Int((safeTile.contentView.backgroundColor?.rgb()!.blue)! * 255)
             //
         }
         performSegue(withIdentifier: "mainToColorDetail", sender: Any?.self)

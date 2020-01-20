@@ -15,4 +15,5 @@ class ColorSlider: UISlider {
         
     }
     
+    
 }

@@ -11,9 +11,9 @@ enum tapType {
 class Tile: UIView {
     
     var hexaCode: String?
-    var redCode: String?
-    var blueCode: String?
-    var greenCode: String?
+    var redCode: Int?
+    var blueCode: Int?
+    var greenCode: Int?
     var color: UIColor?
     var rank: Int?
     var delegate: TileDelegate?

@@ -22,6 +22,7 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
         navigationController?.setNavigationBarHidden(false, animated: true)
         navBar?.backItem?.title = ""
         navBar?.tintColor = .black
+//        navBar?.backItem?.action
 //        navigationController?.applyGradient(color1: .lightGray, color2: .gray)
 //        navBar?.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         
@@ -39,6 +40,11 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
 //        navigationController?.setNavigationBarHidden(true, animated
 //            : true)
     }
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if let vc = segue.destination as? ViewController{
+//            print("go back")
+//        }
+//    }
     
     //MARK: - Delegate functions
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -69,6 +75,13 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
             return CGSize(width: 0, height: 0)
         }
     }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("selected")
+        UIView.animate(withDuration: 0.3, animations: {
+            collectionView.cellForItem(at: indexPath)!.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
+        }, completion: nil)
+    }
+    
 
 }
 //MARK: - Extensions

@@ -21,13 +21,13 @@ class miniPallet: UICollectionViewCell {
 
     }
     @objc func tapHandler() {
-        print("tapped")
+//        print("tapped")
     }
     override func layoutSubviews() {
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapHandler))
         
-        cornerView.addGestureRecognizer(tapGesture)
+//        cornerView.addGestureRecognizer(tapGesture)
         
         super.layoutSubviews()
         tileStack.clipsToBounds = true
