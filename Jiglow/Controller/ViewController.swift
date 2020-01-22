@@ -1,6 +1,13 @@
 import UIKit
 
-class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,UIGestureRecognizerDelegate {
+class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,UIGestureRecognizerDelegate,CollectionControllerDelegate {
+    func viewDidDisapear(topColor: UIColor, secondColor: UIColor, thirdColor: UIColor, bottomColor: UIColor) {
+        pallet.topTile.contentView.backgroundColor = topColor
+        pallet.secondTile .contentView.backgroundColor = secondColor
+        pallet.thirdTile.contentView.backgroundColor = thirdColor
+        pallet.bottomTile.contentView.backgroundColor = bottomColor
+    }
+    
     
     //MARK: - Outlets
     
@@ -28,14 +35,14 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     var pallet = Pallet()
     var tileWidth: CGFloat = 0.0
     
-    var longPressGestureTopTile: UILongPressGestureRecognizer?
-    var longPressGestureSecondTile: UILongPressGestureRecognizer?
-    var longPressGestureThirdTile: UILongPressGestureRecognizer?
-    var longPressGestureBottomTile: UILongPressGestureRecognizer?
+//    var longPressGestureTopTile: UILongPressGestureRecognizer?
+//    var longPressGestureSecondTile: UILongPressGestureRecognizer?
+//    var longPressGestureThirdTile: UILongPressGestureRecognizer?
+//    var longPressGestureBottomTile: UILongPressGestureRecognizer?
     var longPressGestureStack: UILongPressGestureRecognizer?
     var longPressGestureReset: UILongPressGestureRecognizer?
     
-    public var miniPallets = [miniPallet]()
+    public var miniPallets = [MiniPallet]()
     
     var swipeController: SwipeController?
     var originS: CGPoint?
@@ -137,7 +144,10 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         NSLayoutConstraint.activate([
             newPallet.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             newPallet.topAnchor.constraint(equalTo: margins.topAnchor, constant: 30),
+//            newPallet.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 50),
+//            newPallet.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: -50),
             newPallet.widthAnchor.constraint(equalToConstant: width)
+//            newPallet.bottomAnchor.constraint(equalTo: slidersStackView.topAnchor, constant: -20)
         ])
         
         let palletPan = UIPanGestureRecognizer(target: self, action: #selector(panHandler(recognizer:)))
@@ -155,13 +165,16 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     func prepareForCollection(with segue: UIStoryboardSegue,with sender: Any?) {
         if let viewController = segue.destination as? CollectionController {
             viewController.miniPallets = self.miniPallets
+            
+            viewController.delegate = self
+            
             let backItem = UIBarButtonItem()
             backItem.title = ""
             navigationItem.backBarButtonItem = backItem
         }
     }
     func saveTile(){
-        let newMiniPallet = miniPallet()
+        let newMiniPallet = MiniPallet()
         newMiniPallet.topTileColor = pallet.topTile.contentView.backgroundColor!
         newMiniPallet.secondTileColor = pallet.secondTile.contentView.backgroundColor!
         newMiniPallet.thirdTileColor = pallet.thirdTile.contentView.backgroundColor!
@@ -179,6 +192,9 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
                 viewController.redCode = Int(safeTile.redCode!)
                 viewController.greenCode = Int(safeTile.greenCode!)
                 viewController.blueCode = Int(safeTile.blueCode!)
+                
+                print("r: \(safeTile.redCode!) g: \(safeTile.greenCode!) b: \(safeTile.blueCode!)")
+                
                 switch safeTile.rank {
                 case 1:
                     viewController.leftColor = pallet.secondTile.contentView.backgroundColor
@@ -224,6 +240,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
             switch sender.accessibilityIdentifier {
             case "sldRed":
                 red = CGFloat(sender.value)
+                print("slider value :\(red)")
                 sliderCallOut?.calloutLabel.text = String(Int(sender.value * 255))
                 
                 sliderRed.minimumTrackTintColor = UIColor(displayP3Red: red, green: 0.5 * red, blue: 0.5 * red, alpha: 1)
@@ -232,26 +249,29 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
                 localPallet.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
                 localPallet.hexaLabel.prepareColor(red: red, green: green, blue: blue)
                 localPallet.hexaLabel.text = localPallet.contentView.backgroundColor?.toHexString()
+                localPallet.redCode = Int(red * 255)
                 btnReset.animateGradient(startColor: (pallet.activeTile?.contentView.backgroundColor)!)
                 
             case "sldGreen":
                 green = CGFloat(sender.value)
                 sliderCallOut?.calloutLabel.text = String(Int(sender.value * 255))
-                sliderRed.minimumTrackTintColor = UIColor(displayP3Red: 0.5*green, green: green, blue: 0.5 * red, alpha: 1)
+                sliderGreen.minimumTrackTintColor = UIColor(displayP3Red: 0.5*green, green: green, blue: 0.5 * red, alpha: 1)
                 animateSliderCallOut(sender: sliderCallOut!, xCoordinate: xCoordinate)
                 localPallet.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
                 localPallet.hexaLabel.prepareColor(red: red, green: green, blue: blue)
                 localPallet.hexaLabel.text = pallet.activeTile?.contentView.backgroundColor?.toHexString()
+                localPallet.greenCode = Int(green * 255)
                 btnReset.animateGradient(startColor: (localPallet.contentView.backgroundColor)!)
                 
             case "sldBlue":
                 self.blue = CGFloat(sender.value)
                 sliderCallOut?.calloutLabel.text = String(Int(sender.value * 255))
-                sliderRed.minimumTrackTintColor = UIColor(displayP3Red: blue * 0.5, green: 0.5 * blue, blue: blue, alpha: 1)
+                sliderBlue.minimumTrackTintColor = UIColor(displayP3Red: blue * 0.5, green: 0.5 * blue, blue: blue, alpha: 1)
                 animateSliderCallOut(sender: sliderCallOut!, xCoordinate: xCoordinate)
                 localPallet.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
                 localPallet.hexaLabel.prepareColor(red: red, green: green, blue: blue)
                 localPallet.hexaLabel.text = pallet.activeTile?.contentView.backgroundColor?.toHexString()
+                localPallet.blueCode = Int(blue * 255)
                 btnReset.animateGradient(startColor: (localPallet.contentView.backgroundColor)!)
             default:
                 print("error")
@@ -285,8 +305,8 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     @objc func onSliderValChanged(slider: UISlider, event: UIEvent) {
         if let touchEvent = event.allTouches?.first {
             switch touchEvent.phase {
-            case .began:
-                animateSlidersMinTint(slider: sliderRed, color: .systemRed)
+//            case .began:
+//                animateSlidersMinTint(slider: sliderRed, color: .systemRed)
             case .ended:
                 UIView.animate(withDuration: 0.66 ,delay: 0.0, animations: {
                     self.sliderCallOut?.alpha = 0
@@ -308,9 +328,9 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     }
     func animateSliders(tile: Tile) {
         
-        red = (tile.contentView.backgroundColor?.rgb()!.red)!
-        green = (tile.contentView.backgroundColor?.rgb()!.green)!
-        blue = (tile.contentView.backgroundColor?.rgb()!.blue)!
+        red = (tile.contentView.backgroundColor?.rgb.red)!
+        green = (tile.contentView.backgroundColor?.rgb.green)!
+        blue = (tile.contentView.backgroundColor?.rgb.blue)!
         
         tile.hexaLabel.text = tile.contentView.backgroundColor?.toHexString()
         
@@ -341,9 +361,10 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         //Logic
         if let safeTile = pallet.activeTile {
             safeTile.hexaCode = safeTile.contentView.backgroundColor?.toHexString()
-            safeTile.redCode = Int((safeTile.contentView.backgroundColor?.rgb()!.red)! * 255)
-            safeTile.greenCode = Int((safeTile.contentView.backgroundColor?.rgb()!.green)! * 255)
-            safeTile.blueCode = Int((safeTile.contentView.backgroundColor?.rgb()!.blue)! * 255)
+            safeTile.redCode = Int((safeTile.contentView.backgroundColor?.rgb.red)! * 255)
+            print("check redCode set : \(safeTile.contentView.backgroundColor?.rgb.red))")
+            safeTile.greenCode = Int((safeTile.contentView.backgroundColor?.rgb.green)! * 255)
+            safeTile.blueCode = Int((safeTile.contentView.backgroundColor?.rgb.blue)! * 255)
             //
         }
         performSegue(withIdentifier: "mainToColorDetail", sender: Any?.self)
@@ -385,7 +406,7 @@ extension UIColor {
         
         let rgb:Int = (Int)(r*255)<<16 | (Int)(g*255)<<8 | (Int)(b*255)<<0
         
-        return NSString(format:"#%06x", rgb) as String
+        return NSString(format:"#%06X", rgb) as String
     }
     
     convenience init(red: Int, green: Int, blue: Int) {
@@ -396,22 +417,14 @@ extension UIColor {
         self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
     }
     
-    func rgb() -> (red:CGFloat, green:CGFloat, blue:CGFloat, alpha:CGFloat)? {
-        var fRed : CGFloat = 0
-        var fGreen : CGFloat = 0
-        var fBlue : CGFloat = 0
-        var fAlpha: CGFloat = 0
-        if self.getRed(&fRed, green: &fGreen, blue: &fBlue, alpha: &fAlpha) {
-            let iRed = (fRed)
-            let iGreen = (fGreen)
-            let iBlue = (fBlue)
-            let iAlpha = (fAlpha)
-            
-            return (red:iRed, green:iGreen, blue:iBlue, alpha:iAlpha)
-        } else {
-            // Could not extract RGBA components:
-            return nil
-        }
+    var rgb: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+
+        return (red, green, blue, alpha)
     }
 }
 extension UISlider {

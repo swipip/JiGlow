@@ -1,10 +1,17 @@
 import UIKit
+protocol CollectionControllerDelegate {
+    func viewDidDisapear(topColor: UIColor, secondColor: UIColor, thirdColor: UIColor, bottomColor: UIColor)
+}
 
 class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource {
     
     private let spacing:CGFloat = 2.0
     
-    var miniPallets = [miniPallet]()
+    var miniPallets = [MiniPallet]()
+    
+    var miniPallet: MiniPallet?
+    
+    var delegate: CollectionControllerDelegate?
 
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -37,8 +44,11 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-//        navigationController?.setNavigationBarHidden(true, animated
-//            : true)
+
+        if let safeMiniPallet = miniPallet{
+            delegate?.viewDidDisapear(topColor: safeMiniPallet.topTileColor!, secondColor: safeMiniPallet.secondTileColor!, thirdColor: safeMiniPallet.thirdTileColor!, bottomColor: safeMiniPallet.bottomTileColor!)
+        }
+        
     }
 //    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 //        if let vc = segue.destination as? ViewController{
@@ -55,7 +65,7 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
         return 1
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ReusableCell", for: indexPath) as! miniPallet
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ReusableCell", for: indexPath) as! MiniPallet
         
         cell.updateColor(top: miniPallets[indexPath.row].topTileColor!, second: miniPallets[indexPath.row].secondTileColor!, third: miniPallets[indexPath.row].thirdTileColor!, bottom: miniPallets[indexPath.row].bottomTileColor!)
         
@@ -77,9 +87,15 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("selected")
-        UIView.animate(withDuration: 0.3, animations: {
+        
+        miniPallet = miniPallets[indexPath.row]
+        
+        UIView.animate(withDuration: 0.1, animations: {
             collectionView.cellForItem(at: indexPath)!.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
         }, completion: nil)
+        
+        navigationController?.popViewController(animated: true)
+        
     }
     
 

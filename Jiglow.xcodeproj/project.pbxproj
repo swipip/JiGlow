@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		4934472A23D03D6E00324F4A /* Tile.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4934472923D03D6E00324F4A /* Tile.xib */; };
 		4934472C23D08D8F00324F4A /* CollectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4934472B23D08D8F00324F4A /* CollectionController.swift */; };
-		4934472F23D096F000324F4A /* miniPallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4934472D23D096F000324F4A /* miniPallet.swift */; };
+		4934472F23D096F000324F4A /* MiniPallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4934472D23D096F000324F4A /* MiniPallet.swift */; };
 		4934473023D096F000324F4A /* miniPallet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4934472E23D096F000324F4A /* miniPallet.xib */; };
 		498E32D823D1E4E500D1203E /* SwipeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498E32D723D1E4E500D1203E /* SwipeController.swift */; };
 		498E32DB23D3398F00D1203E /* Lobster-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 498E32DA23D3398F00D1203E /* Lobster-Regular.ttf */; };
@@ -36,7 +36,7 @@
 /* Begin PBXFileReference section */
 		4934472923D03D6E00324F4A /* Tile.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Tile.xib; sourceTree = "<group>"; };
 		4934472B23D08D8F00324F4A /* CollectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionController.swift; sourceTree = "<group>"; };
-		4934472D23D096F000324F4A /* miniPallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = miniPallet.swift; sourceTree = "<group>"; };
+		4934472D23D096F000324F4A /* MiniPallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniPallet.swift; sourceTree = "<group>"; };
 		4934472E23D096F000324F4A /* miniPallet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = miniPallet.xib; sourceTree = "<group>"; };
 		498E32D723D1E4E500D1203E /* SwipeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeController.swift; sourceTree = "<group>"; };
 		498E32DA23D3398F00D1203E /* Lobster-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lobster-Regular.ttf"; sourceTree = "<group>"; };
@@ -149,7 +149,7 @@
 			children = (
 				49C58A1C23C25645006A9D2D /* Main.storyboard */,
 				4934472E23D096F000324F4A /* miniPallet.xib */,
-				4934472D23D096F000324F4A /* miniPallet.swift */,
+				4934472D23D096F000324F4A /* MiniPallet.swift */,
 				49C58A4223C505C5006A9D2D /* SliderCallOut.xib */,
 				49C58A3E23C4F6F2006A9D2D /* SliderCallout.swift */,
 				49D5B00223C7327200D9B146 /* Pallet.xib */,
@@ -248,7 +248,7 @@
 				49C58A2F23C3ABE0006A9D2D /* Tile.swift in Sources */,
 				498E32D823D1E4E500D1203E /* SwipeController.swift in Sources */,
 				49C58A1923C25645006A9D2D /* SceneDelegate.swift in Sources */,
-				4934472F23D096F000324F4A /* miniPallet.swift in Sources */,
+				4934472F23D096F000324F4A /* MiniPallet.swift in Sources */,
 				49C58A2123C25645006A9D2D /* Jiglow.xcdatamodeld in Sources */,
 				4934472C23D08D8F00324F4A /* CollectionController.swift in Sources */,
 				49C58A3423C4E1AB006A9D2D /* ColorSlider.swift in Sources */,
@@ -406,7 +406,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.gautierbillard.Jiglow;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -424,7 +424,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.gautierbillard.Jiglow;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

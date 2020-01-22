@@ -1,6 +1,6 @@
 import UIKit
 
-class miniPallet: UICollectionViewCell {
+class MiniPallet: UICollectionViewCell {
 
     
     @IBOutlet private weak var tileStack: UIView!

@@ -1,11 +1,3 @@
-//
-//  ColorDetailControler.swift
-//  Jiglow
-//
-//  Created by Gautier Billard on 08/01/2020.
-//  Copyright © 2020 Gautier Billard. All rights reserved.
-//
-
 import Foundation
 import UIKit
 
@@ -107,3 +99,4 @@ class ColorDetailControler: UIViewController {
 
     }
 }
+

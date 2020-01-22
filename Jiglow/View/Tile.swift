@@ -11,8 +11,16 @@ enum tapType {
 class Tile: UIView {
     
     var hexaCode: String?
-    var redCode: Int?
-    var blueCode: Int?
+    var redCode: Int?{
+        didSet{
+            
+        }
+    }
+    var blueCode: Int?{
+        didSet{
+            print(blueCode)
+        }
+    }
     var greenCode: Int?
     var color: UIColor?
     var rank: Int?
@@ -84,7 +92,7 @@ class Tile: UIView {
 //MARK: - Delegate Methods
     @objc func tapHandler() {
         tileIsActive  = true
-        self.hexaLabel.prepareColor(red: (contentView.backgroundColor?.rgb()?.red)!, green: (contentView.backgroundColor?.rgb()?.green)!, blue: (contentView.backgroundColor?.rgb()?.blue)!)
+        self.hexaLabel.prepareColor(red: (contentView.backgroundColor?.rgb.red)!, green: (contentView.backgroundColor?.rgb.green)!, blue: (contentView.backgroundColor?.rgb.blue)!)
         animateLabelAlphaOn()
         delegate?.didTapTile()
     }
