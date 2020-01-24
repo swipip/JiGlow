@@ -117,7 +117,6 @@
 				49C58A3723C4F3D3006A9D2D /* View */,
 				49C58A2223C25646006A9D2D /* Assets.xcassets */,
 				49C58A2723C25646006A9D2D /* Info.plist */,
-				49C58A1F23C25645006A9D2D /* Jiglow.xcdatamodeld */,
 			);
 			path = Jiglow;
 			sourceTree = "<group>";
@@ -137,9 +136,7 @@
 		49C58A3023C3ABE7006A9D2D /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				49C58A3323C4E1AB006A9D2D /* ColorSlider.swift */,
-				49C58A3123C3C404006A9D2D /* GradientButton.swift */,
-				49C58A3523C4E7AE006A9D2D /* ColorLabel.swift */,
+				49C58A1F23C25645006A9D2D /* Jiglow.xcdatamodeld */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -157,6 +154,9 @@
 				4934472923D03D6E00324F4A /* Tile.xib */,
 				49C58A2E23C3ABE0006A9D2D /* Tile.swift */,
 				49C58A2423C25646006A9D2D /* LaunchScreen.storyboard */,
+				49C58A3323C4E1AB006A9D2D /* ColorSlider.swift */,
+				49C58A3123C3C404006A9D2D /* GradientButton.swift */,
+				49C58A3523C4E7AE006A9D2D /* ColorLabel.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
