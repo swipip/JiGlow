@@ -20,6 +20,9 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
+    // variable the model looks to choose between C || U
+    var editingMode = false
+    
     var red: CGFloat = 0.5
     var green: CGFloat = 0.5
     var blue: CGFloat = 0.5
@@ -42,7 +45,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     var longPressGestureStack: UILongPressGestureRecognizer?
     var longPressGestureReset: UILongPressGestureRecognizer?
     
-    public var miniPallets = [MiniPallet]()
+//    public var miniPallets = [MiniPallet]()
     
     private var miniPalletsCD = [MiniPalletModel]()
     
@@ -54,14 +57,14 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        let path = FileManager
-//        .default
-//        .urls(for: .applicationSupportDirectory, in: .userDomainMask)
-//        .last?
-//        .absoluteString
-//        .replacingOccurrences(of: "file://", with: "")
-//        .removingPercentEncoding
-//        print(path)
+        let path = FileManager
+        .default
+        .urls(for: .applicationSupportDirectory, in: .userDomainMask)
+        .last?
+        .absoluteString
+        .replacingOccurrences(of: "file://", with: "")
+        .removingPercentEncoding
+        print(path)
 
         swipeController = SwipeController(view: self.view)
         swipeController?.delegate = self
@@ -176,7 +179,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     }
     func prepareForCollection(with segue: UIStoryboardSegue,with sender: Any?) {
         if let viewController = segue.destination as? CollectionController {
-            viewController.miniPalletsCD = self.miniPalletsCD
+//            viewController.miniPalletsCD = self.miniPalletsCD
             
             viewController.delegate = self
             
@@ -187,20 +190,46 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     }
     func saveTile(){
         
-        let newMiniPalletCD = MiniPalletModel(context: self.context)
-        newMiniPalletCD.topColor = pallet.topTile.contentView.backgroundColor?.toHexString()
-        newMiniPalletCD.secondColor = pallet.secondTile.contentView.backgroundColor?.toHexString()
-        newMiniPalletCD.thirdColor = pallet.thirdTile.contentView.backgroundColor?.toHexString()
-        newMiniPalletCD.bottomColor = pallet.bottomTile.contentView.backgroundColor?.toHexString()
-        newMiniPalletCD.name = palletName
+        let topColor = pallet.topTile.contentView.backgroundColor?.toHexString()
+        let secondColor = pallet.secondTile.contentView.backgroundColor?.toHexString()
+        let thirdColor = pallet.thirdTile.contentView.backgroundColor?.toHexString()
+        let bottomColor = pallet.bottomTile.contentView.backgroundColor?.toHexString()
         
-        miniPalletsCD.append(newMiniPalletCD)
-        
-        do {
-          try context.save()
-        } catch {
-           print("Error saving context \(error)")
+        if editingMode == false {
+            let newMiniPalletCD = MiniPalletModel(context: self.context)
+            newMiniPalletCD.topColor = topColor
+            newMiniPalletCD.secondColor = secondColor
+            newMiniPalletCD.thirdColor = thirdColor
+            newMiniPalletCD.bottomColor = bottomColor
+            newMiniPalletCD.name = palletName
+            miniPalletsCD.append(newMiniPalletCD)
+            do {
+                try context.save()
+            } catch {
+                print("Error saving context \(error)")
+            }
+        }else{
+            
+            let request:NSFetchRequest<MiniPalletModel> = MiniPalletModel.fetchRequest()
+            let nameFilter = NSPredicate(format: "name MATCHES[cd] %@", self.palletName)
+            request.predicate = nameFilter
+            
+            do {
+                let myPallet = try context.fetch(request)
+                print(myPallet.count)
+                myPallet[0].setValue(topColor, forKey: "topColor")
+                try context.save()
+            }catch{
+                print("error retrieving data")
+            }
+
         }
+
+        
+    }
+    func loadPallets(with request: NSFetchRequest<MiniPalletModel> = MiniPalletModel.fetchRequest(), predicate: NSPredicate? = nil){
+        
+        
         
     }
     func prepareForDetails(with segue: UIStoryboardSegue,with sender: Any?){
@@ -361,15 +390,23 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         }, completion: nil)
     }
     //MARK: - Delegate Methods
-    func viewDidDisapear(topColor: String, secondColor: String, thirdColor: String, bottomColor: String) {
+    func viewDidDisapear(topColor: String, secondColor: String, thirdColor: String, bottomColor: String, editingMode: Bool, palletName: String) {
         pallet.topTile.contentView.backgroundColor = UIColor(hexString: topColor)
         pallet.secondTile .contentView.backgroundColor = UIColor(hexString: secondColor)
         pallet.thirdTile.contentView.backgroundColor = UIColor(hexString: thirdColor)
         pallet.bottomTile.contentView.backgroundColor = UIColor(hexString: bottomColor)
+        
+        self.editingMode = editingMode
+        
+        self.palletName = palletName
+        
     }
     func panDidEnd() {
-        displayAlert()
-        
+        if editingMode {
+            saveTile()
+        }else{
+            displayAlert()
+        }
     }
     
     func didFinishedAnimateReload() {

@@ -2,7 +2,7 @@ import UIKit
 import CoreData
 
 protocol CollectionControllerDelegate {
-    func viewDidDisapear(topColor: String, secondColor: String, thirdColor: String, bottomColor: String)
+    func viewDidDisapear(topColor: String, secondColor: String, thirdColor: String, bottomColor: String, editingMode: Bool, palletName: String)
 }
 
 class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource {
@@ -25,7 +25,7 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
         
         loadMiniPallets()
         
-        print(miniPalletsCD)
+//        print(miniPalletsCD)
         
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -55,7 +55,9 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
             delegate?.viewDidDisapear(topColor: safeMiniPallet.topColor!,
                                       secondColor: safeMiniPallet.secondColor!,
                                       thirdColor: safeMiniPallet.thirdColor!,
-                                      bottomColor: safeMiniPallet.bottomColor!)
+                                      bottomColor: safeMiniPallet.bottomColor!,
+                                      editingMode: true,
+                                      palletName: safeMiniPallet.name!)
         }
         
     }
@@ -88,14 +90,14 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
         
         if let collection = self.collectionView{
             let width = (collection.bounds.width - totalSpacing)/numberOfItemsPerRow
-            print(width)
+//            print(width)
             return CGSize(width: width, height: width * 1.21)
         }else{
             return CGSize(width: 0, height: 0)
         }
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("selected")
+//        print("selected")
         
         miniPallet = miniPalletsCD[indexPath.row]
         navigationController?.popViewController(animated: true)
