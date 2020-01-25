@@ -27,9 +27,9 @@ class PhotoViewController: UIViewController,UINavigationControllerDelegate,UIIma
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true)
         
-        guard let image = info[.editedImage] as? UIImage else{
-            return
-        }
+//        guard let image = info[.editedImage] as? UIImage else{
+//            return
+//        }
         
 //        print(vc)
         

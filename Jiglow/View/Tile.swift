@@ -18,7 +18,7 @@ class Tile: UIView {
     }
     var blueCode: Int?{
         didSet{
-            print(blueCode)
+            
         }
     }
     var greenCode: Int?

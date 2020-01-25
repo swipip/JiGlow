@@ -30,9 +30,9 @@
             filePath = "Jiglow/Controller/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "292"
-            endingLineNumber = "292"
-            landmarkName = "resetClicked(_:)"
+            startingLineNumber = "288"
+            endingLineNumber = "288"
+            landmarkName = "sliderSlide(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -62,10 +62,10 @@
             filePath = "Jiglow/Controller/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "402"
-            endingLineNumber = "402"
-            landmarkName = "toHexString()"
-            landmarkType = "7">
+            startingLineNumber = "404"
+            endingLineNumber = "404"
+            landmarkName = "addParallaxToView(vw:)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -94,10 +94,10 @@
             filePath = "Jiglow/Controller/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "406"
-            endingLineNumber = "406"
-            landmarkName = "toHexString()"
-            landmarkType = "7">
+            startingLineNumber = "408"
+            endingLineNumber = "408"
+            landmarkName = "addParallaxToView(vw:)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -110,25 +110,41 @@
             filePath = "Jiglow/Controller/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "135"
-            endingLineNumber = "135"
-            landmarkName = "palletSetUp()"
+            startingLineNumber = "140"
+            endingLineNumber = "140"
+            landmarkName = "stackLongPress(sender:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "50FA4523-6454-4F16-8ADE-CFB74FE0B2B1"
+            uuid = "99EDC4CA-C462-4085-805C-BEDA45961289"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Jiglow/Controller/ViewController.swift"
+            filePath = "Jiglow/View/MiniPallet.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "6"
-            endingLineNumber = "6"
-            landmarkName = "viewDidDisapear(topColor:secondColor:thirdColor:bottomColor:)"
+            startingLineNumber = "53"
+            endingLineNumber = "53"
+            landmarkName = "updateColorCD(top:second:third:bottom:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D95E9A87-66BD-4564-9BD5-F2131575B69B"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Jiglow/Controller/CollectionController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "87"
+            endingLineNumber = "87"
+            landmarkName = "collectionView(_:layout:sizeForItemAt:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

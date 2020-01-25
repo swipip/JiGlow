@@ -1,12 +1,8 @@
 import UIKit
+import CoreData
 
 class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,UIGestureRecognizerDelegate,CollectionControllerDelegate {
-    func viewDidDisapear(topColor: UIColor, secondColor: UIColor, thirdColor: UIColor, bottomColor: UIColor) {
-        pallet.topTile.contentView.backgroundColor = topColor
-        pallet.secondTile .contentView.backgroundColor = secondColor
-        pallet.thirdTile.contentView.backgroundColor = thirdColor
-        pallet.bottomTile.contentView.backgroundColor = bottomColor
-    }
+
     
     
     //MARK: - Outlets
@@ -21,6 +17,8 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     @IBOutlet weak var btnStack: GradientButton!
     
     //MARK: - Variables
+    
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     var red: CGFloat = 0.5
     var green: CGFloat = 0.5
@@ -44,6 +42,8 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     
     public var miniPallets = [MiniPallet]()
     
+    private var miniPalletsCD = [MiniPalletModel]()
+    
     var swipeController: SwipeController?
     var originS: CGPoint?
     var currentS = CGPoint()
@@ -51,6 +51,16 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        let path = FileManager
+//        .default
+//        .urls(for: .applicationSupportDirectory, in: .userDomainMask)
+//        .last?
+//        .absoluteString
+//        .replacingOccurrences(of: "file://", with: "")
+//        .removingPercentEncoding
+//        print(path)
+
         
         swipeController = SwipeController(view: self.view)
         swipeController?.delegate = self
@@ -164,7 +174,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     }
     func prepareForCollection(with segue: UIStoryboardSegue,with sender: Any?) {
         if let viewController = segue.destination as? CollectionController {
-            viewController.miniPallets = self.miniPallets
+            viewController.miniPalletsCD = self.miniPalletsCD
             
             viewController.delegate = self
             
@@ -174,13 +184,20 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         }
     }
     func saveTile(){
-        let newMiniPallet = MiniPallet()
-        newMiniPallet.topTileColor = pallet.topTile.contentView.backgroundColor!
-        newMiniPallet.secondTileColor = pallet.secondTile.contentView.backgroundColor!
-        newMiniPallet.thirdTileColor = pallet.thirdTile.contentView.backgroundColor!
-        newMiniPallet.bottomTileColor = pallet.bottomTile.contentView.backgroundColor!
         
-        miniPallets.append(newMiniPallet)
+        let newMiniPalletCD = MiniPalletModel(context: self.context)
+        newMiniPalletCD.topColor = pallet.topTile.contentView.backgroundColor?.toHexString()
+        newMiniPalletCD.secondColor = pallet.secondTile.contentView.backgroundColor?.toHexString()
+        newMiniPalletCD.thirdColor = pallet.thirdTile.contentView.backgroundColor?.toHexString()
+        newMiniPalletCD.bottomColor = pallet.bottomTile.contentView.backgroundColor?.toHexString()
+        
+        miniPalletsCD.append(newMiniPalletCD)
+        
+        do {
+          try context.save()
+        } catch {
+           print("Error saving context \(error)")
+        }
         
     }
     func prepareForDetails(with segue: UIStoryboardSegue,with sender: Any?){
@@ -193,7 +210,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
                 viewController.greenCode = Int(safeTile.greenCode!)
                 viewController.blueCode = Int(safeTile.blueCode!)
                 
-                print("r: \(safeTile.redCode!) g: \(safeTile.greenCode!) b: \(safeTile.blueCode!)")
+//                print("r: \(safeTile.redCode!) g: \(safeTile.greenCode!) b: \(safeTile.blueCode!)")
                 
                 switch safeTile.rank {
                 case 1:
@@ -240,7 +257,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
             switch sender.accessibilityIdentifier {
             case "sldRed":
                 red = CGFloat(sender.value)
-                print("slider value :\(red)")
+//                print("slider value :\(red)")
                 sliderCallOut?.calloutLabel.text = String(Int(sender.value * 255))
                 
                 sliderRed.minimumTrackTintColor = UIColor(displayP3Red: red, green: 0.5 * red, blue: 0.5 * red, alpha: 1)
@@ -341,6 +358,12 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         }, completion: nil)
     }
     //MARK: - Delegate Methods
+    func viewDidDisapear(topColor: String, secondColor: String, thirdColor: String, bottomColor: String) {
+        pallet.topTile.contentView.backgroundColor = UIColor(hexString: topColor)
+        pallet.secondTile .contentView.backgroundColor = UIColor(hexString: secondColor)
+        pallet.thirdTile.contentView.backgroundColor = UIColor(hexString: thirdColor)
+        pallet.bottomTile.contentView.backgroundColor = UIColor(hexString: bottomColor)
+    }
     func panDidEnd() {
         saveTile()
     }
@@ -362,7 +385,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         if let safeTile = pallet.activeTile {
             safeTile.hexaCode = safeTile.contentView.backgroundColor?.toHexString()
             safeTile.redCode = Int((safeTile.contentView.backgroundColor?.rgb.red)! * 255)
-            print("check redCode set : \(safeTile.contentView.backgroundColor?.rgb.red))")
+//            print("check redCode set : \(safeTile.contentView.backgroundColor?.rgb.red))")
             safeTile.greenCode = Int((safeTile.contentView.backgroundColor?.rgb.green)! * 255)
             safeTile.blueCode = Int((safeTile.contentView.backgroundColor?.rgb.blue)! * 255)
             //
@@ -397,10 +420,42 @@ extension ViewController: ColorDetailControlerDelegate{
 extension UIColor {
     
     func toHexString() -> String {
-        var r:CGFloat = 0
-        var g:CGFloat = 0
-        var b:CGFloat = 0
-        var a:CGFloat = 0
+        var r:CGFloat = 0{
+            didSet{
+                if r > 1 {
+                    r = 1
+                }else if r < 0{
+                    r = 0
+                }
+            }
+        }
+        var g:CGFloat = 0{
+            didSet{
+                if g > 1 {
+                    g = 1
+                }else if g < 0{
+                    g = 0
+                }
+            }
+        }
+        var b:CGFloat = 0{
+            didSet{
+                if b > 1 {
+                    b = 1
+                }else if b < 0{
+                    b = 0
+                }
+            }
+        }
+        var a:CGFloat = 0{
+            didSet{
+                if a > 1 {
+                    a = 1
+                }else if a < 0{
+                    a = 0
+                }
+            }
+        }
         
         getRed(&r, green: &g, blue: &b, alpha: &a)
         

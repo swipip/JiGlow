@@ -1,24 +1,31 @@
 import UIKit
+import CoreData
+
 protocol CollectionControllerDelegate {
-    func viewDidDisapear(topColor: UIColor, secondColor: UIColor, thirdColor: UIColor, bottomColor: UIColor)
+    func viewDidDisapear(topColor: String, secondColor: String, thirdColor: String, bottomColor: String)
 }
 
 class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource {
     
+    //MARK: - Variables
+    
     private let spacing:CGFloat = 2.0
-    
-    var miniPallets = [MiniPallet]()
-    
-    var miniPallet: MiniPallet?
-    
+    var miniPalletsCD = [MiniPalletModel]()
+    var miniPallet: MiniPalletModel?
     var delegate: CollectionControllerDelegate?
-
-    @IBOutlet weak var collectionView: UICollectionView!
-    
     var navBar: UINavigationBar?
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    @IBOutlet weak var collectionView: UICollectionView!
+
+    //MARK: - Loading functions
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        loadMiniPallets()
+        
+        print(miniPalletsCD)
         
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -42,24 +49,21 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
 //        collectionView.reloadData()
         
     }
-    
     override func viewWillDisappear(_ animated: Bool) {
 
         if let safeMiniPallet = miniPallet{
-            delegate?.viewDidDisapear(topColor: safeMiniPallet.topTileColor!, secondColor: safeMiniPallet.secondTileColor!, thirdColor: safeMiniPallet.thirdTileColor!, bottomColor: safeMiniPallet.bottomTileColor!)
+            delegate?.viewDidDisapear(topColor: safeMiniPallet.topColor!,
+                                      secondColor: safeMiniPallet.secondColor!,
+                                      thirdColor: safeMiniPallet.thirdColor!,
+                                      bottomColor: safeMiniPallet.bottomColor!)
         }
         
     }
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if let vc = segue.destination as? ViewController{
-//            print("go back")
-//        }
-//    }
     
+
     //MARK: - Delegate functions
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print(miniPallets.count)
-        return miniPallets.count
+        return miniPalletsCD.count
     }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -67,7 +71,10 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ReusableCell", for: indexPath) as! MiniPallet
         
-        cell.updateColor(top: miniPallets[indexPath.row].topTileColor!, second: miniPallets[indexPath.row].secondTileColor!, third: miniPallets[indexPath.row].thirdTileColor!, bottom: miniPallets[indexPath.row].bottomTileColor!)
+        cell.updateColorCD(top: miniPalletsCD[indexPath.row].topColor!,
+                           second:  miniPalletsCD[indexPath.row].secondColor!,
+                           third:  miniPalletsCD[indexPath.row].thirdColor!,
+                           bottom: miniPalletsCD[indexPath.row].bottomColor!)
         
         return cell
     }
@@ -88,17 +95,20 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("selected")
         
-        miniPallet = miniPallets[indexPath.row]
-        
-        UIView.animate(withDuration: 0.1, animations: {
-            collectionView.cellForItem(at: indexPath)!.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
-        }, completion: nil)
-        
+        miniPallet = miniPalletsCD[indexPath.row]
         navigationController?.popViewController(animated: true)
         
     }
-    
-
+    //MARK: - Data Management
+    func loadMiniPallets() {
+        let request : NSFetchRequest<MiniPalletModel> = MiniPalletModel.fetchRequest()
+        
+        do{
+            miniPalletsCD = try context.fetch(request)
+        } catch {
+            print("Error loading categories \(error)")
+        }
+    }
 }
 //MARK: - Extensions
 extension UINavigationController {
