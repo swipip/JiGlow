@@ -10,6 +10,7 @@ class MiniPallet: UICollectionViewCell {
     @IBOutlet private weak var bottomTile: UIView!
     @IBOutlet weak var cornerView: UIView!
     @IBOutlet weak var shadowView: UIView!
+    @IBOutlet weak var palletNameLabel: UILabel!
     
     var topTileColor: UIColor?
     var secondTileColor: UIColor?

@@ -32,6 +32,8 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     var sliderCallOut: SliderCallout?
     var pallet = Pallet()
     var tileWidth: CGFloat = 0.0
+    var palletName: String = ""
+    var action: UIAlertAction?
     
 //    var longPressGestureTopTile: UILongPressGestureRecognizer?
 //    var longPressGestureSecondTile: UILongPressGestureRecognizer?
@@ -61,7 +63,6 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
 //        .removingPercentEncoding
 //        print(path)
 
-        
         swipeController = SwipeController(view: self.view)
         swipeController?.delegate = self
         
@@ -135,6 +136,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
             performSegue(withIdentifier: "mainToCollection", sender: self)
         }else if sender.state == .ended{
             btnStack.animateSizeOff()
+//            displayAlert()
         }
         
     }
@@ -190,6 +192,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         newMiniPalletCD.secondColor = pallet.secondTile.contentView.backgroundColor?.toHexString()
         newMiniPalletCD.thirdColor = pallet.thirdTile.contentView.backgroundColor?.toHexString()
         newMiniPalletCD.bottomColor = pallet.bottomTile.contentView.backgroundColor?.toHexString()
+        newMiniPalletCD.name = palletName
         
         miniPalletsCD.append(newMiniPalletCD)
         
@@ -365,7 +368,8 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         pallet.bottomTile.contentView.backgroundColor = UIColor(hexString: bottomColor)
     }
     func panDidEnd() {
-        saveTile()
+        displayAlert()
+        
     }
     
     func didFinishedAnimateReload() {
@@ -392,7 +396,32 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         }
         performSegue(withIdentifier: "mainToColorDetail", sender: Any?.self)
     }
+    func displayAlert() {
+        var textField = UITextField()
+        let alert = UIAlertController(title: "Name your pallet", message: "", preferredStyle: .alert)
+        action = UIAlertAction(title: "Add", style: .default) { (action) in
+            if let name = textField.text {
+                if name == "" {
+//                    self.dismiss(animated: false, completion: nil)
+                }else{
+                    action.isEnabled = true
+                    self.palletName = name
+                    self.saveTile()
+                    print(name)
+                }
+            }
+        }
+        alert.addAction(action!)
+        action!.isEnabled = false
+        alert.addTextField { (field) in
+            textField = field
+            field.delegate = self
+            textField.placeholder = "Your pallet's name"
+        }
+        present(alert, animated: true, completion: nil)
+    }
 }
+
 //MARK: - General functions
 public func addParallaxToView(vw: UIView) {
     let amount = 8
@@ -417,6 +446,16 @@ extension ViewController: ColorDetailControlerDelegate{
         pallet.activeTile = nil
     }
 }
+extension ViewController: UITextFieldDelegate{
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let newText = (textField.text! as NSString).replacingCharacters(in: range, with: string)
+        
+        action?.isEnabled = (newText.count > 0)
+        
+        return true
+    }
+}
+
 extension UIColor {
     
     func toHexString() -> String {

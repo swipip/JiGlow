@@ -2,11 +2,12 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15702" systemVersion="19B88" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="MiniPalletModel" representedClassName=".MiniPalletModel" syncable="YES" codeGenerationType="class">
         <attribute name="bottomColor" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="secondColor" attributeType="String"/>
         <attribute name="thirdColor" attributeType="String"/>
         <attribute name="topColor" attributeType="String"/>
     </entity>
     <elements>
-        <element name="MiniPalletModel" positionX="-63" positionY="-18" width="128" height="103"/>
+        <element name="MiniPalletModel" positionX="-63" positionY="-18" width="128" height="118"/>
     </elements>
 </model>

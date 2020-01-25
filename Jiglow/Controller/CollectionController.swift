@@ -76,6 +76,8 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
                            third:  miniPalletsCD[indexPath.row].thirdColor!,
                            bottom: miniPalletsCD[indexPath.row].bottomColor!)
         
+        cell.palletNameLabel.text = miniPalletsCD[indexPath.row].name ?? "no name"
+        
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
