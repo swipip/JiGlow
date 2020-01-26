@@ -29,19 +29,15 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     var btnColorOne: UIColor = .orange
     var btnColorTwo: UIColor = .systemYellow
     
-    //    var tile: Tile?
     var descriptionLabel: ColorLabel?
     var subviewCallOut = SliderCallout()
     var sliderCallOut: SliderCallout?
     var pallet = Pallet()
     var tileWidth: CGFloat = 0.0
+    private var tilesColors: (top: String?, second: String?, third: String?, bottom: String?)
     var palletName: String = ""
     var action: UIAlertAction?
     
-//    var longPressGestureTopTile: UILongPressGestureRecognizer?
-//    var longPressGestureSecondTile: UILongPressGestureRecognizer?
-//    var longPressGestureThirdTile: UILongPressGestureRecognizer?
-//    var longPressGestureBottomTile: UILongPressGestureRecognizer?
     var longPressGestureStack: UILongPressGestureRecognizer?
     var longPressGestureReset: UILongPressGestureRecognizer?
     
@@ -189,46 +185,36 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         }
     }
     func saveTile(){
-        
-        let topColor = pallet.topTile.contentView.backgroundColor?.toHexString()
-        let secondColor = pallet.secondTile.contentView.backgroundColor?.toHexString()
-        let thirdColor = pallet.thirdTile.contentView.backgroundColor?.toHexString()
-        let bottomColor = pallet.bottomTile.contentView.backgroundColor?.toHexString()
-        
-        if editingMode == false {
-            let newMiniPalletCD = MiniPalletModel(context: self.context)
-            newMiniPalletCD.topColor = topColor
-            newMiniPalletCD.secondColor = secondColor
-            newMiniPalletCD.thirdColor = thirdColor
-            newMiniPalletCD.bottomColor = bottomColor
-            newMiniPalletCD.name = palletName
-            miniPalletsCD.append(newMiniPalletCD)
-            do {
-                try context.save()
-            } catch {
-                print("Error saving context \(error)")
+            if editingMode == false {
+                let newMiniPalletCD = MiniPalletModel(context: self.context)
+                    newMiniPalletCD.topColor = tilesColors.top
+                    newMiniPalletCD.secondColor = tilesColors.second
+                    newMiniPalletCD.thirdColor = tilesColors.third
+                    newMiniPalletCD.bottomColor = tilesColors.bottom
+                    newMiniPalletCD.name = palletName
+                    miniPalletsCD.append(newMiniPalletCD)
+                    do {
+                        try context.save()
+                    } catch {
+                        print("Error saving context \(error)")
+                    }
+            }else{
+                let request:NSFetchRequest<MiniPalletModel> = MiniPalletModel.fetchRequest()
+                let nameFilter = NSPredicate(format: "name MATCHES[cd] %@", self.palletName)
+                request.predicate = nameFilter
+                
+                do {
+                    let myPallet = try context.fetch(request)
+                    print(myPallet.count)
+                    myPallet[0].setValue(tilesColors.top, forKey: "topColor")
+                    myPallet[0].setValue(tilesColors.second, forKey: "secondColor")
+                    myPallet[0].setValue(tilesColors.third, forKey: "thirdColor")
+                    myPallet[0].setValue(tilesColors.bottom, forKey: "bottomColor")
+                    try context.save()
+                }catch{
+                    print("error retrieving data")
+                }
             }
-        }else{
-            
-            let request:NSFetchRequest<MiniPalletModel> = MiniPalletModel.fetchRequest()
-            let nameFilter = NSPredicate(format: "name MATCHES[cd] %@", self.palletName)
-            request.predicate = nameFilter
-            
-            do {
-                let myPallet = try context.fetch(request)
-                print(myPallet.count)
-                myPallet[0].setValue(topColor, forKey: "topColor")
-                myPallet[0].setValue(secondColor, forKey: "secondColor")
-                myPallet[0].setValue(thirdColor, forKey: "thirdColor")
-                myPallet[0].setValue(bottomColor, forKey: "bottomColor")
-                try context.save()
-            }catch{
-                print("error retrieving data")
-            }
-
-        }
-
-        
     }
     func loadPallets(with request: NSFetchRequest<MiniPalletModel> = MiniPalletModel.fetchRequest(), predicate: NSPredicate? = nil){
         
@@ -404,7 +390,14 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         self.palletName = palletName
         
     }
-    func panDidEnd() {
+    func collectionViewDidDisapearWithNoSelection(editingMode: Bool){
+        self.editingMode = editingMode
+    }
+    func panDidEnd(topColor: String, secondColor: String, thirdColor: String, bottomColor: String) {
+        tilesColors.top = topColor
+        tilesColors.second = secondColor
+        tilesColors.third = thirdColor
+        tilesColors.bottom = bottomColor
         if editingMode {
             saveTile()
         }else{

@@ -3,7 +3,8 @@ import UIKit
 
 protocol SwipeControllerDelegate {
     func didFinishedAnimateReload()
-    func panDidEnd()
+//    func panWillEnd(topColor: String, secondColor: String, thirdColor: String, bottomColor: String)
+    func panDidEnd(topColor: String, secondColor: String, thirdColor: String, bottomColor: String)
 }
 
 class SwipeController {
@@ -81,6 +82,11 @@ class SwipeController {
     func handlePanEnded(velocity: CGPoint, recognizer: UIPanGestureRecognizer){
         if Float(differenceFromXOrigin!) >= Float(swipeLimit) {
             
+//            delegate?.panWillEnd(topColor: (squares[1].topTile.contentView.backgroundColor?.toHexString())!,
+//                                 secondColor: (squares[1].secondTile.contentView.backgroundColor?.toHexString())!,
+//                                 thirdColor: (squares[1].thirdTile.contentView.backgroundColor?.toHexString())!,
+//                                 bottomColor: (squares[1].bottomTile.contentView.backgroundColor?.toHexString())!)
+            
             notified = false
             squares[1].rotate()
             
@@ -97,7 +103,10 @@ class SwipeController {
 //            print("middle x \(middleX) current \(currentS.x)")
             if currentS.x > middleX {
                 notification(type: .success)
-                self.delegate?.panDidEnd()
+                self.delegate?.panDidEnd(topColor: (squares[1].topTile.contentView.backgroundColor?.toHexString())!,
+                secondColor: (squares[1].secondTile.contentView.backgroundColor?.toHexString())!,
+                thirdColor: (squares[1].thirdTile.contentView.backgroundColor?.toHexString())!,
+                bottomColor: (squares[1].bottomTile.contentView.backgroundColor?.toHexString())!)
             }else{
                 notification(type: .error)
             }

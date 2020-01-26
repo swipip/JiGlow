@@ -3,6 +3,7 @@ import CoreData
 
 protocol CollectionControllerDelegate {
     func viewDidDisapear(topColor: String, secondColor: String, thirdColor: String, bottomColor: String, editingMode: Bool, palletName: String)
+    func collectionViewDidDisapearWithNoSelection(editingMode: Bool)
 }
 
 class CollectionController: UIViewController,UICollectionViewDataSource {
@@ -55,6 +56,7 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
                                       editingMode: true,
                                       palletName: safeMiniPallet.name!)
         }
+        delegate?.collectionViewDidDisapearWithNoSelection(editingMode: false)
         
     }
     
@@ -100,7 +102,6 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
         }
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
         miniPallet = miniPalletsCD[indexPath.row]
         navigationController?.popViewController(animated: true)
         
@@ -125,8 +126,6 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
             miniPalletsCD = try context.fetch(request)
             context.delete(miniPalletsCD[0])
             try context.save()
-            loadMiniPallets()
-            collectionView.reloadData()
         }catch{
             print("Error retrieving data")
         }
@@ -143,6 +142,7 @@ extension CollectionController: UICollectionViewDelegateFlowLayout {
             let confYes = UIAction(title: "Yes", image: UIImage(systemName: "checkmark.circle")){ action in
                 let selectedPalletFromContext = self.miniPalletsCD[indexPath.row]
                 self.delete(name: (selectedPalletFromContext.name)!)
+                self.collectionView.deleteItems(at: [indexPath])
             }
             let confNo = UIAction(title: "No", image: UIImage(systemName: "trash")){ action in
                 
@@ -153,6 +153,7 @@ extension CollectionController: UICollectionViewDelegateFlowLayout {
             return UIMenu(title: "Main Menu", children: [subMenu,rename])
         }
     }
+
 }
 extension UINavigationController {
     func applyGradient(color1: UIColor, color2: UIColor) {

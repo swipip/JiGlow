@@ -60,7 +60,7 @@ class Pallet: UIView, TileDelegate {
         
     }
     func setUpTiles() {
-        let height = Double(0.14 * UIScreen.main.bounds.size.height)
+        let height = Double(0.15 * UIScreen.main.bounds.size.height)
         var compoundedHeight = 0.0
         for index in 1...4 {
             Tiles[index] = Tile()
