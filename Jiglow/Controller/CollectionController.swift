@@ -79,6 +79,8 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
                            bottom: miniPalletsCD[indexPath.row].bottomColor!)
         
         cell.palletNameLabel.text = miniPalletsCD[indexPath.row].name ?? "no name"
+        let interaction = UIContextMenuInteraction(delegate: self)
+        cell.addInteraction(interaction)
         
         return cell
     }
@@ -115,6 +117,29 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
     }
 }
 //MARK: - Extensions
+extension CollectionController: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (Actions) -> UIMenu? in
+            let rename = UIAction(title: "Rename", image: UIImage(systemName: "pencil.circle")) { action in
+                
+            }
+            let confYes = UIAction(title: "Yes", image: UIImage(systemName: "checkmark.circle")){ action in
+                
+            }
+            let confNo = UIAction(title: "No", image: UIImage(systemName: "trash")){ action in
+                
+            }
+            let subMenu = UIMenu(title: "Delete", image: UIImage(systemName: "trash"), children: [confYes,confNo])
+
+            // Create and return a UIMenu with the share action
+            return UIMenu(title: "Main Menu", children: [subMenu,rename])
+        }
+    }
+    
+    
+    
+    
+}
 extension UINavigationController {
     func applyGradient(color1: UIColor, color2: UIColor) {
         

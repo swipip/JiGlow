@@ -80,7 +80,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "406"
             endingLineNumber = "406"
-            landmarkName = "panDidEnd()"
+            landmarkName = "viewDidDisapear(topColor:secondColor:thirdColor:bottomColor:editingMode:palletName:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

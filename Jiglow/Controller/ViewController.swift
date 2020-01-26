@@ -218,6 +218,9 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
                 let myPallet = try context.fetch(request)
                 print(myPallet.count)
                 myPallet[0].setValue(topColor, forKey: "topColor")
+                myPallet[0].setValue(secondColor, forKey: "secondColor")
+                myPallet[0].setValue(thirdColor, forKey: "thirdColor")
+                myPallet[0].setValue(bottomColor, forKey: "bottomColor")
                 try context.save()
             }catch{
                 print("error retrieving data")
