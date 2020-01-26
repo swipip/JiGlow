@@ -16,7 +16,7 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
     var delegate: CollectionControllerDelegate?
     var navBar: UINavigationBar?
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
+    private var action = UIAlertAction()
     @IBOutlet weak var collectionView: UICollectionView!
 
     //MARK: - Loading functions
@@ -58,6 +58,23 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
         }
         delegate?.collectionViewDidDisapearWithNoSelection(editingMode: false)
         
+    }
+    func displayAlert() {
+        var textField = UITextField()
+        let alert = UIAlertController(title: "Rename your pallet", message: "", preferredStyle: .alert)
+        action = UIAlertAction(title: "Rename", style: .default) { (action) in
+            if let name = textField.text {
+                self.update(newName: name)
+                self.collectionView.reloadData()
+            }
+        }
+        alert.addAction(action)
+        action.isEnabled = true
+        alert.addTextField { (field) in
+            textField = field
+            textField.placeholder = "Your pallet's name"
+        }
+        present(alert, animated: true, completion: nil)
     }
     
 
@@ -121,7 +138,6 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
         let request: NSFetchRequest<MiniPalletModel> = MiniPalletModel.fetchRequest()
         let predicate = NSPredicate(format: "name MATCHES[cd] %@", name)
         request.predicate = predicate
-        
         do{
             miniPalletsCD = try context.fetch(request)
             context.delete(miniPalletsCD[0])
@@ -129,7 +145,14 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
         }catch{
             print("Error retrieving data")
         }
-        
+    }
+    func update(newName: String){
+        miniPallet?.setValue(newName, forKey: "name")
+        do{
+            try context.save()
+        }catch{
+            
+        }
     }
 }
 //MARK: - Extensions
@@ -137,7 +160,8 @@ extension CollectionController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
                 return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (Actions) -> UIMenu? in
             let rename = UIAction(title: "Rename", image: UIImage(systemName: "pencil.circle")) { action in
-                
+                self.miniPallet = self.miniPalletsCD[indexPath.row]
+                self.displayAlert()
             }
             let confYes = UIAction(title: "Yes", image: UIImage(systemName: "checkmark.circle")){ action in
                 let selectedPalletFromContext = self.miniPalletsCD[indexPath.row]
