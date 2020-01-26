@@ -17,28 +17,28 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wy5-cq-dv9">
-                        <rect key="frame" x="10" y="10" width="246" height="340"/>
+                        <rect key="frame" x="0.0" y="0.0" width="266" height="360"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L6c-ZD-GgO">
-                                <rect key="frame" x="0.0" y="0.0" width="246" height="340"/>
+                                <rect key="frame" x="0.0" y="0.0" width="266" height="360"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mQs-Vf-RGm">
-                                        <rect key="frame" x="5" y="5" width="236" height="283"/>
+                                        <rect key="frame" x="5" y="5" width="256" height="299.5"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dYT-ZB-dVh">
-                                                <rect key="frame" x="0.0" y="0.0" width="236" height="126.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="256" height="134"/>
                                                 <color key="backgroundColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9XB-yc-K8n">
-                                                <rect key="frame" x="0.0" y="126.5" width="236" height="74"/>
+                                                <rect key="frame" x="0.0" y="134" width="256" height="78"/>
                                                 <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MGa-hT-cax">
-                                                <rect key="frame" x="0.0" y="200.5" width="236" height="45"/>
+                                                <rect key="frame" x="0.0" y="212" width="256" height="48"/>
                                                 <color key="backgroundColor" systemColor="systemYellowColor" red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yep-NQ-20A">
-                                                <rect key="frame" x="0.0" y="245.5" width="236" height="37.5"/>
+                                                <rect key="frame" x="0.0" y="260" width="256" height="39.5"/>
                                                 <color key="backgroundColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </view>
                                         </subviews>
@@ -63,10 +63,10 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HNo-I0-uhB" userLabel="Label Stack">
-                                        <rect key="frame" x="5" y="288" width="236" height="47"/>
+                                        <rect key="frame" x="5" y="304.5" width="256" height="50.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="My Pallet" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ohd-DZ-I6r">
-                                                <rect key="frame" x="5" y="16" width="52" height="14.5"/>
+                                                <rect key="frame" x="5" y="18" width="52" height="14.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -104,10 +104,10 @@
             </view>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="wy5-cq-dv9" secondAttribute="trailing" constant="10" id="KpS-Qh-Jhd"/>
-                <constraint firstItem="wy5-cq-dv9" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="10" id="NgQ-h5-a4Z"/>
-                <constraint firstItem="wy5-cq-dv9" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="qav-EN-5YZ"/>
-                <constraint firstAttribute="bottom" secondItem="wy5-cq-dv9" secondAttribute="bottom" constant="10" id="xpp-c6-d5f"/>
+                <constraint firstAttribute="trailing" secondItem="wy5-cq-dv9" secondAttribute="trailing" id="KpS-Qh-Jhd"/>
+                <constraint firstItem="wy5-cq-dv9" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="NgQ-h5-a4Z"/>
+                <constraint firstItem="wy5-cq-dv9" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="qav-EN-5YZ"/>
+                <constraint firstAttribute="bottom" secondItem="wy5-cq-dv9" secondAttribute="bottom" id="xpp-c6-d5f"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="ccI-8B-0bV"/>
             <size key="customSize" width="266" height="360"/>

@@ -5,11 +5,11 @@ protocol CollectionControllerDelegate {
     func viewDidDisapear(topColor: String, secondColor: String, thirdColor: String, bottomColor: String, editingMode: Bool, palletName: String)
 }
 
-class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource {
+class CollectionController: UIViewController,UICollectionViewDataSource {
     
     //MARK: - Variables
     
-    private let spacing:CGFloat = 2.0
+    private let spacing:CGFloat = 8.0
     var miniPalletsCD = [MiniPalletModel]()
     var miniPallet: MiniPalletModel?
     var delegate: CollectionControllerDelegate?
@@ -23,9 +23,7 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadMiniPallets()
-        
-//        print(miniPalletsCD)
+//        loadMiniPallets()
         
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -46,8 +44,6 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
         layout.minimumInteritemSpacing = spacing
         self.collectionView?.collectionViewLayout = layout
         
-//        collectionView.reloadData()
-        
     }
     override func viewWillDisappear(_ animated: Bool) {
 
@@ -65,6 +61,7 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
 
     //MARK: - Delegate functions
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        loadMiniPallets()
         return miniPalletsCD.count
     }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -79,8 +76,12 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
                            bottom: miniPalletsCD[indexPath.row].bottomColor!)
         
         cell.palletNameLabel.text = miniPalletsCD[indexPath.row].name ?? "no name"
-        let interaction = UIContextMenuInteraction(delegate: self)
-        cell.addInteraction(interaction)
+        
+        cell.layer.shadowRadius = 3.123
+        cell.layer.shadowOpacity = 0.2
+        cell.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
+        cell.layer.masksToBounds = false
+//        cell.layer.shadowPath = UIBezierPath(roundedRect:cell.bounds, cornerRadius:cell.contentView.layer.cornerRadius).cgPath
         
         return cell
     }
@@ -92,14 +93,13 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
         
         if let collection = self.collectionView{
             let width = (collection.bounds.width - totalSpacing)/numberOfItemsPerRow
-//            print(width)
+
             return CGSize(width: width, height: width * 1.21)
         }else{
             return CGSize(width: 0, height: 0)
         }
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        print("selected")
         
         miniPallet = miniPalletsCD[indexPath.row]
         navigationController?.popViewController(animated: true)
@@ -115,16 +115,34 @@ class CollectionController: UIViewController,UICollectionViewDelegateFlowLayout,
             print("Error loading categories \(error)")
         }
     }
+    func delete(name: String) {
+        
+        let request: NSFetchRequest<MiniPalletModel> = MiniPalletModel.fetchRequest()
+        let predicate = NSPredicate(format: "name MATCHES[cd] %@", name)
+        request.predicate = predicate
+        
+        do{
+            miniPalletsCD = try context.fetch(request)
+            context.delete(miniPalletsCD[0])
+            try context.save()
+            loadMiniPallets()
+            collectionView.reloadData()
+        }catch{
+            print("Error retrieving data")
+        }
+        
+    }
 }
 //MARK: - Extensions
-extension CollectionController: UIContextMenuInteractionDelegate {
-    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (Actions) -> UIMenu? in
+extension CollectionController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+                return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (Actions) -> UIMenu? in
             let rename = UIAction(title: "Rename", image: UIImage(systemName: "pencil.circle")) { action in
                 
             }
             let confYes = UIAction(title: "Yes", image: UIImage(systemName: "checkmark.circle")){ action in
-                
+                let selectedPalletFromContext = self.miniPalletsCD[indexPath.row]
+                self.delete(name: (selectedPalletFromContext.name)!)
             }
             let confNo = UIAction(title: "No", image: UIImage(systemName: "trash")){ action in
                 
@@ -135,10 +153,6 @@ extension CollectionController: UIContextMenuInteractionDelegate {
             return UIMenu(title: "Main Menu", children: [subMenu,rename])
         }
     }
-    
-    
-    
-    
 }
 extension UINavigationController {
     func applyGradient(color1: UIColor, color2: UIColor) {
