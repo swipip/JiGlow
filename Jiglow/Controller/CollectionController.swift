@@ -10,7 +10,7 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
     
     //MARK: - Variables
     
-    private let spacing:CGFloat = 8.0
+    private let spacing:CGFloat = 10.0
     var miniPalletsCD = [MiniPalletModel]()
     var miniPallet: MiniPalletModel?
     var delegate: CollectionControllerDelegate?
@@ -96,11 +96,11 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
         
         cell.palletNameLabel.text = miniPalletsCD[indexPath.row].name ?? "no name"
         
-        cell.layer.shadowRadius = 3.123
-        cell.layer.shadowOpacity = 0.2
-        cell.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
         cell.layer.masksToBounds = false
-//        cell.layer.shadowPath = UIBezierPath(roundedRect:cell.bounds, cornerRadius:cell.contentView.layer.cornerRadius).cgPath
+        cell.layer.shadowPath = UIBezierPath(roundedRect:cell.bounds, cornerRadius:cell.contentView.layer.cornerRadius).cgPath
+        cell.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
+        cell.layer.shadowOpacity = 0.2
+        cell.layer.shadowRadius = 3.123
         
         return cell
     }
@@ -174,7 +174,7 @@ extension CollectionController: UICollectionViewDelegateFlowLayout {
             let subMenu = UIMenu(title: "Delete", image: UIImage(systemName: "trash"), children: [confYes,confNo])
 
             // Create and return a UIMenu with the share action
-            return UIMenu(title: "Main Menu", children: [subMenu,rename])
+            return UIMenu(title: "Options", children: [subMenu,rename])
         }
     }
 
