@@ -35,9 +35,9 @@ class MiniPallet: UICollectionViewCell {
         tileStack.layer.cornerRadius = 5
         cornerView.layer.cornerRadius = 10
         cornerView.clipsToBounds = true
-        shadowView.layer.shadowRadius = 4
-        shadowView.layer.shadowOpacity = 0.0
-        shadowView.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
+//        shadowView.layer.shadowRadius = 4
+//        shadowView.layer.shadowOpacity = 0.0
+//        shadowView.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
     }
     func updateColor(top: UIColor, second:UIColor, third: UIColor, bottom: UIColor) {
         

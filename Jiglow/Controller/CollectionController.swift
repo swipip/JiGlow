@@ -96,11 +96,12 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
         
         cell.palletNameLabel.text = miniPalletsCD[indexPath.row].name ?? "no name"
         
-        cell.layer.masksToBounds = false
-        cell.layer.shadowPath = UIBezierPath(roundedRect:cell.bounds, cornerRadius:cell.contentView.layer.cornerRadius).cgPath
-        cell.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
+        cell.layer.shadowOffset = CGSize(width: 0, height: 0)
+        cell.layer.shadowRadius = 4.1536
+        cell.layer.shadowColor = UIColor.lightGray.cgColor
         cell.layer.shadowOpacity = 0.2
-        cell.layer.shadowRadius = 3.123
+        cell.layer.masksToBounds = false
+        cell.layer.shadowPath = UIBezierPath(roundedRect: cell.bounds, cornerRadius: cell.cornerView.layer.cornerRadius).cgPath
         
         return cell
     }
@@ -179,6 +180,7 @@ extension CollectionController: UICollectionViewDelegateFlowLayout {
     }
 
 }
+
 extension UINavigationController {
     func applyGradient(color1: UIColor, color2: UIColor) {
         

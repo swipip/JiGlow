@@ -79,7 +79,7 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
-                                            <segue destination="Uoa-Rn-jj0" kind="show" id="Qws-a0-0vj"/>
+                                            <action selector="cameraPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Xez-lb-3HJ"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="71o-8g-jsV" customClass="GradientButton" customModule="Jiglow" customModuleProvider="target">
@@ -142,6 +142,7 @@
                         <outlet property="superView" destination="8bC-Xf-vdC" id="nYP-0z-cqr"/>
                         <segue destination="lHC-ky-R2q" kind="presentation" identifier="mainToColorDetail" id="F2Z-pl-myJ"/>
                         <segue destination="BsN-Yx-05h" kind="show" identifier="mainToCollection" id="HAF-ci-9XY"/>
+                        <segue destination="Uoa-Rn-jj0" kind="show" identifier="mainToCamera" id="ruh-3j-iyj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -197,21 +198,35 @@
             </objects>
             <point key="canvasLocation" x="1780" y="626"/>
         </scene>
-        <!--Photo View Controller-->
+        <!--Title-->
         <scene sceneID="05f-Uv-UhA">
             <objects>
-                <viewController id="Uoa-Rn-jj0" customClass="PhotoViewController" customModule="Jiglow" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PhotoViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Uoa-Rn-jj0" customClass="PhotoViewController" customModule="Jiglow" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="QYd-fF-5YZ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="aea-N2-Bha">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                            </imageView>
+                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="aea-N2-Bha" secondAttribute="bottom" id="60C-i1-2C7"/>
+                            <constraint firstItem="aea-N2-Bha" firstAttribute="top" secondItem="QYd-fF-5YZ" secondAttribute="top" id="LES-xc-cFI"/>
+                            <constraint firstItem="e1r-ta-jgG" firstAttribute="trailing" secondItem="aea-N2-Bha" secondAttribute="trailing" id="WWa-pN-Eof"/>
+                            <constraint firstItem="aea-N2-Bha" firstAttribute="leading" secondItem="e1r-ta-jgG" secondAttribute="leading" id="m2d-vc-cxK"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="e1r-ta-jgG"/>
                     </view>
-                    <navigationItem key="navigationItem" id="j4h-QL-dAU"/>
+                    <navigationItem key="navigationItem" title="Title" id="Rat-uE-zjU"/>
+                    <connections>
+                        <outlet property="finalImageView" destination="aea-N2-Bha" id="3UV-jp-E2A"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4FP-s3-wnB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2974" y="626"/>
+            <point key="canvasLocation" x="2508" y="625.86206896551732"/>
         </scene>
         <!--Color Detail Controler-->
         <scene sceneID="Yx0-te-6id">

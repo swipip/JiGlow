@@ -1,7 +1,7 @@
 import UIKit
 import CoreData
 
-class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,UIGestureRecognizerDelegate,CollectionControllerDelegate {
+class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,UIGestureRecognizerDelegate,CollectionControllerDelegate,CAAnimationDelegate {
 
     
     
@@ -60,7 +60,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         .absoluteString
         .replacingOccurrences(of: "file://", with: "")
         .removingPercentEncoding
-        print(path)
+        print(path!)
 
         swipeController = SwipeController(view: self.view)
         swipeController?.delegate = self
@@ -100,7 +100,7 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         layoutPallet()
     }
     override func viewDidAppear(_ animated: Bool) {
-        addParallaxToView(vw: pallet)
+//        addParallaxToView(vw: pallet)
         
     }
     func layoutPallet(){
@@ -128,6 +128,25 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
         
     }
     //MARK: - Gestures Handlers
+    @IBAction func cameraPressed(_ sender: UIButton) {
+  
+//        performSegue(withIdentifier: "mainToCamera", sender: self)
+        
+        let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
+        let controller = storyBoard.instantiateViewController(withIdentifier: "PhotoViewController") as! PhotoViewController
+//        controller.isModalInPresentation = true
+        controller.delegate = self
+        
+        let transition = CATransition.init()
+        transition.duration = 0.45
+        transition.timingFunction = CAMediaTimingFunction.init(name: CAMediaTimingFunctionName.default)
+        transition.type = CATransitionType.push //Transition you want like Push, Reveal
+        transition.subtype = CATransitionSubtype.fromLeft // Direction like Left to Right, Right to Left
+        transition.delegate = self
+        view.window!.layer.add(transition, forKey: kCATransition)
+        self.navigationController?.pushViewController(controller, animated: true)
+        
+    }
     @objc func stackLongPress(sender: UILongPressGestureRecognizer) {
         
         if sender.state == .began{
@@ -472,6 +491,11 @@ public func addParallaxToView(vw: UIView) {
     vw.addMotionEffect(group)
 }
 //MARK: - Extensions
+extension ViewController: PhotoViewControllerDelegte {
+    func getColor(color: UIColor) {
+        pallet.topTile.contentView.backgroundColor = color
+    }
+}
 extension ViewController: ColorDetailControlerDelegate{
     func colorDetailDelegateDidDisapear() {
         pallet.activeTile?.transformOff()
