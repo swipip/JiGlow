@@ -99,8 +99,10 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     override func viewDidLayoutSubviews() {
         layoutPallet()
     }
-    override func viewDidAppear(_ animated: Bool) {
-//        addParallaxToView(vw: pallet)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        navigationController?.navigationBar.isHidden = false
         
     }
     func layoutPallet(){
@@ -430,6 +432,10 @@ class ViewController: UIViewController, PalletDelegate,SwipeControllerDelegate,U
     func shortPressOccured() {
         if pallet.activeTile != nil{
             animateSliders(tile: pallet.activeTile!)
+            if let color = pallet.activeTile?.contentView.backgroundColor {
+//                print("white: \(color.getWhiteAndAlpha.white)")
+                self.btnReset.animateGradient(startColor: color)
+            }
         }
     }
     func longPressOccured() {
@@ -494,7 +500,18 @@ public func addParallaxToView(vw: UIView) {
 extension ViewController: PhotoViewControllerDelegte {
     func getColor(color: UIColor) {
         pallet.topTile.contentView.backgroundColor = color
+        
+        if color.getWhiteAndAlpha.white < 0.5 {
+            pallet.secondTile.contentView.backgroundColor = color.darken(by: 10)
+            pallet.thirdTile.contentView.backgroundColor = color.darken(by: 20)
+            pallet.bottomTile.contentView.backgroundColor = color.darken(by: 30)
+        }else{
+            pallet.secondTile.contentView.backgroundColor = color.lighten(by: 10)
+            pallet.thirdTile.contentView.backgroundColor = color.lighten(by: 20)
+            pallet.bottomTile.contentView.backgroundColor = color.lighten(by: 30)
+        }
     }
+    
 }
 extension ViewController: ColorDetailControlerDelegate{
     func colorDetailDelegateDidDisapear() {
@@ -574,8 +591,14 @@ extension UIColor {
         var blue: CGFloat = 0
         var alpha: CGFloat = 0
         getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-
         return (red, green, blue, alpha)
+    }
+    var getWhiteAndAlpha: (white: CGFloat, alpha: CGFloat) {
+        var white: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        getWhite(&white, alpha: &alpha)
+        return(white, alpha)
     }
 }
 extension UISlider {

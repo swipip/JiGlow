@@ -58,10 +58,6 @@ class PhotoViewController: UIViewController{
         layoutViews()
         
     }
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
-        navigationController?.navigationBar.isHidden = false
-    }
     func layoutViews(){
         self.view.layoutIfNeeded()
         
@@ -274,14 +270,15 @@ class PhotoViewController: UIViewController{
         
         let constant = colorPreviewHeight.constant
         
-        UIView.animate(withDuration: 0.32) {
+        UIView.animate(withDuration: 0.567, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.1, options: .curveEaseInOut, animations: {
             self.colorPreviewHeight.constant = self.mainItemHeight < constant ? self.mainItemHeight : 0.0
             self.colorPreview.layer.cornerRadius = self.mainItemHeight < constant ? self.cornerRad : 3
             self.optionButton.alpha = self.mainItemHeight < constant ? 1 : 0
             self.hexLabel.text = self.mainItemHeight < constant ? self.hexLabel.text : nil
             self.view.layoutIfNeeded()
-        }
-        UIView.animate(withDuration: 0.32) {
+        }, completion: nil)
+
+        UIView.animate(withDuration: 0.567) {
             self.hexLabelContainer.alpha = self.mainItemHeight < constant ? 1 : 0
             self.view.layoutIfNeeded()
         }
@@ -410,7 +407,6 @@ extension UIColor {
     func darken(by percentage: CGFloat = 30.0) -> UIColor? {
         return self.adjust(by: -1 * abs(percentage) )
     }
-    
     func adjust(by percentage: CGFloat = 30.0) -> UIColor? {
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
         if self.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
