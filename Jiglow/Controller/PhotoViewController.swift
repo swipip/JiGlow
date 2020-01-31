@@ -51,7 +51,7 @@ class PhotoViewController: UIViewController{
         
         navigationController?.navigationBar.isHidden = true
         
-        initializeCaptureSession()
+//        initializeCaptureSession()
         
         addSubViews()
         

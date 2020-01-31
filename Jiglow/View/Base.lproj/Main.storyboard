@@ -25,7 +25,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="F4y-0O-LPV">
-                                <rect key="frame" x="60" y="476" width="255" height="150"/>
+                                <rect key="frame" x="60" y="517" width="255" height="150"/>
                                 <subviews>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="VEQ-md-npY">
                                         <rect key="frame" x="18" y="0.0" width="219" height="31"/>
@@ -68,7 +68,7 @@
                                 </variation>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="17" translatesAutoresizingMaskIntoConstraints="NO" id="sD4-Fz-MqG">
-                                <rect key="frame" x="-24" y="676" width="423" height="50"/>
+                                <rect key="frame" x="-24" y="717" width="423" height="50"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8li-Rz-TIf">
                                         <rect key="frame" x="0.0" y="0.0" width="129.66666666666666" height="50"/>
@@ -118,7 +118,7 @@
                             <constraint firstAttribute="trailingMargin" secondItem="sD4-Fz-MqG" secondAttribute="trailing" constant="-40" id="4X3-am-O0l"/>
                             <constraint firstAttribute="trailing" secondItem="3Sr-f2-cb9" secondAttribute="trailing" id="6EX-f1-EXZ"/>
                             <constraint firstItem="F4y-0O-LPV" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="DmW-mh-aOK"/>
-                            <constraint firstAttribute="bottomMargin" secondItem="sD4-Fz-MqG" secondAttribute="bottom" constant="52" id="ZtN-kv-74A"/>
+                            <constraint firstAttribute="bottom" secondItem="sD4-Fz-MqG" secondAttribute="bottom" constant="45" id="ZtN-kv-74A"/>
                             <constraint firstItem="F4y-0O-LPV" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="60" id="caq-eR-Yh5"/>
                             <constraint firstItem="sD4-Fz-MqG" firstAttribute="top" secondItem="F4y-0O-LPV" secondAttribute="bottom" constant="50" id="i6o-nr-axg"/>
                             <constraint firstAttribute="trailing" secondItem="F4y-0O-LPV" secondAttribute="trailing" constant="60" id="pZS-W5-E0o"/>
