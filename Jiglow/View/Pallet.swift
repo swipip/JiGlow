@@ -1,7 +1,7 @@
 import UIKit
 protocol PalletDelegate {
-    func shortPressOccured()
-    func longPressOccured()
+    func tileTapped()
+    func tileLongTapped()
 }
 class Pallet: UIView, TileDelegate {    
     
@@ -34,16 +34,18 @@ class Pallet: UIView, TileDelegate {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        topTile.contentView.backgroundColor = .systemOrange
+        let tileColor:UIColor = .systemOrange
+        
+        topTile.contentView.backgroundColor = tileColor
         topTile.hexaLabel.text = topTile.contentView.backgroundColor!.toHexString()
         
-        secondTile.contentView.backgroundColor = .systemYellow
+        secondTile.contentView.backgroundColor = tileColor.lighten(by: 10)
         secondTile.hexaLabel.text = secondTile.contentView.backgroundColor!.toHexString()
         
-        thirdTile.contentView.backgroundColor = .systemGreen
+        thirdTile.contentView.backgroundColor = tileColor.lighten(by: 20)
         thirdTile.hexaLabel.text = thirdTile.contentView.backgroundColor!.toHexString()
         
-        bottomTile.contentView.backgroundColor = .systemBlue
+        bottomTile.contentView.backgroundColor = tileColor.lighten(by: 30)
         bottomTile.hexaLabel.text = bottomTile.contentView.backgroundColor!.toHexString()
         
     }
@@ -87,48 +89,15 @@ class Pallet: UIView, TileDelegate {
         NSLayoutConstraint.activate([contentView.heightAnchor.constraint(equalToConstant: CGFloat(compoundedHeight))])
     }
     func addTileToView(with tile: Tile, height: Double, topAnchor constraint: Double) {
+        
         contentView.addSubview(tile)
+        //constraints
         tile.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            tile.topAnchor.constraint(equalTo: contentView.topAnchor, constant: CGFloat(constraint)),
-            tile.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 0),
-            tile.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 0),
-            //            tile.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0)
-            tile.heightAnchor.constraint(equalToConstant: CGFloat(height))
+        NSLayoutConstraint.activate([tile.topAnchor.constraint(equalTo: contentView.topAnchor, constant: CGFloat(constraint)),
+                                     tile.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 0),
+                                     tile.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 0),
+                                     tile.heightAnchor.constraint(equalToConstant: CGFloat(height))
         ])
-    }
-    //MARK: - Delegate methods
-    func didTapTile() {
-        //A tile got tapped
-        for i in 1...4 {
-            if Tiles[i]?.tileIsActive == true {
-                if activeTile == Tiles[i] {
-                    activeTile?.transformOff()
-                    activeTile?.tileIsActive = false
-                    activeTile?.animateLabelAlphaOff()
-                    activeTile = nil
-                }else{
-                    activeTile = Tiles[i]
-                    activeTile?.transformOn()
-                    activeTile?.tileIsActive = false
-                }
-            }else if Tiles[i]?.tileIsActive == false{
-                Tiles[i]?.transformOff()
-                Tiles[i]?.animateLabelAlphaOff()
-            }
-        }
-        delegate?.shortPressOccured()
-    }
-    func didLongPress() {
-        for tile in Tiles{
-            if tile.value.tileIsActive == true{
-                activeTile = tile.value
-                activeTile?.transformOn()
-            }else{
-                tile.value.transformOff()
-            }
-        }
-        delegate?.longPressOccured()
     }
     //MARK: - Rotation Handlers
     func rotateSquare(angle: CGFloat){
@@ -165,5 +134,39 @@ class Pallet: UIView, TileDelegate {
             }
         }
         
+    }
+    
+    //MARK: - Delegate methods
+    func didTapTile() {
+        //A tile got tapped
+        for i in 1...4 {
+            if Tiles[i]?.tileIsActive == true {
+                if activeTile == Tiles[i] {
+                    activeTile?.transformOff()
+                    activeTile?.tileIsActive = false
+                    activeTile?.animateLabelAlphaOff()
+                    activeTile = nil
+                }else{
+                    activeTile = Tiles[i]
+                    activeTile?.transformOn()
+                    activeTile?.tileIsActive = false
+                }
+            }else if Tiles[i]?.tileIsActive == false{
+                Tiles[i]?.transformOff()
+                Tiles[i]?.animateLabelAlphaOff()
+            }
+        }
+        delegate?.tileTapped()
+    }
+    func didLongPress() {
+        for tile in Tiles{
+            if tile.value.tileIsActive == true{
+                activeTile = tile.value
+                activeTile?.transformOn()
+            }else{
+                tile.value.transformOff()
+            }
+        }
+        delegate?.tileLongTapped()
     }
 }

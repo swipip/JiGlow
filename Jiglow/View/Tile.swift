@@ -92,7 +92,7 @@ class Tile: UIView {
 //MARK: - Delegate Methods
     @objc func tapHandler() {
         tileIsActive  = true
-        self.hexaLabel.prepareColor(red: (contentView.backgroundColor?.rgb.red)!, green: (contentView.backgroundColor?.rgb.green)!, blue: (contentView.backgroundColor?.rgb.blue)!)
+        self.hexaLabel.adjustTextColor(red: (contentView.backgroundColor?.rgb.red)!, green: (contentView.backgroundColor?.rgb.green)!, blue: (contentView.backgroundColor?.rgb.blue)!)
         animateLabelAlphaOn()
         delegate?.didTapTile()
     }

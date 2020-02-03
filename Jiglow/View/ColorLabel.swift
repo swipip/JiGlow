@@ -33,19 +33,30 @@ class ColorLabel: UILabel {
         //            self.finished = true
         //        }
     }
-    func prepareColor(red: CGFloat, green: CGFloat, blue: CGFloat){
-        if red < 0.1 || green < 0.1 || blue < 0.1 {
-            self.red = max(0, red + 0.5)
-            self.green = max(0, green + 0.5)
-            self.blue = max(0, blue + 0.5)
-            self.textColor = UIColor(displayP3Red: self.red!, green: self.green!, blue: self.blue!, alpha: 1)
-            
+//    func prepareColor(red: CGFloat, green: CGFloat, blue: CGFloat){
+//        if red < 0.1 || green < 0.1 || blue < 0.1 {
+//            self.red = max(0, red + 0.5)
+//            self.green = max(0, green + 0.5)
+//            self.blue = max(0, blue + 0.5)
+//            self.textColor = UIColor(displayP3Red: self.red!, green: self.green!, blue: self.blue!, alpha: 1)
+//
+//        }else{
+//            self.red = max(0, red - 0.12)
+//            self.green = max(0, green - 0.12)
+//            self.blue = max(0, blue - 0.12)
+//            self.textColor = UIColor(displayP3Red: self.red!, green: self.green!, blue: self.blue!, alpha: 1)
+//        }
+//    }
+    func adjustTextColor(red: CGFloat, green: CGFloat, blue: CGFloat) {
+        
+        let color = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
+        
+        if color.getWhiteAndAlpha.white > 0.2 {
+            self.textColor = color.lighten()
         }else{
-            self.red = max(0, red - 0.12)
-            self.green = max(0, green - 0.12)
-            self.blue = max(0, blue - 0.12)
-            self.textColor = UIColor(displayP3Red: self.red!, green: self.green!, blue: self.blue!, alpha: 1)
+            self.textColor = color.darken()
         }
+        
     }
     
 }

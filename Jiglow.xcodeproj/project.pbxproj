@@ -11,6 +11,7 @@
 		4934472C23D08D8F00324F4A /* CollectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4934472B23D08D8F00324F4A /* CollectionController.swift */; };
 		4934472F23D096F000324F4A /* MiniPallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4934472D23D096F000324F4A /* MiniPallet.swift */; };
 		4934473023D096F000324F4A /* miniPallet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4934472E23D096F000324F4A /* miniPallet.xib */; };
+		498998F623E8C33800C8FF61 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498998F523E8C33800C8FF61 /* Extensions.swift */; };
 		498E32D823D1E4E500D1203E /* SwipeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498E32D723D1E4E500D1203E /* SwipeController.swift */; };
 		498E32DB23D3398F00D1203E /* Lobster-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 498E32DA23D3398F00D1203E /* Lobster-Regular.ttf */; };
 		498E32DD23D46B7E00D1203E /* digital-7.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 498E32DC23D46B7E00D1203E /* digital-7.ttf */; };
@@ -38,6 +39,7 @@
 		4934472B23D08D8F00324F4A /* CollectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionController.swift; sourceTree = "<group>"; };
 		4934472D23D096F000324F4A /* MiniPallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniPallet.swift; sourceTree = "<group>"; };
 		4934472E23D096F000324F4A /* miniPallet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = miniPallet.xib; sourceTree = "<group>"; };
+		498998F523E8C33800C8FF61 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		498E32D723D1E4E500D1203E /* SwipeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeController.swift; sourceTree = "<group>"; };
 		498E32DA23D3398F00D1203E /* Lobster-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lobster-Regular.ttf"; sourceTree = "<group>"; };
 		498E32DC23D46B7E00D1203E /* digital-7.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "digital-7.ttf"; sourceTree = "<group>"; };
@@ -76,10 +78,19 @@
 		4934473123D0BADA00324F4A /* Ressources */ = {
 			isa = PBXGroup;
 			children = (
+				49C58A2223C25646006A9D2D /* Assets.xcassets */,
 				49C58A1623C25645006A9D2D /* AppDelegate.swift */,
 				49C58A1823C25645006A9D2D /* SceneDelegate.swift */,
 			);
 			path = Ressources;
+			sourceTree = "<group>";
+		};
+		498998F423E8C30C00C8FF61 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				498998F523E8C33800C8FF61 /* Extensions.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		498E32D923D3397A00D1203E /* Fonts */ = {
@@ -112,10 +123,10 @@
 			children = (
 				498E32D923D3397A00D1203E /* Fonts */,
 				4934473123D0BADA00324F4A /* Ressources */,
+				498998F423E8C30C00C8FF61 /* Extensions */,
 				49C58A3023C3ABE7006A9D2D /* Model */,
 				49C58A2D23C3ABC2006A9D2D /* Controller */,
 				49C58A3723C4F3D3006A9D2D /* View */,
-				49C58A2223C25646006A9D2D /* Assets.xcassets */,
 				49C58A2723C25646006A9D2D /* Info.plist */,
 			);
 			path = Jiglow;
@@ -249,6 +260,7 @@
 				498E32D823D1E4E500D1203E /* SwipeController.swift in Sources */,
 				49C58A1923C25645006A9D2D /* SceneDelegate.swift in Sources */,
 				4934472F23D096F000324F4A /* MiniPallet.swift in Sources */,
+				498998F623E8C33800C8FF61 /* Extensions.swift in Sources */,
 				49C58A2123C25645006A9D2D /* Jiglow.xcdatamodeld in Sources */,
 				4934472C23D08D8F00324F4A /* CollectionController.swift in Sources */,
 				49C58A3423C4E1AB006A9D2D /* ColorSlider.swift in Sources */,

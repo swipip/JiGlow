@@ -2,7 +2,7 @@ import UIKit
 import CoreData
 
 protocol CollectionControllerDelegate {
-    func viewDidDisapear(topColor: String, secondColor: String, thirdColor: String, bottomColor: String, editingMode: Bool, palletName: String)
+    func collectionControllerDidDisapear(topColor: String, secondColor: String, thirdColor: String, bottomColor: String, editingMode: Bool, palletName: String)
     func collectionViewDidDisapearWithNoSelection(editingMode: Bool)
 }
 
@@ -49,7 +49,7 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
     override func viewWillDisappear(_ animated: Bool) {
 
         if let safeMiniPallet = miniPallet{
-            delegate?.viewDidDisapear(topColor: safeMiniPallet.topColor!,
+            delegate?.collectionControllerDidDisapear(topColor: safeMiniPallet.topColor!,
                                       secondColor: safeMiniPallet.secondColor!,
                                       thirdColor: safeMiniPallet.thirdColor!,
                                       bottomColor: safeMiniPallet.bottomColor!,
