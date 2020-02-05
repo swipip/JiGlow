@@ -2,7 +2,7 @@ import UIKit
 import CoreData
 
 class ViewController: UIViewController{
-
+    
     //MARK: - Outlets
     
     @IBOutlet weak var sliderRed: UISlider!
@@ -26,8 +26,8 @@ class ViewController: UIViewController{
     var blue: CGFloat = 0.5
     
     var descriptionLabel: ColorLabel?
-//    var subviewCallOut = SliderCallout()
-    var sliderCallOut: SliderCallout?
+    var sliderCallOut: UIView?
+    private var sliderCallOutLabel: UILabel?
     var pallet = Pallet()
     var tileWidth: CGFloat = 0.0
     private var tilesColors: (top: String?, second: String?, third: String?, bottom: String?)
@@ -42,20 +42,22 @@ class ViewController: UIViewController{
     var swipeController: SwipeController?
     var originS: CGPoint?
     var currentS = CGPoint()
+    
+    private var callOutleadingConstraint: NSLayoutConstraint?
     //MARK: - Layout
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        let path = FileManager
-//        .default
-//        .urls(for: .applicationSupportDirectory, in: .userDomainMask)
-//        .last?
-//        .absoluteString
-//        .replacingOccurrences(of: "file://", with: "")
-//        .removingPercentEncoding
-//        print(path!)
-
+        //        let path = FileManager
+        //        .default
+        //        .urls(for: .applicationSupportDirectory, in: .userDomainMask)
+        //        .last?
+        //        .absoluteString
+        //        .replacingOccurrences(of: "file://", with: "")
+        //        .removingPercentEncoding
+        //        print(path!)
+        
         swipeController = SwipeController(view: self.view)
         swipeController?.delegate = self
         
@@ -86,11 +88,17 @@ class ViewController: UIViewController{
         let navigationTitleFont = UIFont(name: "Lobster", size: 20)
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: navigationTitleFont!]
         
+//        layoutPallet()
+        
     }
     @objc func panHandler(recognizer: UIPanGestureRecognizer){
         swipeController?.handlePan(recognizer: recognizer)
     }
     override func viewDidLayoutSubviews() {
+//        layoutPallet()
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
         layoutPallet()
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -99,7 +107,7 @@ class ViewController: UIViewController{
         navigationController?.navigationBar.isHidden = false
         
     }
-    func layoutPallet(){
+    private func layoutPallet(){
         pallet = (swipeController?.squares[1])!
         pallet.delegate = self
         for pallet in swipeController!.squares{
@@ -118,43 +126,43 @@ class ViewController: UIViewController{
         swipeController!.originS = self.originS
         swipeController!.currentS = self.currentS
         
-        NSLayoutConstraint.activate([
-            slidersStackView.topAnchor.constraint(equalTo: (swipeController?.squares[0].bottomAnchor)!, constant: 80)
-               ])
+//        NSLayoutConstraint.activate([
+//            slidersStackView.topAnchor.constraint(equalTo: (swipeController?.squares[0].bottomAnchor)!, constant: 80)
+//        ])
         
     }
     //MARK: - Data Management
     func saveTile(){
-            if editingMode == false {
-                let newMiniPalletCD = MiniPalletModel(context: self.context)
-                    newMiniPalletCD.topColor = tilesColors.top
-                    newMiniPalletCD.secondColor = tilesColors.second
-                    newMiniPalletCD.thirdColor = tilesColors.third
-                    newMiniPalletCD.bottomColor = tilesColors.bottom
-                    newMiniPalletCD.name = palletName
-                    miniPalletsCD.append(newMiniPalletCD)
-                    do {
-                        try context.save()
-                    } catch {
-                        print("Error saving context \(error)")
-                    }
-            }else{
-                let request:NSFetchRequest<MiniPalletModel> = MiniPalletModel.fetchRequest()
-                let nameFilter = NSPredicate(format: "name MATCHES[cd] %@", self.palletName)
-                request.predicate = nameFilter
-                
-                do {
-                    let myPallet = try context.fetch(request)
-                    print(myPallet.count)
-                    myPallet[0].setValue(tilesColors.top, forKey: "topColor")
-                    myPallet[0].setValue(tilesColors.second, forKey: "secondColor")
-                    myPallet[0].setValue(tilesColors.third, forKey: "thirdColor")
-                    myPallet[0].setValue(tilesColors.bottom, forKey: "bottomColor")
-                    try context.save()
-                }catch{
-                    print("error retrieving data")
-                }
+        if editingMode == false {
+            let newMiniPalletCD = MiniPalletModel(context: self.context)
+            newMiniPalletCD.topColor = tilesColors.top
+            newMiniPalletCD.secondColor = tilesColors.second
+            newMiniPalletCD.thirdColor = tilesColors.third
+            newMiniPalletCD.bottomColor = tilesColors.bottom
+            newMiniPalletCD.name = palletName
+            miniPalletsCD.append(newMiniPalletCD)
+            do {
+                try context.save()
+            } catch {
+                print("Error saving context \(error)")
             }
+        }else{
+            let request:NSFetchRequest<MiniPalletModel> = MiniPalletModel.fetchRequest()
+            let nameFilter = NSPredicate(format: "name MATCHES[cd] %@", self.palletName)
+            request.predicate = nameFilter
+            
+            do {
+                let myPallet = try context.fetch(request)
+                print(myPallet.count)
+                myPallet[0].setValue(tilesColors.top, forKey: "topColor")
+                myPallet[0].setValue(tilesColors.second, forKey: "secondColor")
+                myPallet[0].setValue(tilesColors.third, forKey: "thirdColor")
+                myPallet[0].setValue(tilesColors.bottom, forKey: "bottomColor")
+                try context.save()
+            }catch{
+                print("error retrieving data")
+            }
+        }
     }
     //MARK: - Gestures Handlers
     @objc func stackLongPress(sender: UILongPressGestureRecognizer) {
@@ -164,7 +172,7 @@ class ViewController: UIViewController{
             performSegue(withIdentifier: "mainToCollection", sender: self)
         }else if sender.state == .ended{
             btnStack.animateSizeOff()
-//            displayAlert()
+            //            displayAlert()
         }
         
     }
@@ -184,10 +192,10 @@ class ViewController: UIViewController{
         NSLayoutConstraint.activate([
             newPallet.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             newPallet.topAnchor.constraint(equalTo: margins.topAnchor, constant: 30),
-//            newPallet.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 50),
-//            newPallet.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: -50),
+            //            newPallet.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 50),
+            //            newPallet.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: -50),
             newPallet.widthAnchor.constraint(equalToConstant: width)
-//            newPallet.bottomAnchor.constraint(equalTo: slidersStackView.topAnchor, constant: -20)
+            //            newPallet.bottomAnchor.constraint(equalTo: slidersStackView.topAnchor, constant: -20)
         ])
         
         let palletPan = UIPanGestureRecognizer(target: self, action: #selector(panHandler(recognizer:)))
@@ -204,7 +212,7 @@ class ViewController: UIViewController{
     }
     func prepareForCollection(with segue: UIStoryboardSegue,with sender: Any?) {
         if let viewController = segue.destination as? CollectionController {
-//            viewController.miniPalletsCD = self.miniPalletsCD
+            //            viewController.miniPalletsCD = self.miniPalletsCD
             
             viewController.delegate = self
             
@@ -248,12 +256,12 @@ class ViewController: UIViewController{
     }
     //MARK: - IBActions
     @IBAction func cameraPressed(_ sender: UIButton) {
-  
-//        performSegue(withIdentifier: "mainToCamera", sender: self)
+        
+        //        performSegue(withIdentifier: "mainToCamera", sender: self)
         
         let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
         let controller = storyBoard.instantiateViewController(withIdentifier: "PhotoViewController") as! PhotoViewController
-//        controller.isModalInPresentation = true
+        //        controller.isModalInPresentation = true
         controller.delegate = self
         
         let transition = CATransition.init()
@@ -266,72 +274,96 @@ class ViewController: UIViewController{
         self.navigationController?.pushViewController(controller, animated: true)
         
     }
+    func addSliderCallOut(slider: UISlider) {
+        
+        if sliderCallOut == nil {
+            sliderCallOut = UIView()
+            if let callOut = sliderCallOut {
+                callOut.backgroundColor = .gray
+                callOut.layer.cornerRadius = 15
+                callOut.frame.origin.x = slider.thumbCenterX - callOut.frame.size.width/2
+                callOut.frame.origin.y = slider.frame.origin.y - 40
+                callOut.frame.size = CGSize(width: 30, height: 30)
+                self.view.addSubview(callOut)
+                
+                sliderCallOutLabel = UILabel()
+                
+                if let label = sliderCallOutLabel {
+                    label.text = "123"
+                    label.font = UIFont(name: "Galvji", size: 10)
+                    label.textColor = .white
+                    label.textAlignment = .center
+                    label.frame.origin.x = slider.thumbCenterX - label.frame.size.width/2
+                    label.frame.origin.y = slider.frame.origin.y - 40
+                    label.frame.size = CGSize(width: 30, height: 30)
+                    view.addSubview(label)
+                    
+                }
+            }
+        }else{
+            sliderCallOut?.alpha += 0.05
+        }
+    }
+    func manageTile(tile: Tile,slider: UISlider){
+        
+        let color = UIColor(red: Int(red*255), green: Int(green*255), blue: Int(blue*255))
+        
+        animateSliderCallOut(slider: slider)
+        sliderCallOutLabel?.text = String(Int(slider.value * 255))
+        tile.contentView.backgroundColor = color
+        tile.hexaLabel.adjustTextColor(red: red, green: green, blue: blue)
+        tile.hexaLabel.text = color.toHexString()
+        btnReset.animateGradient(startColor: (tile.contentView.backgroundColor)!)
+    }
+    func manageSlide(tile: Tile,sender: UISlider,coordinates: CGPoint){
+        switch sender.accessibilityIdentifier {
+        case "sldRed":
+            red = CGFloat(sender.value)
+            
+            sliderRed.minimumTrackTintColor = UIColor(displayP3Red: red, green: 0.5 * red, blue: 0.5 * red, alpha: 1)
+            tile.redCode = Int(red * 255)
+            
+            manageTile(tile: tile, slider: sender)
+            
+        case "sldGreen":
+            green = CGFloat(sender.value)
+            
+            sliderGreen.minimumTrackTintColor = UIColor(displayP3Red: 0.5*green, green: green, blue: 0.5 * red, alpha: 1)
+            tile.greenCode = Int(green * 255)
+            
+            manageTile(tile: tile, slider: sender)
+            
+        case "sldBlue":
+            self.blue = CGFloat(sender.value)
+            
+            sliderBlue.minimumTrackTintColor = UIColor(displayP3Red: blue * 0.5, green: 0.5 * blue, blue: blue, alpha: 1)
+            tile.blueCode = Int(blue * 255)
+            
+            manageTile(tile: tile, slider: sender)
+            
+        default:
+            print("error")
+        }
+    }
     @IBAction func sliderSlide(_ sender: UISlider) {
         
-        let sliderCoordinates = superView.convert(sender.frame, from:sliderRed)
-        let xCoordinate = sender.thumbCenterX + 36
+        let sliderCoordinates = self.view.convert(sender.frame, from:sliderRed)
+        let xCoordinate = sender.thumbCenterX + (self.view.frame.size.width - sliderRed.frame.size.width)/4 - 2.5
         let yCoordinate = sliderCoordinates.origin.y - CGFloat(30)
         
-        if let localPallet = pallet.activeTile {
-            if sliderCallOut != nil {
-                sliderCallOut?.alpha += 0.05
-            }else{
-                sliderCallOut = SliderCallout()
-                sliderCallOut?.frame.size = CGSize(width: 50, height: 30)
-                sliderCallOut?.frame.origin.x = xCoordinate
-                sliderCallOut?.frame.origin.y = yCoordinate
-                sliderCallOut?.alpha = 0
-                
-                superView.addSubview(sliderCallOut!)
-            }
-            switch sender.accessibilityIdentifier {
-            case "sldRed":
-                red = CGFloat(sender.value)
-
-                sliderRed.minimumTrackTintColor = UIColor(displayP3Red: red, green: 0.5 * red, blue: 0.5 * red, alpha: 1)
-                localPallet.redCode = Int(red * 255)
-                
-                animateSliderCallOut(sender: sliderCallOut!, xCoordinate: xCoordinate)
-                sliderCallOut?.calloutLabel.text = String(Int(sender.value * 255))
-                localPallet.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
-                localPallet.hexaLabel.adjustTextColor(red: red, green: green, blue: blue)
-                localPallet.hexaLabel.text = localPallet.contentView.backgroundColor?.toHexString()
-                btnReset.animateGradient(startColor: (pallet.activeTile?.contentView.backgroundColor)!)
-                
-            case "sldGreen":
-                green = CGFloat(sender.value)
-                
-                sliderGreen.minimumTrackTintColor = UIColor(displayP3Red: 0.5*green, green: green, blue: 0.5 * red, alpha: 1)
-                localPallet.greenCode = Int(green * 255)
-                
-                sliderCallOut?.calloutLabel.text = String(Int(sender.value * 255))
-                animateSliderCallOut(sender: sliderCallOut!, xCoordinate: xCoordinate)
-                localPallet.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
-                localPallet.hexaLabel.adjustTextColor(red: red, green: green, blue: blue)
-                localPallet.hexaLabel.text = pallet.activeTile?.contentView.backgroundColor?.toHexString()
-                btnReset.animateGradient(startColor: (localPallet.contentView.backgroundColor)!)
-                
-            case "sldBlue":
-                self.blue = CGFloat(sender.value)
-                
-                
-                sliderBlue.minimumTrackTintColor = UIColor(displayP3Red: blue * 0.5, green: 0.5 * blue, blue: blue, alpha: 1)
-                localPallet.blueCode = Int(blue * 255)
-                
-                sliderCallOut?.calloutLabel.text = String(Int(sender.value * 255))
-                animateSliderCallOut(sender: sliderCallOut!, xCoordinate: xCoordinate)
-                localPallet.contentView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
-                localPallet.hexaLabel.adjustTextColor(red: red, green: green, blue: blue)
-                localPallet.hexaLabel.text = pallet.activeTile?.contentView.backgroundColor?.toHexString()
-                btnReset.animateGradient(startColor: (localPallet.contentView.backgroundColor)!)
-                
-            default:
-                print("error")
-            }
+        addSliderCallOut(slider: sender)
+        
+        if let tile = pallet.activeTile {
+            manageSlide(tile: tile, sender: sender, coordinates: CGPoint(x: xCoordinate, y: yCoordinate))
+            
+        }else if let tile = pallet.topTile{
+            tile.transformOn()
+            tile.animateLabelAlphaOn()
+            manageSlide(tile: tile, sender: sender, coordinates: CGPoint(x: xCoordinate, y: yCoordinate))
         }
         
     }
-
+    
     @IBAction func resetClicked(_ sender: UIButton) {
         pallet.topTile.contentView.backgroundColor = .lightGray
         pallet.secondTile.contentView.backgroundColor = .gray
@@ -349,7 +381,7 @@ class ViewController: UIViewController{
     @objc func onSliderValChanged(slider: UISlider, event: UIEvent) {
         if let touchEvent = event.allTouches?.first {
             switch touchEvent.phase {
-
+                
             case .ended:
                 UIView.animate(withDuration: 0.66 ,delay: 0.0, animations: {
                     self.sliderCallOut?.alpha = 0
@@ -363,9 +395,11 @@ class ViewController: UIViewController{
             }
         }
     }
-    func animateSliderCallOut(sender: UIView, xCoordinate: CGFloat) {
+    func animateSliderCallOut(slider: UISlider) {
         UIView.animate(withDuration: 0.5, animations: {
-            sender.frame = CGRect(x: xCoordinate, y: (sender.frame.origin.y), width: CGFloat(50), height: CGFloat(30))
+            self.sliderCallOut?.frame.origin.x = slider.thumbCenterX - (self.sliderCallOut?.frame.width)!/2
+            self.sliderCallOutLabel?.frame.origin.x = slider.thumbCenterX - (self.sliderCallOutLabel?.frame.width)!/2
+//            self.view.layoutIfNeeded()
             
         }, completion: nil)
     }
@@ -390,7 +424,7 @@ class ViewController: UIViewController{
         action = UIAlertAction(title: "Add", style: .default) { (action) in
             if let name = textField.text {
                 if name == "" {
-//                    self.dismiss(animated: false, completion: nil)
+                    //                    self.dismiss(animated: false, completion: nil)
                 }else{
                     action.isEnabled = true
                     self.palletName = name
@@ -400,6 +434,7 @@ class ViewController: UIViewController{
             }
         }
         alert.addAction(action!)
+        alert.view.tintColor = .label
         action!.isEnabled = false
         alert.addTextField { (field) in
             textField = field
@@ -518,4 +553,9 @@ extension ViewController: CollectionControllerDelegate{
 }
 extension ViewController: CAAnimationDelegate{
     
+}
+extension UISlider {
+    var thumbCenterX: CGFloat {
+        return thumbRect(forBounds: frame, trackRect: trackRect(forBounds: frame), value: value).midX
+    }
 }

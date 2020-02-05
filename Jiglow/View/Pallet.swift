@@ -13,7 +13,7 @@ class Pallet: UIView, TileDelegate {
     var activeTile: Tile?
     var rotated:(on: Bool,dir: rotatedCases) = (false,.right)
     
-    var Tiles = [Int: Tile]()
+    private var Tiles = [Int: Tile]()
     
     var delegate: PalletDelegate?
     
@@ -31,8 +31,7 @@ class Pallet: UIView, TileDelegate {
         super.init(coder: aDecoder)
         fatalError("init(coder:) has not been implemented")
     }
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    private func layoutTiles() {
         
         let tileColor:UIColor = .systemOrange
         
@@ -49,7 +48,7 @@ class Pallet: UIView, TileDelegate {
         bottomTile.hexaLabel.text = bottomTile.contentView.backgroundColor!.toHexString()
         
     }
-    func commonInit() {
+    private func commonInit() {
         Bundle.main.loadNibNamed("Pallet", owner: self, options: nil)
         addSubview(contentView)
         contentView.frame = self.bounds
@@ -60,8 +59,10 @@ class Pallet: UIView, TileDelegate {
         thirdTile.delegate = self
         bottomTile.delegate = self
         
+        layoutTiles()
+        
     }
-    func setUpTiles() {
+    private func setUpTiles() {
         let height = Double(0.15 * UIScreen.main.bounds.size.height)
         var compoundedHeight = 0.0
         for index in 1...4 {
@@ -88,7 +89,7 @@ class Pallet: UIView, TileDelegate {
         }
         NSLayoutConstraint.activate([contentView.heightAnchor.constraint(equalToConstant: CGFloat(compoundedHeight))])
     }
-    func addTileToView(with tile: Tile, height: Double, topAnchor constraint: Double) {
+    private func addTileToView(with tile: Tile, height: Double, topAnchor constraint: Double) {
         
         contentView.addSubview(tile)
         //constraints
@@ -148,6 +149,7 @@ class Pallet: UIView, TileDelegate {
                     activeTile = nil
                 }else{
                     activeTile = Tiles[i]
+                    self.bringSubviewToFront(activeTile!) //activeTile
                     activeTile?.transformOn()
                     activeTile?.tileIsActive = false
                 }

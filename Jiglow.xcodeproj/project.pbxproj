@@ -26,8 +26,6 @@
 		49C58A3223C3C404006A9D2D /* GradientButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C58A3123C3C404006A9D2D /* GradientButton.swift */; };
 		49C58A3423C4E1AB006A9D2D /* ColorSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C58A3323C4E1AB006A9D2D /* ColorSlider.swift */; };
 		49C58A3623C4E7AE006A9D2D /* ColorLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C58A3523C4E7AE006A9D2D /* ColorLabel.swift */; };
-		49C58A3F23C4F6F2006A9D2D /* SliderCallout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C58A3E23C4F6F2006A9D2D /* SliderCallout.swift */; };
-		49C58A4323C505C5006A9D2D /* SliderCallOut.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49C58A4223C505C5006A9D2D /* SliderCallOut.xib */; };
 		49D5010D23D4B6790017638D /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D5010C23D4B6790017638D /* PhotoViewController.swift */; };
 		49D5B00123C62C9700D9B146 /* ColorDetailControler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D5B00023C62C9700D9B146 /* ColorDetailControler.swift */; };
 		49D5B00323C7327200D9B146 /* Pallet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49D5B00223C7327200D9B146 /* Pallet.xib */; };
@@ -56,8 +54,6 @@
 		49C58A3123C3C404006A9D2D /* GradientButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientButton.swift; sourceTree = "<group>"; };
 		49C58A3323C4E1AB006A9D2D /* ColorSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSlider.swift; sourceTree = "<group>"; };
 		49C58A3523C4E7AE006A9D2D /* ColorLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorLabel.swift; sourceTree = "<group>"; };
-		49C58A3E23C4F6F2006A9D2D /* SliderCallout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderCallout.swift; sourceTree = "<group>"; };
-		49C58A4223C505C5006A9D2D /* SliderCallOut.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SliderCallOut.xib; sourceTree = "<group>"; };
 		49D5010C23D4B6790017638D /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
 		49D5B00023C62C9700D9B146 /* ColorDetailControler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorDetailControler.swift; sourceTree = "<group>"; };
 		49D5B00223C7327200D9B146 /* Pallet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Pallet.xib; sourceTree = "<group>"; };
@@ -158,8 +154,6 @@
 				49C58A1C23C25645006A9D2D /* Main.storyboard */,
 				4934472E23D096F000324F4A /* miniPallet.xib */,
 				4934472D23D096F000324F4A /* MiniPallet.swift */,
-				49C58A4223C505C5006A9D2D /* SliderCallOut.xib */,
-				49C58A3E23C4F6F2006A9D2D /* SliderCallout.swift */,
 				49D5B00223C7327200D9B146 /* Pallet.xib */,
 				49D5B00423C7340000D9B146 /* Pallet.swift */,
 				4934472923D03D6E00324F4A /* Tile.xib */,
@@ -234,7 +228,6 @@
 				498E32DD23D46B7E00D1203E /* digital-7.ttf in Resources */,
 				498E32DB23D3398F00D1203E /* Lobster-Regular.ttf in Resources */,
 				4934472A23D03D6E00324F4A /* Tile.xib in Resources */,
-				49C58A4323C505C5006A9D2D /* SliderCallOut.xib in Resources */,
 				49C58A2323C25646006A9D2D /* Assets.xcassets in Resources */,
 				49C58A1E23C25645006A9D2D /* Main.storyboard in Resources */,
 				49D5B00323C7327200D9B146 /* Pallet.xib in Resources */,
@@ -255,7 +248,6 @@
 				49C58A3623C4E7AE006A9D2D /* ColorLabel.swift in Sources */,
 				49D5B00123C62C9700D9B146 /* ColorDetailControler.swift in Sources */,
 				49C58A1723C25645006A9D2D /* AppDelegate.swift in Sources */,
-				49C58A3F23C4F6F2006A9D2D /* SliderCallout.swift in Sources */,
 				49C58A2F23C3ABE0006A9D2D /* Tile.swift in Sources */,
 				498E32D823D1E4E500D1203E /* SwipeController.swift in Sources */,
 				49C58A1923C25645006A9D2D /* SceneDelegate.swift in Sources */,

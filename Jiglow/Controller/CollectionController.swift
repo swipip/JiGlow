@@ -34,7 +34,7 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
         navBar = navigationController!.navigationBar
         navigationController?.setNavigationBarHidden(false, animated: true)
         navBar?.backItem?.title = ""
-        navBar?.tintColor = .black
+        navBar?.tintColor = .label
 //        navBar?.backItem?.action
 //        navigationController?.applyGradient(color1: .lightGray, color2: .gray)
 //        navBar?.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
@@ -97,9 +97,10 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
         cell.palletNameLabel.text = miniPalletsCD[indexPath.row].name ?? "no name"
         
         cell.layer.shadowOffset = CGSize(width: 0, height: 0)
-        cell.layer.shadowRadius = 4.1536
+        cell.layer.shadowRadius = 6.1536
         cell.layer.shadowColor = UIColor.lightGray.cgColor
         cell.layer.shadowOpacity = 0.2
+        cell.layer.shadowColor = UIColor.black.cgColor
         cell.layer.masksToBounds = false
         cell.layer.shadowPath = UIBezierPath(roundedRect: cell.bounds, cornerRadius: cell.cornerView.layer.cornerRadius).cgPath
         

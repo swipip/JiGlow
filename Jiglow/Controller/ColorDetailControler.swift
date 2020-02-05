@@ -14,9 +14,6 @@ class ColorDetailControler: UIViewController {
     @IBOutlet weak var secondColor2: UIView!
     @IBOutlet weak var secondColor3: UIView!
     @IBOutlet weak var lblHexaCode: UILabel!
-    @IBOutlet weak var lblRed: UILabel!
-    @IBOutlet weak var lblGreen: UILabel!
-    @IBOutlet weak var lblBlue: UILabel!
     @IBOutlet weak var roundedView: UIView!
     @IBOutlet weak var shadowView: UIView!
     
@@ -25,21 +22,20 @@ class ColorDetailControler: UIViewController {
     var middleColor: UIColor?
     var rightColor: UIColor?
     var hexaCode: String?
-    var redCode: Int?
-    var greenCode: Int?
-    var blueCode: Int?
+    var redCode, greenCode, blueCode: Int?
     
-    var gauges = [UIView]()
+    private var gauges = [UIView]()
+    private var labels = [UILabel]()
+    private var redWidthConstraint: NSLayoutConstraint?
+    private var greenWidthConstraint: NSLayoutConstraint?
+    private var blueWidthConstraint: NSLayoutConstraint?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setUpDetailController()
-        
-//        roundedView.layer.cornerRadius = 5
-//        shadowView.layer.shadowRadius = 2
-//        shadowView.layer.shadowOpacity = 0.234
-//        shadowView.layer.shadowOffset  = CGSize(width: 0.0, height: 0.0)
+        setUpGauges()
+        setUpLabels()
         
     }
     override func viewDidLayoutSubviews() {
@@ -48,33 +44,92 @@ class ColorDetailControler: UIViewController {
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        setUpGauges(relativeTo: lblRed,color: .systemRed)
-            setUpGauges(relativeTo: lblGreen, color: .systemGreen)
-            setUpGauges(relativeTo: lblBlue, color: .systemBlue)
-        animateGauges(gauge: gauges[0], width: Double(redCode!)/255*130)
-        animateGauges(gauge: gauges[1], width: Double(greenCode!)/255*130)
-        animateGauges(gauge: gauges[2], width: Double(blueCode!)/255*130)
+        animateLabels(code: redCode!, label: labels[0])
+        animateLabels(code: greenCode!, label: labels[1])
+        animateLabels(code: blueCode!, label: labels[2])
+        animateGauges(gauge: redWidthConstraint!, width: Double(redCode!)/255*130)
+        animateGauges(gauge: greenWidthConstraint!, width: Double(greenCode!)/255*130)
+        animateGauges(gauge: blueWidthConstraint!, width: Double(blueCode!)/255*130)
         
     }
-    func setUpGauges(relativeTo label:UILabel, color: UIColor){
-        let origin = label.convert(label.frame.origin, to: self.view)
-        let newGauge = UIView(frame:CGRect(x: label.frame.origin.x + label.frame.width + 50, y: origin.y, width: 26, height: 26))
-        newGauge.translatesAutoresizingMaskIntoConstraints = false
-        newGauge.backgroundColor = color
-        newGauge.frame.size = CGSize(width: 26, height: 24)
-        
-        gauges.append(newGauge)
-        
-        self.view.addSubview(newGauge)
-        
-        newGauge.layer.cornerRadius = 12
-       
+    func setUpGauges(){
+        var topAnchorVar:CGFloat = 6
+        let gaugeHeight: CGFloat = 32
+        for i in 1...3 {
+            let newGauge = UIView()
+            
+            gauges.append(newGauge)
+            newGauge.layer.cornerRadius = gaugeHeight/2
+            self.view.addSubview(newGauge)
+            
+            newGauge.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([newGauge.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20),
+                                         newGauge.topAnchor.constraint(equalTo: lblHexaCode.bottomAnchor, constant: topAnchorVar),
+                                         newGauge.heightAnchor.constraint(equalToConstant: gaugeHeight)])
+            switch i {
+            case 1:
+                newGauge.backgroundColor = .systemRed
+                redWidthConstraint = NSLayoutConstraint(item: newGauge, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: gaugeHeight)
+                self.view.addConstraint(redWidthConstraint!)
+                topAnchorVar += gaugeHeight + 4
+            case 2:
+                newGauge.backgroundColor = .systemGreen
+                greenWidthConstraint = NSLayoutConstraint(item: newGauge, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: gaugeHeight)
+                self.view.addConstraint(greenWidthConstraint!)
+                topAnchorVar += gaugeHeight + 4
+            case 3:
+                newGauge.backgroundColor = .systemBlue
+                blueWidthConstraint = NSLayoutConstraint(item: newGauge, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: gaugeHeight)
+                self.view.addConstraint(blueWidthConstraint!)
+            default:
+                break
+            }
+            
+        }
     }
-    func animateGauges(gauge: UIView, width: Double){
-        if width > 26{
+    func setUpLabels(){
+        
+        for i in 0...2 {
+            
+            let newLabel = UILabel()
+            newLabel.text = "0"
+            newLabel.textAlignment = .right
+            newLabel.textColor = .white
+            newLabel.font = UIFont(name: "Digital-7", size: 14)
+            self.view.addSubview(newLabel)
+            
+            newLabel.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([newLabel.trailingAnchor.constraint(equalTo: gauges[i].trailingAnchor, constant: -5),
+                                         newLabel.topAnchor.constraint(equalTo: gauges[i].topAnchor, constant: 0),
+                                         newLabel.bottomAnchor.constraint(equalTo: gauges[i].bottomAnchor, constant: 0),
+                                         newLabel.widthAnchor.constraint(equalToConstant: 50)])
+            
+            labels.append(newLabel)
+            
+        }
+        
+    }
+    func animateGauges(gauge: NSLayoutConstraint, width: Double){
+        if width > 34{
             UIView.animate(withDuration: 1, delay: 0.0 ,animations: {
-                gauge.frame.size.width = CGFloat(width)
+                gauge.constant = CGFloat(width) * 1.2
+                self.view.layoutIfNeeded()
             }, completion: nil)
+        }
+    }
+    func animateLabels(code: Int, label: UILabel){
+        
+        var rgbCode:Double = 0
+        let code = code == 0 ? 0.0001 : Double(code)
+        let timeInterval = 1 / code
+        
+        let _ = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeInterval), repeats: true) { (timer) in
+            if rgbCode == code {
+                timer.invalidate()
+            }else{
+                rgbCode += 1
+                label.text = String(Int(rgbCode))
+            }
         }
     }
     func setUpDetailController() {
@@ -85,13 +140,7 @@ class ColorDetailControler: UIViewController {
         secondColor3.backgroundColor = rightColor
         lblHexaCode.text = hexaCode
         lblHexaCode.textColor = mainColor
-//        addParallaxToView(vw: lblHexaCode)
-        lblRed.text = String(redCode!)
-        lblGreen.text = String(greenCode!)
-        lblBlue.text = String(blueCode!)
-        
-        
-        
+  
     }
     override func viewWillDisappear(_ animated: Bool) {
         
