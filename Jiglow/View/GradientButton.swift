@@ -28,16 +28,17 @@ class GradientButton: UIButton {
     }
     private func setButtonGradient() {
         
-        gradientLayer = CAGradientLayer()
-        if let safeLayer = gradientLayer {
-            safeLayer.colors = [UIColor.orange.cgColor, UIColor.systemYellow.cgColor]
-            safeLayer.startPoint = CGPoint(x:0.0,y: 0)
-            safeLayer.endPoint = CGPoint(x:1, y:0)
-            safeLayer.frame = self.bounds
-            safeLayer.cornerRadius = 25
-            self.layer.insertSublayer(safeLayer, at: 0)
+        if gradientLayer == nil{
+            gradientLayer = CAGradientLayer()
+            if let safeLayer = gradientLayer {
+                safeLayer.colors = [UIColor.orange.cgColor, UIColor.systemYellow.cgColor]
+                safeLayer.startPoint = CGPoint(x:0.0,y: 0)
+                safeLayer.endPoint = CGPoint(x:1, y:0)
+                safeLayer.frame = self.bounds
+                safeLayer.cornerRadius = 25
+                self.layer.insertSublayer(safeLayer, at: 0)
+            }
         }
-
     }
     func animateGradient(startColor: UIColor, endColor: UIColor = .systemOrange){
         

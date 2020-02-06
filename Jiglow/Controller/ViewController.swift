@@ -96,7 +96,7 @@ class ViewController: UIViewController{
         let navigationTitleFont = UIFont(name: "Lobster", size: 20)
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: navigationTitleFont!]
         
-        addImage()
+        launchScreenAnimation()
 
     }
     override func viewDidAppear(_ animated: Bool) {
@@ -113,7 +113,7 @@ class ViewController: UIViewController{
         
     }
     //MARK: - Launch Animation
-    func addImage() {
+    func launchScreenAnimation() {
         
         navigationController?.navigationBar.alpha = 0.0
         
@@ -155,10 +155,17 @@ class ViewController: UIViewController{
     //MARK: - Return Button
     func addReturnButton() {
         
+        let buttonSize:CGFloat = 35
+        
+        let sliderPosition = sliderRed.frame.origin.y
+        let palletPosition = pallet.frame.origin.y + pallet.frame.size.height
+        
+        let distanceFromPallet = (sliderPosition - palletPosition - buttonSize)/2
+        
         returnButton = UIButton()
         
         returnButton!.backgroundColor = .gray
-        returnButton!.layer.cornerRadius = 15
+        returnButton!.layer.cornerRadius = buttonSize/2
         returnButton!.setImage(UIImage(systemName: "arrow.counterclockwise"), for: .normal)
         returnButton!.isEnabled = false
         returnButton!.tintColor = .white
@@ -168,9 +175,9 @@ class ViewController: UIViewController{
         
         returnButton!.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([returnButton!.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
-                                     returnButton!.topAnchor.constraint(equalTo: pallet.bottomAnchor, constant: 20),
-                                     returnButton!.widthAnchor.constraint(equalToConstant: 30),
-                                     returnButton!.heightAnchor.constraint(equalToConstant: 30)])
+                                     returnButton!.topAnchor.constraint(equalTo: pallet.bottomAnchor, constant: distanceFromPallet),
+                                     returnButton!.widthAnchor.constraint(equalToConstant: buttonSize),
+                                     returnButton!.heightAnchor.constraint(equalToConstant: buttonSize)])
         
         returnButton!.addTarget(self, action: #selector(returnPressed(_:)), for: .touchUpInside)
     }
@@ -241,7 +248,7 @@ class ViewController: UIViewController{
                     self.sliderCallOut?.removeFromSuperview()
                     self.sliderCallOut = nil
                 }
-                slider.minimumTrackTintColor = .systemGray
+                slider.minimumTrackTintColor = UIColor(named:"sliderMinTrack")
             default:
                 break
             }
@@ -296,8 +303,8 @@ class ViewController: UIViewController{
         pallet = (swipeController?.squares[1])!
         pallet.delegate = self
         for pallet in swipeController!.squares{
-            pallet.topTile.roundCorners([.topRight, .topLeft], radius: 18)
-            pallet.bottomTile.roundCorners([.bottomRight, .bottomLeft], radius: 18)
+            pallet.topTile.roundCorners([.topRight, .topLeft], radius: 14)
+            pallet.bottomTile.roundCorners([.bottomRight, .bottomLeft], radius: 14)
             pallet.layer.shadowRadius = 5.23
             pallet.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
             pallet.layer.shadowOpacity = 0.23
@@ -448,17 +455,28 @@ class ViewController: UIViewController{
     }
     @IBAction func resetClicked(_ sender: UIButton) {
         
-        pallet.topTile.contentView.backgroundColor = .lightGray
-        pallet.secondTile.contentView.backgroundColor = .gray
-        pallet.thirdTile.contentView.backgroundColor = .darkGray
-        pallet.bottomTile.contentView.backgroundColor = .black
+        let color = UIColor.systemOrange
         
-        btnReset.animateGradient(startColor: .darkGray, endColor: .lightGray)
+        pallet.topTile.contentView.backgroundColor = color
+        pallet.secondTile.contentView.backgroundColor = color.lighten(by: 10)
+        pallet.thirdTile.contentView.backgroundColor = color.lighten(by: 20)
+        pallet.bottomTile.contentView.backgroundColor = color.lighten(by: 30)
+        
+        btnReset.animateGradient(startColor: color, endColor: color.lighten()!)
         
         pallet.activeTile?.transformOff()
         pallet.activeTile?.animateLabelAlphaOff()
         pallet.activeTile?.tileIsActive = false
         pallet.activeTile = nil
+        
+        let animation = CABasicAnimation(keyPath: "transform.scale")
+        animation.duration = 0.25
+        animation.autoreverses = true
+        animation.toValue = CGPoint(x: 1.05, y: 1.05)
+        
+        pallet.layer.add(animation, forKey: nil)
+        
+
     }
     //MARK: - Add Subviews
     func addConfirmationViews() {
@@ -556,6 +574,11 @@ class ViewController: UIViewController{
         
         let dismiss = UIAlertAction(title: "Cancel", style: .default) { (action) in
             print("dissmissed")
+            self.pallet.topTile.contentView.backgroundColor = UIColor(hexString: self.tilesColors.top!)
+            self.pallet.secondTile.contentView.backgroundColor  = UIColor(hexString: self.tilesColors.second!)
+            self.pallet.thirdTile.contentView.backgroundColor  = UIColor(hexString: self.tilesColors.third!)
+            self.pallet.bottomTile.contentView.backgroundColor  = UIColor(hexString: self.tilesColors.bottom!)
+            
         }
         alert.addAction(dismiss)
 
@@ -604,7 +627,7 @@ extension ViewController: PhotoViewControllerDelegte {
         editingMode = false
         pallet.topTile.contentView.backgroundColor = color
         
-        if color.getWhiteAndAlpha.white < 0.5 {
+        if color.getWhiteAndAlpha.white > 0.5 {
             pallet.secondTile.contentView.backgroundColor = color.darken(by: 10)
             pallet.thirdTile.contentView.backgroundColor = color.darken(by: 20)
             pallet.bottomTile.contentView.backgroundColor = color.darken(by: 30)
