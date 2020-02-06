@@ -165,16 +165,16 @@ extension CollectionController: UICollectionViewDelegateFlowLayout {
                 self.miniPallet = self.miniPalletsCD[indexPath.row]
                 self.displayAlert()
             }
-            let confYes = UIAction(title: "Yes", image: UIImage(systemName: "checkmark.circle")){ action in
+            let confYes = UIAction(title: "Yes", image: UIImage(systemName: "trash")){ action in
                 let selectedPalletFromContext = self.miniPalletsCD[indexPath.row]
                 self.delete(name: (selectedPalletFromContext.name)!)
                 self.collectionView.deleteItems(at: [indexPath])
             }
-            let confNo = UIAction(title: "No", image: UIImage(systemName: "trash")){ action in
+            let confNo = UIAction(title: "No", image: UIImage(systemName: "checkmark.circle")){ action in
                 
             }
             let subMenu = UIMenu(title: "Delete", image: UIImage(systemName: "trash"), children: [confYes,confNo])
-
+                   
             // Create and return a UIMenu with the share action
             return UIMenu(title: "Options", children: [subMenu,rename])
         }

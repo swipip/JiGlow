@@ -3,16 +3,6 @@
     {
       "idiom" : "universal",
       "filename" : "Jiglow-LauchScreen.pdf"
-    },
-    {
-      "idiom" : "universal",
-      "filename" : "Jiglow-LauchScreen-1.pdf",
-      "appearances" : [
-        {
-          "appearance" : "luminosity",
-          "value" : "dark"
-        }
-      ]
     }
   ],
   "info" : {

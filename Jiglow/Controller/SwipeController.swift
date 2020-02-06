@@ -3,10 +3,9 @@ import UIKit
 
 protocol SwipeControllerDelegate {
     func didFinishedAnimateReload()
-//    func panWillEnd(topColor: String, secondColor: String, thirdColor: String, bottomColor: String)
+    func didUpdatePalletPosition(position: CGFloat, direction: Direction)
     func panDidEnd(topColor: String, secondColor: String, thirdColor: String, bottomColor: String)
 }
-
 class SwipeController {
     
     var squares: [Pallet] = []
@@ -42,13 +41,15 @@ class SwipeController {
             view.alpha = 1
             view.transform = CGAffineTransform(scaleX: 1, y: 1)
         }) { (Bool) in
-            self.delegate?.didFinishedAnimateReload()
             self.squares.remove(at: 1)
+            self.delegate?.didFinishedAnimateReload()
+            
         }
         
     }
     func changeRotationDirection(recognizer: UIPanGestureRecognizer) {
         if currentS.x > motherView.getCenter().x {
+            delegate?.didUpdatePalletPosition(position: CGFloat(differenceFromXOrigin! / 150),direction: .right)
             //view right hand
             if myBool != oldValue {
                 squares[1].rotate()
@@ -58,6 +59,7 @@ class SwipeController {
             }
             myBool = true //is right
         }else{
+            delegate?.didUpdatePalletPosition(position: CGFloat(differenceFromXOrigin! / 150),direction: .left)
             //view left hand
             if myBool != oldValue {
                 squares[1].rotate()
@@ -81,11 +83,6 @@ class SwipeController {
     }
     func handlePanEnded(velocity: CGPoint, recognizer: UIPanGestureRecognizer){
         if Float(differenceFromXOrigin!) >= Float(swipeLimit) {
-            
-//            delegate?.panWillEnd(topColor: (squares[1].topTile.contentView.backgroundColor?.toHexString())!,
-//                                 secondColor: (squares[1].secondTile.contentView.backgroundColor?.toHexString())!,
-//                                 thirdColor: (squares[1].thirdTile.contentView.backgroundColor?.toHexString())!,
-//                                 bottomColor: (squares[1].bottomTile.contentView.backgroundColor?.toHexString())!)
             
             notified = false
             squares[1].rotate()
@@ -138,6 +135,9 @@ class SwipeController {
             handlePanEnded(velocity: velocity, recognizer: recognizer)
         case .changed:
 //            notification()
+//            print("swipe limit \(swipeLimit)")
+//            let wayToGo = swipeLimit - currentS.x
+            
             changeRotationDirection(recognizer: recognizer)
         default:
             print("error")
@@ -157,7 +157,7 @@ class SwipeController {
             feedBack.notificationOccurred(type)
         }
     }
-    func handleSwipe(with recognizer: UISwipeGestureRecognizer) {
+    @objc func handleSwipe(with recognizer: UISwipeGestureRecognizer) {
         //        print("swiped")
         let finalPoint = CGPoint(x:originS!.x + 1000,
                                  y:originS!.y + 50)
@@ -167,6 +167,9 @@ class SwipeController {
         squares[1].removeFromSuperview()
         animateReload(view: squares[0])
     }
+}
+enum Direction {
+    case right,left
 }
 extension UIView {
     func setAnchorPoint(_ point: CGPoint) {

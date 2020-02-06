@@ -67,8 +67,8 @@
                                         <rect key="frame" x="5" y="304.5" width="256" height="50.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="My Pallet" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ohd-DZ-I6r">
-                                                <rect key="frame" x="5" y="15" width="76.5" height="20"/>
-                                                <fontDescription key="fontDescription" name="Galvji" family="Galvji" pointSize="17"/>
+                                                <rect key="frame" x="5" y="17" width="63" height="16.5"/>
+                                                <fontDescription key="fontDescription" name="Galvji" family="Galvji" pointSize="14"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>

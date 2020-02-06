@@ -11,6 +11,7 @@
 		4934472C23D08D8F00324F4A /* CollectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4934472B23D08D8F00324F4A /* CollectionController.swift */; };
 		4934472F23D096F000324F4A /* MiniPallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4934472D23D096F000324F4A /* MiniPallet.swift */; };
 		4934473023D096F000324F4A /* miniPallet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4934472E23D096F000324F4A /* miniPallet.xib */; };
+		495439C923EB5F5C0015AE3F /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495439C823EB5F5C0015AE3F /* RadialGradientView.swift */; };
 		498998F623E8C33800C8FF61 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498998F523E8C33800C8FF61 /* Extensions.swift */; };
 		498E32D823D1E4E500D1203E /* SwipeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498E32D723D1E4E500D1203E /* SwipeController.swift */; };
 		498E32DB23D3398F00D1203E /* Lobster-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 498E32DA23D3398F00D1203E /* Lobster-Regular.ttf */; };
@@ -37,6 +38,7 @@
 		4934472B23D08D8F00324F4A /* CollectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionController.swift; sourceTree = "<group>"; };
 		4934472D23D096F000324F4A /* MiniPallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniPallet.swift; sourceTree = "<group>"; };
 		4934472E23D096F000324F4A /* miniPallet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = miniPallet.xib; sourceTree = "<group>"; };
+		495439C823EB5F5C0015AE3F /* RadialGradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadialGradientView.swift; sourceTree = "<group>"; };
 		498998F523E8C33800C8FF61 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		498E32D723D1E4E500D1203E /* SwipeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeController.swift; sourceTree = "<group>"; };
 		498E32DA23D3398F00D1203E /* Lobster-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lobster-Regular.ttf"; sourceTree = "<group>"; };
@@ -162,6 +164,7 @@
 				49C58A3323C4E1AB006A9D2D /* ColorSlider.swift */,
 				49C58A3123C3C404006A9D2D /* GradientButton.swift */,
 				49C58A3523C4E7AE006A9D2D /* ColorLabel.swift */,
+				495439C823EB5F5C0015AE3F /* RadialGradientView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -251,6 +254,7 @@
 				49C58A2F23C3ABE0006A9D2D /* Tile.swift in Sources */,
 				498E32D823D1E4E500D1203E /* SwipeController.swift in Sources */,
 				49C58A1923C25645006A9D2D /* SceneDelegate.swift in Sources */,
+				495439C923EB5F5C0015AE3F /* RadialGradientView.swift in Sources */,
 				4934472F23D096F000324F4A /* MiniPallet.swift in Sources */,
 				498998F623E8C33800C8FF61 /* Extensions.swift in Sources */,
 				49C58A2123C25645006A9D2D /* Jiglow.xcdatamodeld in Sources */,

@@ -11,6 +11,7 @@ class Pallet: UIView, TileDelegate {
     var thirdTile: Tile!
     var bottomTile: Tile!
     var activeTile: Tile?
+    private (set) var compoundedHeight:Double = 0.0
     var rotated:(on: Bool,dir: rotatedCases) = (false,.right)
     
     private var Tiles = [Int: Tile]()
@@ -31,23 +32,7 @@ class Pallet: UIView, TileDelegate {
         super.init(coder: aDecoder)
         fatalError("init(coder:) has not been implemented")
     }
-    private func layoutTiles() {
-        
-        let tileColor:UIColor = .systemOrange
-        
-        topTile.contentView.backgroundColor = tileColor
-        topTile.hexaLabel.text = topTile.contentView.backgroundColor!.toHexString()
-        
-        secondTile.contentView.backgroundColor = tileColor.lighten(by: 10)
-        secondTile.hexaLabel.text = secondTile.contentView.backgroundColor!.toHexString()
-        
-        thirdTile.contentView.backgroundColor = tileColor.lighten(by: 20)
-        thirdTile.hexaLabel.text = thirdTile.contentView.backgroundColor!.toHexString()
-        
-        bottomTile.contentView.backgroundColor = tileColor.lighten(by: 30)
-        bottomTile.hexaLabel.text = bottomTile.contentView.backgroundColor!.toHexString()
-        
-    }
+
     private func commonInit() {
         Bundle.main.loadNibNamed("Pallet", owner: self, options: nil)
         addSubview(contentView)
@@ -63,8 +48,8 @@ class Pallet: UIView, TileDelegate {
         
     }
     private func setUpTiles() {
-        let height = Double(0.15 * UIScreen.main.bounds.size.height)
-        var compoundedHeight = 0.0
+        let height = Double(0.155 * UIScreen.main.bounds.size.height)
+        compoundedHeight = 0.0
         for index in 1...4 {
             Tiles[index] = Tile()
             switch index {
@@ -88,6 +73,23 @@ class Pallet: UIView, TileDelegate {
             compoundedHeight += height/Double(index)
         }
         NSLayoutConstraint.activate([contentView.heightAnchor.constraint(equalToConstant: CGFloat(compoundedHeight))])
+    }
+    private func layoutTiles() {
+        
+        let tileColor:UIColor = .systemOrange
+
+        topTile.contentView.backgroundColor = tileColor
+        topTile.hexaLabel.text = topTile.contentView.backgroundColor!.toHexString()
+        
+        secondTile.contentView.backgroundColor = tileColor.lighten(by: 10)
+        secondTile.hexaLabel.text = secondTile.contentView.backgroundColor!.toHexString()
+        
+        thirdTile.contentView.backgroundColor = tileColor.lighten(by: 20)
+        thirdTile.hexaLabel.text = thirdTile.contentView.backgroundColor!.toHexString()
+        
+        bottomTile.contentView.backgroundColor = tileColor.lighten(by: 30)
+        bottomTile.hexaLabel.text = bottomTile.contentView.backgroundColor!.toHexString()
+        
     }
     private func addTileToView(with tile: Tile, height: Double, topAnchor constraint: Double) {
         
