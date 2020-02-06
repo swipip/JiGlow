@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="retina6_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -15,19 +15,16 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LauchScreen" translatesAutoresizingMaskIntoConstraints="NO" id="NHm-3e-1M6">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchScreenNT" translatesAutoresizingMaskIntoConstraints="NO" id="hgY-iu-nFh">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                                <color key="tintColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="414" id="gyY-X8-qod"/>
-                                    <constraint firstAttribute="height" constant="896" id="tug-xy-QQt"/>
-                                </constraints>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="NHm-3e-1M6" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="5nF-oC-C8g"/>
-                            <constraint firstItem="NHm-3e-1M6" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="dWd-us-cHe"/>
+                            <constraint firstItem="hgY-iu-nFh" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="topMargin" constant="-44" id="3Eg-1X-zoa"/>
+                            <constraint firstItem="hgY-iu-nFh" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="CVS-ZR-hQQ"/>
+                            <constraint firstItem="hgY-iu-nFh" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="Mdu-Cz-nMk"/>
+                            <constraint firstItem="hgY-iu-nFh" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="NAi-eS-6el"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -38,6 +35,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LauchScreen" width="1242" height="2688"/>
+        <image name="LaunchScreenNT" width="1242" height="2688"/>
     </resources>
 </document>

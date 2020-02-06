@@ -8,7 +8,18 @@
 
 import Foundation
 import UIKit
-
+extension UIButton {
+    func animateAlphaOn() {
+        UIView.animate(withDuration: 1) {
+            self.alpha = 1
+        }
+    }
+    func animateAlphaOff() {
+        UIView.animate(withDuration: 1) {
+            self.alpha = 0.0
+        }
+    }
+}
 extension UIView {
 
     func roundCorners(_ corners: UIRectCorner, radius: CGFloat) {

@@ -19,6 +19,7 @@ class ViewController: UIViewController{
     
     // variable the model looks to choose between C || U
     var editingMode = false
+    var hideBar = true
     
     var red: CGFloat = 0.5
     var green: CGFloat = 0.5
@@ -43,6 +44,8 @@ class ViewController: UIViewController{
     var currentS = CGPoint()
     
     private var callOutleadingConstraint: NSLayoutConstraint?
+    private var returnButton: UIButton?
+    private var colorSave: UIColor?
     
     private var gradientConfirmations = [String:RadialGradientView]()
     //MARK: - Layout
@@ -83,19 +86,21 @@ class ViewController: UIViewController{
         
         btnStack.addGestureRecognizer(longPressGestureStack!)
         
-        navigationController?.setNavigationBarHidden(false, animated: false)
-        
+        navigationController?.navigationBar.alpha = 0.0
         navigationController!.navigationBar.tintColor = .black
         
         let navigationTitleFont = UIFont(name: "Lobster", size: 20)
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: navigationTitleFont!]
- 
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: navigationTitleFont!]
+        
+        addImage()
+
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         palletLayout()
         btnReset.setButton()
         addConfirmationViews()
+        addReturnButton()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
@@ -103,7 +108,79 @@ class ViewController: UIViewController{
         navigationController?.navigationBar.isHidden = false
         
     }
-
+    //MARK: - Launch Animation
+    func addImage() {
+        
+        navigationController?.navigationBar.alpha = 0.0
+        
+        let image = UIImageView(image: UIImage(named: "LaunchScreenNT"))
+        
+        self.view.addSubview(image)
+        
+        image.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([image.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
+                                     image.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
+                                     image.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0),
+                                     image.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0)])
+        
+        let logo = UIImageView(image: UIImage(named: "JiglowLogo"))
+        
+        self.view.addSubview(logo)
+        
+        logo.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([logo.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -5),
+                                     logo.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
+                                     logo.heightAnchor.constraint(equalToConstant: self.view.frame.size.height * 0.29947917),
+                                     logo.widthAnchor.constraint(equalToConstant: self.view.frame.size.width * 0.45813205)])
+        
+        UIView.animate(withDuration: 1, delay: 1 ,animations: {
+            self.navigationController?.navigationBar.alpha = 1.0
+            image.alpha = 0.0
+            logo.transform = CGAffineTransform(scaleX: 100, y: 100)
+            logo.alpha = 0.0
+        }, completion: {(finished) in
+            if finished {
+                image.removeFromSuperview()
+                logo.removeFromSuperview()
+                self.hideBar = false
+            }
+        })
+        
+        
+    }
+    //MARK: - Return Button
+    func addReturnButton() {
+        
+        returnButton = UIButton()
+        
+        returnButton!.backgroundColor = .gray
+        returnButton!.layer.cornerRadius = 15
+        returnButton!.setImage(UIImage(systemName: "arrow.counterclockwise"), for: .normal)
+        returnButton!.isEnabled = false
+        returnButton!.tintColor = .white
+        returnButton!.alpha = 0.0
+        
+        self.view.addSubview(returnButton!)
+        
+        returnButton!.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([returnButton!.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
+                                     returnButton!.topAnchor.constraint(equalTo: pallet.bottomAnchor, constant: 20),
+                                     returnButton!.widthAnchor.constraint(equalToConstant: 30),
+                                     returnButton!.heightAnchor.constraint(equalToConstant: 30)])
+        
+        returnButton!.addTarget(self, action: #selector(returnPressed(_:)), for: .touchUpInside)
+    }
+    @IBAction func returnPressed(_ sender: UIButton){
+        if let tile = pallet.activeTile {
+            tile.contentView.backgroundColor = colorSave
+//            let color = colorSave
+            animateSliders(forTile: tile)
+            let red = (colorSave?.rgb.red)!
+            let green = (colorSave?.rgb.green)!
+            let blue = (colorSave?.rgb.blue)!
+            tile.hexaLabel.adjustTextColor(red: red, green: green, blue: blue)
+        }
+    }
     //MARK: - Data Management
     func saveTile(){
         if editingMode == false {
@@ -141,11 +218,22 @@ class ViewController: UIViewController{
     @objc func onSliderValChanged(slider: UISlider, event: UIEvent) {
         if let touchEvent = event.allTouches?.first {
             switch touchEvent.phase {
-                
+            case .began:
+                colorSave = pallet.activeTile?.contentView.backgroundColor
+                returnButton?.isEnabled = true
+                returnButton?.animateAlphaOn()
             case .ended:
+                
+                let _ = Timer.scheduledTimer(withTimeInterval: 4, repeats: false) { (timer) in
+                    self.returnButton?.animateAlphaOff()
+                    self.returnButton?.isEnabled = false
+                }
+                
                 UIView.animate(withDuration: 0.66 ,delay: 0.0, animations: {
                     self.sliderCallOut?.alpha = 0
+                    self.sliderCallOutLabel?.alpha = 0
                 }) { (finished: Bool) in
+                    self.sliderCallOutLabel?.removeFromSuperview()
                     self.sliderCallOut?.removeFromSuperview()
                     self.sliderCallOut = nil
                 }
@@ -306,6 +394,7 @@ class ViewController: UIViewController{
             manageSlideUponSliderSlide(tile: tile, sender: sender, coordinates: CGPoint(x: xCoordinate, y: yCoordinate))
             
         }else if let tile = pallet.topTile{
+            pallet.activeTile = tile
             tile.transformOn()
             tile.animateLabelAlphaOn()
             manageSlideUponSliderSlide(tile: tile, sender: sender, coordinates: CGPoint(x: xCoordinate, y: yCoordinate))
@@ -376,7 +465,9 @@ class ViewController: UIViewController{
     }
     func confirmationViewSetUp(position: GradientConfirmationScreenPosition) -> RadialGradientView{
         let newConfirmationGradient = RadialGradientView()
-
+        
+        let interfaceTheme = traitCollection.userInterfaceStyle
+        
         let color:UIColor = position == .right ? UIColor.systemGreen : UIColor.systemRed
         newConfirmationGradient.right = position == .right ? true : false
         
@@ -384,7 +475,7 @@ class ViewController: UIViewController{
         newConfirmationGradient.frame.origin = CGPoint(x: 0, y: -pallet.center.y)
         
         newConfirmationGradient.insideColor = color
-        newConfirmationGradient.outSideColor = .white
+        newConfirmationGradient.outSideColor = interfaceTheme == .light ? .white : UIColor(named: "mainBackground")!
         newConfirmationGradient.radius = 300
         newConfirmationGradient.alpha = 0.0
         newConfirmationGradient.backgroundColor = .clear
@@ -439,7 +530,7 @@ class ViewController: UIViewController{
             
         }, completion: nil)
     }
-    func animateSliders(tile: Tile) {
+    func animateSliders(forTile tile: Tile) {
         
         red = (tile.contentView.backgroundColor?.rgb.red)!
         green = (tile.contentView.backgroundColor?.rgb.green)!
@@ -538,7 +629,7 @@ extension ViewController: UITextFieldDelegate{
 extension ViewController: PalletDelegate {
     func tileTapped() {
         if pallet.activeTile != nil{
-            animateSliders(tile: pallet.activeTile!)
+            animateSliders(forTile: pallet.activeTile!)
             if let color = pallet.activeTile?.contentView.backgroundColor {
                 self.btnReset.animateGradient(startColor: color)
             }
