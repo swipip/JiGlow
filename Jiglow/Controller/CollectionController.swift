@@ -2,8 +2,8 @@ import UIKit
 import CoreData
 
 protocol CollectionControllerDelegate {
-    func collectionControllerDidDisapear(topColor: String, secondColor: String, thirdColor: String, bottomColor: String, editingMode: Bool, palletName: String)
-    func collectionViewDidDisapearWithNoSelection(editingMode: Bool)
+    func collectionControllerDidDisapearWithSeletion(topColor: String, secondColor: String, thirdColor: String, bottomColor: String, editingMode: Bool, palletName: String)
+    func collectionControllerDidDisapearWithNoSelection(editingMode: Bool)
 }
 
 class CollectionController: UIViewController,UICollectionViewDataSource {
@@ -49,15 +49,15 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
     override func viewWillDisappear(_ animated: Bool) {
 
         if let safeMiniPallet = miniPallet{
-            delegate?.collectionControllerDidDisapear(topColor: safeMiniPallet.topColor!,
+            delegate?.collectionControllerDidDisapearWithSeletion(topColor: safeMiniPallet.topColor!,
                                       secondColor: safeMiniPallet.secondColor!,
                                       thirdColor: safeMiniPallet.thirdColor!,
                                       bottomColor: safeMiniPallet.bottomColor!,
                                       editingMode: true,
                                       palletName: safeMiniPallet.name!)
+        }else{
+            delegate?.collectionControllerDidDisapearWithNoSelection(editingMode: false)
         }
-        delegate?.collectionViewDidDisapearWithNoSelection(editingMode: false)
-        
     }
     func displayAlert() {
         var textField = UITextField()
@@ -95,6 +95,8 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
                            bottom: miniPalletsCD[indexPath.row].bottomColor!)
         
         cell.palletNameLabel.text = miniPalletsCD[indexPath.row].name ?? "no name"
+        
+        cell.backgroundColor = .clear
         
         cell.layer.shadowOffset = CGSize(width: 0, height: 0)
         cell.layer.shadowRadius = 6.1536

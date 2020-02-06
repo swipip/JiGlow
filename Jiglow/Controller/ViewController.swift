@@ -18,7 +18,11 @@ class ViewController: UIViewController{
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     // variable the model looks to choose between C || U
-    var editingMode = false
+    var editingMode = false{
+        willSet{
+            print(newValue)
+        }
+    }
     var hideBar = true
     
     var red: CGFloat = 0.5
@@ -77,7 +81,7 @@ class ViewController: UIViewController{
         
         palletSetUp()
         palletSetUp()
-        swipeController?.squares[0].secondTile.contentView.backgroundColor = .red
+//        swipeController?.squares[0].secondTile.contentView.backgroundColor = .red
         
         longPressGestureStack = UILongPressGestureRecognizer(target: self, action: #selector(stackLongPress))
         longPressGestureStack?.minimumPressDuration = 0.0
@@ -410,7 +414,7 @@ class ViewController: UIViewController{
         tile.contentView.backgroundColor = color
         tile.hexaLabel.adjustTextColor(red: red, green: green, blue: blue)
         tile.hexaLabel.text = color.toHexString()
-        btnReset.animateGradient(startColor: (tile.contentView.backgroundColor)!)
+        btnReset.animateGradient(startColor: color)
     }
     func manageSlideUponSliderSlide(tile: Tile,sender: UISlider,coordinates: CGPoint){
         switch sender.accessibilityIdentifier {
@@ -596,7 +600,8 @@ public func addParallaxToView(vw: UIView) {
 }
 //MARK: - VC Extensions
 extension ViewController: PhotoViewControllerDelegte {
-    func getColor(color: UIColor) {
+    func PhotoVCDidDisapear(color: UIColor) {
+        editingMode = false
         pallet.topTile.contentView.backgroundColor = color
         
         if color.getWhiteAndAlpha.white < 0.5 {
@@ -608,6 +613,7 @@ extension ViewController: PhotoViewControllerDelegte {
             pallet.thirdTile.contentView.backgroundColor = color.lighten(by: 20)
             pallet.bottomTile.contentView.backgroundColor = color.lighten(by: 30)
         }
+//        btnReset.setButton()
     }
 }
 extension ViewController: ColorDetailControlerDelegate{
@@ -657,6 +663,7 @@ extension ViewController: SwipeControllerDelegate{
         tilesColors.second = secondColor
         tilesColors.third = thirdColor
         tilesColors.bottom = bottomColor
+        print("pandidend: \(editingMode)")
         if editingMode {
             saveTile()
         }else{
@@ -664,6 +671,7 @@ extension ViewController: SwipeControllerDelegate{
         }
     }
     func didFinishedAnimateReload() {
+        editingMode = false
         palletSetUp()
         palletLayout()
         
@@ -678,19 +686,24 @@ extension ViewController: SwipeControllerDelegate{
 }
 extension ViewController: CollectionControllerDelegate{
     
-    func collectionViewDidDisapearWithNoSelection(editingMode: Bool){
+    func collectionControllerDidDisapearWithNoSelection(editingMode: Bool){
         self.editingMode = editingMode
+//        btnReset.setButton()
     }
     
-    func collectionControllerDidDisapear(topColor: String, secondColor: String, thirdColor: String, bottomColor: String, editingMode: Bool, palletName: String) {
+    func collectionControllerDidDisapearWithSeletion(topColor: String, secondColor: String, thirdColor: String, bottomColor: String, editingMode: Bool, palletName: String) {
         pallet.topTile.contentView.backgroundColor = UIColor(hexString: topColor)
         pallet.secondTile .contentView.backgroundColor = UIColor(hexString: secondColor)
         pallet.thirdTile.contentView.backgroundColor = UIColor(hexString: thirdColor)
         pallet.bottomTile.contentView.backgroundColor = UIColor(hexString: bottomColor)
         
+        print("collection disapear: \(editingMode)")
+        
         self.editingMode = editingMode
         
         self.palletName = palletName
+        
+//        btnReset.setButton()
         
     }
 }

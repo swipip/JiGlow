@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 
 protocol PhotoViewControllerDelegte {
-    func getColor(color: UIColor)
+    func PhotoVCDidDisapear(color: UIColor)
 }
 class PhotoViewController: UIViewController{
     
@@ -288,10 +288,10 @@ class PhotoViewController: UIViewController{
     @IBAction func shotButtonPressed(sender: UIButton){
         takePicture()
         revealOptionsAfterShot()
-        optionButton.isEnabled.toggle()
+        optionButton.isEnabled = true
     }
     @IBAction func optionPressed(sender: UIButton){
-        delegate?.getColor(color: self.color)
+        delegate?.PhotoVCDidDisapear(color: self.color)
         self.navigationController?.popToRootViewController(animated: true)
     }
     //MARK: - Camera Session
