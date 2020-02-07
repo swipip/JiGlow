@@ -51,6 +51,17 @@ class ViewController: UIViewController{
     private var returnButton: UIButton?
     private var colorSave: UIColor?
     
+    private var timer: Timer?
+    private var startTime: CFTimeInterval = CFAbsoluteTimeGetCurrent()
+    private var timeElapsed:Double? {
+        willSet{
+            if newValue! > 8 {
+                animateLayoutToGiveIndications()
+                startTime = CFAbsoluteTimeGetCurrent()
+            }
+        }
+    }
+    
     private var gradientConfirmations = [String:RadialGradientView]()
     //MARK: - Layout
     
@@ -96,6 +107,8 @@ class ViewController: UIViewController{
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: navigationTitleFont!]
         
         launchScreenAnimation()
+        
+        checkTime()
 
     }
     override func viewDidAppear(_ animated: Bool) {
@@ -110,6 +123,61 @@ class ViewController: UIViewController{
         
         navigationController?.navigationBar.isHidden = false
         
+    }
+    func animateLayoutToGiveIndications() {
+        let angle = CGFloat(Double.pi / 32)
+
+        UIView.animate(withDuration: 0.3,delay: 0.2,options: .curveEaseInOut, animations: {
+            self.pallet.transform = CGAffineTransform(rotationAngle: angle).concatenating(CGAffineTransform(translationX: 70, y: -20))
+            self.gradientConfirmations["green"]?.alpha = 1
+            self.view.layoutIfNeeded()
+        }) { (finished) in
+            UIView.animate(withDuration: 0.5,delay: 0.0, options: .curveEaseInOut, animations: {
+                self.pallet.transform = CGAffineTransform(rotationAngle: 0)
+                self.gradientConfirmations["green"]?.alpha = 0.0
+            })
+        }
+        
+        let hintView = UILabel()
+        let hintViewHeight:CGFloat = 30
+        hintView.backgroundColor = .gray
+        hintView.textColor = .white
+        hintView.alpha = 0.0
+        hintView.textAlignment = .center
+        hintView.font = UIFont(name: "system", size: 11)
+        hintView.text = "Swipe right to save"
+        hintView.layer.shadowOffset = CGSize(width: 0, height:  0)
+        hintView.layer.shadowRadius =  3.23
+        hintView.layer.shadowOpacity = 0.23
+        
+        self.view.addSubview(hintView)
+        
+        hintView.translatesAutoresizingMaskIntoConstraints = false
+        hintView.translatesAutoresizingMaskIntoConstraints = false
+         NSLayoutConstraint.activate([hintView.topAnchor.constraint(equalTo: pallet.bottomAnchor, constant: 30),
+                                      hintView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
+                                      hintView.heightAnchor.constraint(equalToConstant: hintViewHeight),
+                                      hintView.widthAnchor.constraint(equalToConstant: 250)])
+        
+        hintView.layer.masksToBounds = true
+        hintView.layer.cornerRadius = hintViewHeight/2
+        
+        UIView.animate(withDuration: 0.3, animations: {
+            hintView.alpha = 1.0
+        }) { (finished) in
+            UIView.animate(withDuration: 0.8, delay: 2, animations: {
+                hintView.alpha = 0.0
+            }, completion: nil)
+        }
+        
+    }
+    //MARK: - Timer
+    func checkTime() {
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { (timer) in
+            let endTime = CFAbsoluteTimeGetCurrent()
+            let startTime = self.startTime
+            self.timeElapsed = endTime - startTime
+        })
     }
     //MARK: - Launch Animation
     func launchScreenAnimation() {
@@ -286,6 +354,7 @@ class ViewController: UIViewController{
         btnReset.animateGradient(startColor: color)
     }
     @objc func onSliderValChanged(slider: UISlider, event: UIEvent) {
+        startTime = CFAbsoluteTimeGetCurrent()
         if let touchEvent = event.allTouches?.first {
             switch touchEvent.phase {
             case .began:
@@ -580,6 +649,7 @@ class ViewController: UIViewController{
             self.pallet.secondTile.contentView.backgroundColor  = UIColor(hexString: self.tilesColors.second!)
             self.pallet.thirdTile.contentView.backgroundColor  = UIColor(hexString: self.tilesColors.third!)
             self.pallet.bottomTile.contentView.backgroundColor  = UIColor(hexString: self.tilesColors.bottom!)
+            self.startTime = CFAbsoluteTimeGetCurrent()
             
         }
         alert.addAction(dismiss)
@@ -590,7 +660,7 @@ class ViewController: UIViewController{
                 action.isEnabled = true
                 self.palletName = name
                 self.saveTile()
-                print(name)
+                self.startTime = CFAbsoluteTimeGetCurrent()
                 
             }
         }
@@ -732,19 +802,8 @@ extension ViewController: CollectionControllerDelegate{
         
     }
     func collectionViewAnimatePallet() {
-        
-        let angle = CGFloat(Double.pi / 32)
-
-        UIView.animate(withDuration: 0.3,delay: 0.2,options: .curveEaseInOut, animations: {
-            self.pallet.transform = CGAffineTransform(rotationAngle: angle).concatenating(CGAffineTransform(translationX: 70, y: -20))
-            self.gradientConfirmations["green"]?.alpha = 1
-            self.view.layoutIfNeeded()
-        }) { (finished) in
-            UIView.animate(withDuration: 0.3,delay: 0.0, options: .curveEaseInOut, animations: {
-                self.pallet.transform = CGAffineTransform(rotationAngle: 0)
-                self.gradientConfirmations["green"]?.alpha = 0.0
-            })
-        }
+        animateLayoutToGiveIndications()
+        startTime = CFAbsoluteTimeGetCurrent()
     }
 }
 extension ViewController: CAAnimationDelegate{
@@ -757,8 +816,15 @@ extension UISlider {
 }
 extension ViewController: UIGestureRecognizerDelegate {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        startTime = CFAbsoluteTimeGetCurrent()
         swipeController?.originS = CGPoint(x: pallet.center.x, y: pallet.center.y)
         return true
+    }
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        startTime = CFAbsoluteTimeGetCurrent()
+    }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        startTime = CFAbsoluteTimeGetCurrent()
     }
 }
 enum GradientConfirmationScreenPosition{
