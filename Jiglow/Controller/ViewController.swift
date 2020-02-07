@@ -81,7 +81,6 @@ class ViewController: UIViewController{
         
         palletSetUp()
         palletSetUp()
-//        swipeController?.squares[0].secondTile.contentView.backgroundColor = .red
         
         longPressGestureStack = UILongPressGestureRecognizer(target: self, action: #selector(stackLongPress))
         longPressGestureStack?.minimumPressDuration = 0.0
@@ -225,7 +224,67 @@ class ViewController: UIViewController{
             }
         }
     }
-    //MARK: - Gestures Handlers
+    //MARK: - Sliders
+    @IBAction func sliderSlide(_ sender: UISlider) {
+        
+        let sliderCoordinates = self.view.convert(sender.frame, from:sliderRed)
+        let xCoordinate = sender.thumbCenterX + (self.view.frame.size.width - sliderRed.frame.size.width)/4 - 2.5
+        let yCoordinate = sliderCoordinates.origin.y - CGFloat(30)
+        
+        addSliderCallOut(slider: sender)
+        
+        if let tile = pallet.activeTile {
+            manageSlideUponSliderSlide(tile: tile, sender: sender, coordinates: CGPoint(x: xCoordinate, y: yCoordinate))
+            
+        }else if let tile = pallet.topTile{
+            pallet.activeTile = tile
+            tile.transformOn()
+            tile.animateLabelAlphaOn()
+            manageSlideUponSliderSlide(tile: tile, sender: sender, coordinates: CGPoint(x: xCoordinate, y: yCoordinate))
+        }
+        
+    }
+    func manageSlideUponSliderSlide(tile: Tile,sender: UISlider,coordinates: CGPoint){
+        switch sender.accessibilityIdentifier {
+        case "sldRed":
+            red = CGFloat(sender.value)
+            
+            sliderRed.minimumTrackTintColor = UIColor(displayP3Red: red, green: 0.5 * red, blue: 0.5 * red, alpha: 1)
+            tile.redCode = Int(red * 255)
+            
+            manageTileUponSliderSlide(tile: tile, slider: sender)
+            
+        case "sldGreen":
+            green = CGFloat(sender.value)
+            
+            sliderGreen.minimumTrackTintColor = UIColor(displayP3Red: 0.5*green, green: green, blue: 0.5 * red, alpha: 1)
+            tile.greenCode = Int(green * 255)
+            
+            manageTileUponSliderSlide(tile: tile, slider: sender)
+            
+        case "sldBlue":
+            self.blue = CGFloat(sender.value)
+            
+            sliderBlue.minimumTrackTintColor = UIColor(displayP3Red: blue * 0.5, green: 0.5 * blue, blue: blue, alpha: 1)
+            tile.blueCode = Int(blue * 255)
+            
+            manageTileUponSliderSlide(tile: tile, slider: sender)
+            
+        default:
+            print("error")
+        }
+    }
+    func manageTileUponSliderSlide(tile: Tile,slider: UISlider){
+        
+        let color = UIColor(red: Int(red*255), green: Int(green*255), blue: Int(blue*255))
+        
+        animateSliderCallOut(slider: slider)
+        sliderCallOutLabel?.text = String(Int(slider.value * 255))
+        tile.contentView.backgroundColor = color
+        tile.hexaLabel.adjustTextColor(red: red, green: green, blue: blue)
+        tile.hexaLabel.text = color.toHexString()
+        btnReset.animateGradient(startColor: color)
+    }
     @objc func onSliderValChanged(slider: UISlider, event: UIEvent) {
         if let touchEvent = event.allTouches?.first {
             switch touchEvent.phase {
@@ -254,6 +313,108 @@ class ViewController: UIViewController{
             }
         }
     }
+    func animateSliders(forTile tile: Tile) {
+        
+        red = (tile.contentView.backgroundColor?.rgb.red)!
+        green = (tile.contentView.backgroundColor?.rgb.green)!
+        blue = (tile.contentView.backgroundColor?.rgb.blue)!
+        
+        tile.hexaLabel.text = tile.contentView.backgroundColor?.toHexString()
+        
+        UIView.animate(withDuration: 0.63, delay: 0,options: UIView.AnimationOptions.curveEaseOut, animations: {
+            self.sliderRed.setValue(Float(self.red), animated: true)
+            self.sliderGreen.setValue(Float(self.green), animated: true)
+            self.sliderBlue.setValue(Float(self.blue), animated: true)
+        }, completion: nil)
+    }
+    //MARK: - Slider CallOuts
+    func addSliderCallOut(slider: UISlider) {
+        
+        if sliderCallOut == nil {
+            sliderCallOut = UIView()
+            if let callOut = sliderCallOut {
+                callOut.backgroundColor = .gray
+                callOut.layer.cornerRadius = 15
+                callOut.frame.origin.x = slider.thumbCenterX - callOut.frame.size.width/2
+                callOut.frame.origin.y = slider.frame.origin.y - 35
+                callOut.frame.size = CGSize(width: 30, height: 30)
+                self.view.addSubview(callOut)
+                
+                sliderCallOutLabel = UILabel()
+                
+                if let label = sliderCallOutLabel {
+                    label.text = "123"
+                    label.font = UIFont(name: "Galvji", size: 10)
+                    label.textColor = .white
+                    label.textAlignment = .center
+                    label.frame.origin.x = slider.thumbCenterX - label.frame.size.width/2
+                    label.frame.origin.y = slider.frame.origin.y - 35
+                    label.frame.size = CGSize(width: 30, height: 30)
+                    view.addSubview(label)
+                    
+                }
+            }
+        }else{
+            sliderCallOut?.alpha += 0.05
+        }
+    }
+        func animateSliderCallOut(slider: UISlider) {
+            UIView.animate(withDuration: 0.5, animations: {
+                self.sliderCallOut?.frame.origin.x = slider.thumbCenterX - (self.sliderCallOut?.frame.width)!/2
+                self.sliderCallOutLabel?.frame.origin.x = slider.thumbCenterX - (self.sliderCallOutLabel?.frame.width)!/2
+    //            self.view.layoutIfNeeded()
+                
+            }, completion: nil)
+        }
+    //MARK: - Camera Button
+        @IBAction func cameraPressed(_ sender: UIButton) {
+            
+
+            
+    //        performSegue(withIdentifier: "mainToCamera", sender: self)
+            
+            let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
+            let controller = storyBoard.instantiateViewController(withIdentifier: "PhotoViewController") as! PhotoViewController
+            //        controller.isModalInPresentation = true
+            controller.delegate = self
+
+            let transition = CATransition.init()
+            transition.duration = 0.45
+            transition.timingFunction = CAMediaTimingFunction.init(name: CAMediaTimingFunctionName.default)
+            transition.type = CATransitionType.push //Transition you want like Push, Reveal
+            transition.subtype = CATransitionSubtype.fromLeft // Direction like Left to Right, Right to Left
+            transition.delegate = self
+            view.window!.layer.add(transition, forKey: kCATransition)
+            self.navigationController?.pushViewController(controller, animated: true)
+            
+        }
+    //MARK: - Reset Button
+        @IBAction func resetClicked(_ sender: UIButton) {
+            
+            let color = UIColor.systemOrange
+            
+            pallet.topTile.contentView.backgroundColor = color
+            pallet.secondTile.contentView.backgroundColor = color.lighten(by: 10)
+            pallet.thirdTile.contentView.backgroundColor = color.lighten(by: 20)
+            pallet.bottomTile.contentView.backgroundColor = color.lighten(by: 30)
+            
+            btnReset.animateGradient(startColor: color, endColor: color.lighten()!)
+            
+            pallet.activeTile?.transformOff()
+            pallet.activeTile?.animateLabelAlphaOff()
+            pallet.activeTile?.tileIsActive = false
+            pallet.activeTile = nil
+            
+            let animation = CABasicAnimation(keyPath: "transform.scale")
+            animation.duration = 0.25
+            animation.autoreverses = true
+            animation.toValue = CGPoint(x: 1.05, y: 1.05)
+            
+            pallet.layer.add(animation, forKey: nil)
+            
+
+        }
+    //MARK: - Stack Button
     @objc func stackLongPress(sender: UILongPressGestureRecognizer) {
         
         if sender.state == .began{
@@ -265,14 +426,8 @@ class ViewController: UIViewController{
         }
         
     }
-    @objc func panHandler(recognizer: UIPanGestureRecognizer){
-        swipeController?.handlePan(recognizer: recognizer)
-        
-        if recognizer.state == .ended {
-            animateConfirmationOut()
-        }
-    }
-    //MARK: - Pallet SetUp
+
+    //MARK: - Palettes
     typealias CompletionHandler = (_ success:Bool) -> Void
     func palletSetUp(completionHandler: CompletionHandler? = nil) {
         
@@ -319,7 +474,14 @@ class ViewController: UIViewController{
 
         completionHandler?(true)
     }
-    //MARK: - Segue Preparation
+    @objc func panHandler(recognizer: UIPanGestureRecognizer){
+        swipeController?.handlePan(recognizer: recognizer)
+        
+        if recognizer.state == .ended {
+            animateConfirmationOut()
+        }
+    }
+    //MARK: - Segues
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "mainToColorDetail" {
             prepareForDetails(with: segue, with: sender)
@@ -371,114 +533,7 @@ class ViewController: UIViewController{
             }
         }
     }
-    //MARK: - IBActions
-    @IBAction func cameraPressed(_ sender: UIButton) {
-        
-
-        
-//        performSegue(withIdentifier: "mainToCamera", sender: self)
-        
-        let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
-        let controller = storyBoard.instantiateViewController(withIdentifier: "PhotoViewController") as! PhotoViewController
-        //        controller.isModalInPresentation = true
-        controller.delegate = self
-
-        let transition = CATransition.init()
-        transition.duration = 0.45
-        transition.timingFunction = CAMediaTimingFunction.init(name: CAMediaTimingFunctionName.default)
-        transition.type = CATransitionType.push //Transition you want like Push, Reveal
-        transition.subtype = CATransitionSubtype.fromLeft // Direction like Left to Right, Right to Left
-        transition.delegate = self
-        view.window!.layer.add(transition, forKey: kCATransition)
-        self.navigationController?.pushViewController(controller, animated: true)
-        
-    }
-    @IBAction func sliderSlide(_ sender: UISlider) {
-        
-        let sliderCoordinates = self.view.convert(sender.frame, from:sliderRed)
-        let xCoordinate = sender.thumbCenterX + (self.view.frame.size.width - sliderRed.frame.size.width)/4 - 2.5
-        let yCoordinate = sliderCoordinates.origin.y - CGFloat(30)
-        
-        addSliderCallOut(slider: sender)
-        
-        if let tile = pallet.activeTile {
-            manageSlideUponSliderSlide(tile: tile, sender: sender, coordinates: CGPoint(x: xCoordinate, y: yCoordinate))
-            
-        }else if let tile = pallet.topTile{
-            pallet.activeTile = tile
-            tile.transformOn()
-            tile.animateLabelAlphaOn()
-            manageSlideUponSliderSlide(tile: tile, sender: sender, coordinates: CGPoint(x: xCoordinate, y: yCoordinate))
-        }
-        
-    }
-    func manageTileUponSliderSlide(tile: Tile,slider: UISlider){
-        
-        let color = UIColor(red: Int(red*255), green: Int(green*255), blue: Int(blue*255))
-        
-        animateSliderCallOut(slider: slider)
-        sliderCallOutLabel?.text = String(Int(slider.value * 255))
-        tile.contentView.backgroundColor = color
-        tile.hexaLabel.adjustTextColor(red: red, green: green, blue: blue)
-        tile.hexaLabel.text = color.toHexString()
-        btnReset.animateGradient(startColor: color)
-    }
-    func manageSlideUponSliderSlide(tile: Tile,sender: UISlider,coordinates: CGPoint){
-        switch sender.accessibilityIdentifier {
-        case "sldRed":
-            red = CGFloat(sender.value)
-            
-            sliderRed.minimumTrackTintColor = UIColor(displayP3Red: red, green: 0.5 * red, blue: 0.5 * red, alpha: 1)
-            tile.redCode = Int(red * 255)
-            
-            manageTileUponSliderSlide(tile: tile, slider: sender)
-            
-        case "sldGreen":
-            green = CGFloat(sender.value)
-            
-            sliderGreen.minimumTrackTintColor = UIColor(displayP3Red: 0.5*green, green: green, blue: 0.5 * red, alpha: 1)
-            tile.greenCode = Int(green * 255)
-            
-            manageTileUponSliderSlide(tile: tile, slider: sender)
-            
-        case "sldBlue":
-            self.blue = CGFloat(sender.value)
-            
-            sliderBlue.minimumTrackTintColor = UIColor(displayP3Red: blue * 0.5, green: 0.5 * blue, blue: blue, alpha: 1)
-            tile.blueCode = Int(blue * 255)
-            
-            manageTileUponSliderSlide(tile: tile, slider: sender)
-            
-        default:
-            print("error")
-        }
-    }
-    @IBAction func resetClicked(_ sender: UIButton) {
-        
-        let color = UIColor.systemOrange
-        
-        pallet.topTile.contentView.backgroundColor = color
-        pallet.secondTile.contentView.backgroundColor = color.lighten(by: 10)
-        pallet.thirdTile.contentView.backgroundColor = color.lighten(by: 20)
-        pallet.bottomTile.contentView.backgroundColor = color.lighten(by: 30)
-        
-        btnReset.animateGradient(startColor: color, endColor: color.lighten()!)
-        
-        pallet.activeTile?.transformOff()
-        pallet.activeTile?.animateLabelAlphaOff()
-        pallet.activeTile?.tileIsActive = false
-        pallet.activeTile = nil
-        
-        let animation = CABasicAnimation(keyPath: "transform.scale")
-        animation.duration = 0.25
-        animation.autoreverses = true
-        animation.toValue = CGPoint(x: 1.05, y: 1.05)
-        
-        pallet.layer.add(animation, forKey: nil)
-        
-
-    }
-    //MARK: - Add Subviews
+    //MARK: - Confirmation Views
     func addConfirmationViews() {
         
         gradientConfirmations["green"] = confirmationViewSetUp(position: .right)
@@ -506,37 +561,6 @@ class ViewController: UIViewController{
         
         return newConfirmationGradient
     }
-    func addSliderCallOut(slider: UISlider) {
-        
-        if sliderCallOut == nil {
-            sliderCallOut = UIView()
-            if let callOut = sliderCallOut {
-                callOut.backgroundColor = .gray
-                callOut.layer.cornerRadius = 15
-                callOut.frame.origin.x = slider.thumbCenterX - callOut.frame.size.width/2
-                callOut.frame.origin.y = slider.frame.origin.y - 35
-                callOut.frame.size = CGSize(width: 30, height: 30)
-                self.view.addSubview(callOut)
-                
-                sliderCallOutLabel = UILabel()
-                
-                if let label = sliderCallOutLabel {
-                    label.text = "123"
-                    label.font = UIFont(name: "Galvji", size: 10)
-                    label.textColor = .white
-                    label.textAlignment = .center
-                    label.frame.origin.x = slider.thumbCenterX - label.frame.size.width/2
-                    label.frame.origin.y = slider.frame.origin.y - 35
-                    label.frame.size = CGSize(width: 30, height: 30)
-                    view.addSubview(label)
-                    
-                }
-            }
-        }else{
-            sliderCallOut?.alpha += 0.05
-        }
-    }
-    //MARK: - Animations
     func animateConfirmationOut() {
         UIView.animate(withDuration: 0.6) {
             self.gradientConfirmations["green"]?.alpha = 0.0
@@ -544,28 +568,6 @@ class ViewController: UIViewController{
         }
     }
 
-    func animateSliderCallOut(slider: UISlider) {
-        UIView.animate(withDuration: 0.5, animations: {
-            self.sliderCallOut?.frame.origin.x = slider.thumbCenterX - (self.sliderCallOut?.frame.width)!/2
-            self.sliderCallOutLabel?.frame.origin.x = slider.thumbCenterX - (self.sliderCallOutLabel?.frame.width)!/2
-//            self.view.layoutIfNeeded()
-            
-        }, completion: nil)
-    }
-    func animateSliders(forTile tile: Tile) {
-        
-        red = (tile.contentView.backgroundColor?.rgb.red)!
-        green = (tile.contentView.backgroundColor?.rgb.green)!
-        blue = (tile.contentView.backgroundColor?.rgb.blue)!
-        
-        tile.hexaLabel.text = tile.contentView.backgroundColor?.toHexString()
-        
-        UIView.animate(withDuration: 0.63, delay: 0,options: UIView.AnimationOptions.curveEaseOut, animations: {
-            self.sliderRed.setValue(Float(self.red), animated: true)
-            self.sliderGreen.setValue(Float(self.green), animated: true)
-            self.sliderBlue.setValue(Float(self.blue), animated: true)
-        }, completion: nil)
-    }
     //MARK: - Pop-up Alerts
     func displayAlert() {
         
@@ -728,6 +730,21 @@ extension ViewController: CollectionControllerDelegate{
         
 //        btnReset.setButton()
         
+    }
+    func collectionViewAnimatePallet() {
+        
+        let angle = CGFloat(Double.pi / 32)
+
+        UIView.animate(withDuration: 0.3,delay: 0.2,options: .curveEaseInOut, animations: {
+            self.pallet.transform = CGAffineTransform(rotationAngle: angle).concatenating(CGAffineTransform(translationX: 70, y: -20))
+            self.gradientConfirmations["green"]?.alpha = 1
+            self.view.layoutIfNeeded()
+        }) { (finished) in
+            UIView.animate(withDuration: 0.3,delay: 0.0, options: .curveEaseInOut, animations: {
+                self.pallet.transform = CGAffineTransform(rotationAngle: 0)
+                self.gradientConfirmations["green"]?.alpha = 0.0
+            })
+        }
     }
 }
 extension ViewController: CAAnimationDelegate{

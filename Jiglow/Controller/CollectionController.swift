@@ -4,6 +4,7 @@ import CoreData
 protocol CollectionControllerDelegate {
     func collectionControllerDidDisapearWithSeletion(topColor: String, secondColor: String, thirdColor: String, bottomColor: String, editingMode: Bool, palletName: String)
     func collectionControllerDidDisapearWithNoSelection(editingMode: Bool)
+    func collectionViewAnimatePallet()
 }
 
 class CollectionController: UIViewController,UICollectionViewDataSource {
@@ -35,9 +36,6 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
         navigationController?.setNavigationBarHidden(false, animated: true)
         navBar?.backItem?.title = ""
         navBar?.tintColor = .label
-//        navBar?.backItem?.action
-//        navigationController?.applyGradient(color1: .lightGray, color2: .gray)
-//        navBar?.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
@@ -48,6 +46,10 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
     }
     override func viewWillDisappear(_ animated: Bool) {
 
+        if miniPalletsCD.count == 0 {
+//            delegate?.collectionViewAnimatePallet()
+        }
+        
         if let safeMiniPallet = miniPallet{
             delegate?.collectionControllerDidDisapearWithSeletion(topColor: safeMiniPallet.topColor!,
                                       secondColor: safeMiniPallet.secondColor!,
@@ -76,12 +78,90 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
         }
         present(alert, animated: true, completion: nil)
     }
-    
+    //MARK: - Add hint
+    func saveHint() {
+        
+        let saveHintView = UIButton()
+        
+        saveHintView.backgroundColor = .gray
+        saveHintView.tintColor = .white
+        saveHintView.setTitle("Swipe right to add a new palette", for: .normal)
+        saveHintView.alpha = 0
+        
+        
+        self.view.addSubview(saveHintView)
+        
+        let saveHintViewHeight:CGFloat = 40
+        saveHintView.layer.cornerRadius = saveHintViewHeight/2
+        saveHintView.layer.shadowOffset = CGSize(width: 0, height:  0)
+        saveHintView.layer.shadowRadius =  3.23
+        saveHintView.layer.shadowOpacity = 0.23
+        saveHintView.titleLabel?.textAlignment = .center
+        saveHintView.titleLabel?.font = UIFont(name: "system", size: 11)
+        
+        
+        saveHintView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([saveHintView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 130),
+                                     saveHintView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
+                                     saveHintView.heightAnchor.constraint(equalToConstant: saveHintViewHeight),
+                                     saveHintView.widthAnchor.constraint(equalToConstant: 270)])
+        
+        saveHintView.titleLabel?.lineBreakMode = .byWordWrapping
+
+        saveHintView.addTarget(self, action: #selector(hintPressed(_:)), for: .touchUpInside)
+        
+        //add return Button
+        
+        let returnButton = UIButton()
+        returnButton.backgroundColor = .gray
+        returnButton.setImage(UIImage(systemName: "arrow.left"), for: .normal)
+        returnButton.layer.cornerRadius = saveHintViewHeight/2
+        returnButton.alpha = 0.0
+        returnButton.tintColor = .white
+        returnButton.layer.shadowOffset = CGSize(width: 0, height:  0)
+        returnButton.layer.shadowRadius =  3.23
+        returnButton.layer.shadowOpacity = 0.23
+        
+        self.view.addSubview(returnButton)
+        
+        returnButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([returnButton.topAnchor.constraint(equalTo: saveHintView.bottomAnchor, constant: 15),
+                                     returnButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
+                                     returnButton.heightAnchor.constraint(equalToConstant: saveHintViewHeight),
+                                     returnButton.widthAnchor.constraint(equalToConstant: saveHintViewHeight)])
+        
+        returnButton.addTarget(self, action: #selector(hintPressed(_:)), for: .touchUpInside)
+        
+        UIView.animate(withDuration: 0.8, animations: {
+            saveHintView.alpha = 1.0
+            returnButton.alpha = 1.0
+        }, completion: nil)
+        
+        let _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (timer) in
+            let animation = CABasicAnimation(keyPath: "transform.scale")
+            animation.duration = 0.2
+            animation.autoreverses = true
+            animation.toValue = CGPoint(x: 1.05, y: 1.05)
+            
+            saveHintView.layer.add(animation, forKey: nil)
+        }
+        
+    }
+    @IBAction func hintPressed( _ sender: UIButton){
+        delegate?.collectionViewAnimatePallet()
+        self.navigationController?.popToRootViewController(animated: true)
+    }
 
     //MARK: - Delegate functions
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         loadMiniPallets()
-        return miniPalletsCD.count
+        
+        let numberOfCells = miniPalletsCD.count
+        
+        if numberOfCells == 0 {
+            saveHint()
+        }
+        return numberOfCells
     }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -182,30 +262,4 @@ extension CollectionController: UICollectionViewDelegateFlowLayout {
         }
     }
 
-}
-
-extension UINavigationController {
-    func applyGradient(color1: UIColor, color2: UIColor) {
-        
-        //gradient layer
-        let gradient = CAGradientLayer()
-        let bounds = self.navigationBar.bounds
-        gradient.frame = bounds
-        gradient.colors = [color1.cgColor, color2.cgColor]
-        gradient.startPoint = CGPoint(x: 0, y: 0)
-        gradient.endPoint = CGPoint(x: 1, y: 0)
-        
-        // graident image
-        var gradientImage:UIImage?
-        UIGraphicsBeginImageContext(gradient.frame.size)
-        if let context = UIGraphicsGetCurrentContext() {
-            gradient.render(in: context)
-            gradientImage = UIGraphicsGetImageFromCurrentImageContext()?.resizableImage(withCapInsets: UIEdgeInsets.zero, resizingMode: .stretch)
-        }
-        UIGraphicsEndImageContext()
-        
-        //applying
-        let img = gradientImage
-        self.navigationBar.setBackgroundImage(img, for: UIBarMetrics.default)
-    }
 }
