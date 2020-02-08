@@ -19,6 +19,10 @@ class ViewController: UIViewController{
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
+    let userDefault = UserDefaults.standard
+    
+    private var firstOpen = true
+    
     private let sliderBegan = Notification.Name(sliderBeganNotificationKey)
     private var returnTapCount = 0.0
     private var sliderTimer = Timer()
@@ -64,7 +68,7 @@ class ViewController: UIViewController{
     private var startTime: CFTimeInterval = CFAbsoluteTimeGetCurrent()
     private var timeElapsed:Double? {
         willSet{
-            if newValue! > 8 {
+            if newValue! > 10 {
                 animateLayoutToGiveIndications()
                 startTime = CFAbsoluteTimeGetCurrent()
             }
@@ -85,6 +89,14 @@ class ViewController: UIViewController{
         //        .replacingOccurrences(of: "file://", with: "")
         //        .removingPercentEncoding
         //        print(path!)
+        
+        
+        if let _ = userDefault.object(forKey: "firstOpen") {
+            firstOpen = userDefault.bool(forKey: "firstOpen")
+        }
+        
+        print(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! as String)
+        print(firstOpen)
         
         swipeController = SwipeController(view: self.view)
         swipeController?.delegate = self
@@ -138,52 +150,76 @@ class ViewController: UIViewController{
     }
     //MARK: - Indications
     func animateTileToGiveIndications() {
-
-        let tile = self.pallet.secondTile!
-        
-        let rightArrow = UIImageView()
-        rightArrow.alpha = 0
-        rightArrow.image = UIImage(systemName: "arrow.left")
-        rightArrow.tintColor = .gray
-        
-        self.view.addSubview(rightArrow)
-        
-        rightArrow.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([rightArrow.leadingAnchor.constraint(equalTo: tile.trailingAnchor, constant: 10),
-                                     rightArrow.centerYAnchor.constraint(equalTo: tile.centerYAnchor),
-                                     rightArrow.widthAnchor.constraint(equalToConstant: 30),
-                                     rightArrow.heightAnchor.constraint(equalToConstant: 30),])
-        
-        let leftArrow = UIImageView()
-        leftArrow.alpha = 0
-        leftArrow.image = UIImage(systemName: "arrow.right")
-        leftArrow.tintColor = .gray
-        
-        self.view.addSubview(leftArrow)
-        
-        leftArrow.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([leftArrow.leadingAnchor.constraint(equalTo: tile.leadingAnchor, constant: -10),
-                                     leftArrow.centerYAnchor.constraint(equalTo: tile.centerYAnchor),
-                                     leftArrow.widthAnchor.constraint(equalToConstant: 30),
-                                     leftArrow.heightAnchor.constraint(equalToConstant: 30),])
-        
-        let comment = UILabel()
-        
-        UIView.animate(withDuration: 0.5, delay: 2, options: .curveEaseInOut, animations: {
-            tile.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
-            tile.contentView.layer.cornerRadius = 10
-            leftArrow.alpha = 1.0
-            rightArrow.alpha = 1.0
-        }) { (finished) in
+        if firstOpen == true {
+            let tile = self.pallet.secondTile!
+            
+            let rightArrow = UIImageView()
+            rightArrow.alpha = 0
+            rightArrow.image = UIImage(systemName: "arrow.left")
+            rightArrow.tintColor = .gray
+            
+            self.view.addSubview(rightArrow)
+            
+            rightArrow.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([rightArrow.leadingAnchor.constraint(equalTo: tile.trailingAnchor, constant: 10),
+                                         rightArrow.centerYAnchor.constraint(equalTo: tile.centerYAnchor),
+                                         rightArrow.widthAnchor.constraint(equalToConstant: 30),
+                                         rightArrow.heightAnchor.constraint(equalToConstant: 30),])
+            
+            let leftArrow = UIImageView()
+            leftArrow.alpha = 0
+            leftArrow.image = UIImage(systemName: "arrow.right")
+            leftArrow.tintColor = .gray
+            
+            self.view.addSubview(leftArrow)
+            
+            leftArrow.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([leftArrow.trailingAnchor.constraint(equalTo: tile.leadingAnchor, constant: -10),
+                                         leftArrow.centerYAnchor.constraint(equalTo: tile.centerYAnchor),
+                                         leftArrow.widthAnchor.constraint(equalToConstant: 30),
+                                         leftArrow.heightAnchor.constraint(equalToConstant: 30),])
+            
+            let comment = UILabel()
+            comment.backgroundColor = .gray
+            comment.textColor = .white
+            comment.alpha = 0.0
+            comment.textAlignment = .center
+            comment.font = UIFont(name: "system", size: 5)
+            comment.text = "Tap a tile to Start"
+            comment.layer.shadowOffset = CGSize(width: 0, height:  0)
+            comment.layer.shadowRadius =  3.23
+            comment.layer.shadowOpacity = 0.23
+            
+            self.view.addSubview(comment)
+            
+            comment.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([comment.centerXAnchor.constraint(equalTo: tile.centerXAnchor, constant: 0),
+                                         comment.centerYAnchor.constraint(equalTo: tile.centerYAnchor),
+                                         comment.widthAnchor.constraint(equalToConstant: 170),
+                                         comment.heightAnchor.constraint(equalToConstant: 30),])
+            
+            
+            comment.layer.masksToBounds = true
+            comment.layer.cornerRadius = 15
+            
             UIView.animate(withDuration: 0.5, delay: 2, options: .curveEaseInOut, animations: {
-                tile.transform = CGAffineTransform(scaleX: 1.00, y: 1.00)
-                tile.contentView.layer.cornerRadius = 0
-                leftArrow.alpha = 0
-                rightArrow.alpha = 0
-            }, completion: nil)
+                tile.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
+                tile.contentView.layer.cornerRadius = 10
+                leftArrow.alpha = 1.0
+                rightArrow.alpha = 1.0
+                comment.alpha = 0.8
+            }) { (finished) in
+                UIView.animate(withDuration: 0.5, delay: 3, options: .curveEaseInOut, animations: {
+                    tile.transform = CGAffineTransform(scaleX: 1.00, y: 1.00)
+                    tile.contentView.layer.cornerRadius = 0
+                    leftArrow.alpha = 0
+                    rightArrow.alpha = 0
+                    comment.alpha = 0.0
+                }, completion: nil)
+            }
+            firstOpen = false
+            self.userDefault.set(firstOpen, forKey: "firstOpen")
         }
-        
-        
     }
     func animateLayoutToGiveIndications() {
         let angle = CGFloat(Double.pi / 32)
@@ -213,7 +249,6 @@ class ViewController: UIViewController{
         
         self.view.addSubview(hintView)
         
-        hintView.translatesAutoresizingMaskIntoConstraints = false
         hintView.translatesAutoresizingMaskIntoConstraints = false
          NSLayoutConstraint.activate([hintView.topAnchor.constraint(equalTo: pallet.bottomAnchor, constant: 30),
                                       hintView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
@@ -247,7 +282,6 @@ class ViewController: UIViewController{
         sliderTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (timer) in
             
             let timeElapsed = CFAbsoluteTimeGetCurrent() - start
-            print(timeElapsed)
             if timeElapsed > 5 {
                 self.returnButton?.animateAlphaOff()
                 self.returnButton?.isEnabled = false
@@ -309,7 +343,7 @@ class ViewController: UIViewController{
     //MARK: - Return Button
     func addReturnButton() {
         
-        let buttonSize:CGFloat = 35
+        let buttonSize:CGFloat = 40
         
         let sliderPosition = sliderRed.frame.origin.y
         let palletPosition = pallet.frame.origin.y + pallet.frame.size.height
@@ -362,6 +396,8 @@ class ViewController: UIViewController{
             
             feedBack.notificationOccurred(.error)
             
+            returnButton?.isEnabled = false
+            
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseIn, animations: {
                 self.returnButton?.backgroundColor = .red
             }) { (finished) in
@@ -372,12 +408,13 @@ class ViewController: UIViewController{
             
             let anticlockAnimation = CABasicAnimation(keyPath: "transform.rotation")
             anticlockAnimation.fromValue = CGFloat.pi * 2
-            anticlockAnimation.toValue = 0
+            anticlockAnimation.toValue = 0 //CGAffineTransform(rotationAngle: 0)
             anticlockAnimation.isAdditive = true
             anticlockAnimation.duration = 0.6
             anticlockAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
             self.returnButton?.layer.add(anticlockAnimation, forKey: "rotate")
-            colorSave = []
+            colorSave = [UIColor]()
+            
             
         }else{
             if let tile = pallet.activeTile {
@@ -391,10 +428,9 @@ class ViewController: UIViewController{
                 let green = (color.rgb.green)
                 let blue = (color.rgb.blue)
                 tile.hexaLabel.adjustTextColor(red: red, green: green, blue: blue)
+                
             }
         }
-        
-
     }
     //MARK: - Data Management
     func saveTile(){
@@ -871,7 +907,7 @@ extension ViewController: UITextFieldDelegate{
 }
 extension ViewController: PalletDelegate {
     func tileTapped() {
-        colorSave = []
+        colorSave = [UIColor]()
         if let tile = pallet.activeTile{
             animateSliders(forTile: tile)
             if let color = tile.contentView.backgroundColor {
