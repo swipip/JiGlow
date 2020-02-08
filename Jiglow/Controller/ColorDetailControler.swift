@@ -14,8 +14,7 @@ class ColorDetailControler: UIViewController {
     @IBOutlet weak var secondColor2: UIView!
     @IBOutlet weak var secondColor3: UIView!
     @IBOutlet weak var lblHexaCode: UILabel!
-    @IBOutlet weak var roundedView: UIView!
-    @IBOutlet weak var shadowView: UIView!
+    @IBOutlet weak var gaugesView: UIView!
     
     var mainColor: UIColor?
     var leftColor: UIColor?
@@ -53,8 +52,8 @@ class ColorDetailControler: UIViewController {
         
     }
     func setUpGauges(){
-        var topAnchorVar:CGFloat = 6
         let gaugeHeight: CGFloat = 32
+        var topAnchorVar:CGFloat = (self.gaugesView.frame.size.height - gaugeHeight * 3)/4
         for i in 1...3 {
             let newGauge = UIView()
             
@@ -64,7 +63,7 @@ class ColorDetailControler: UIViewController {
             
             newGauge.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([newGauge.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20),
-                                         newGauge.topAnchor.constraint(equalTo: lblHexaCode.bottomAnchor, constant: topAnchorVar),
+                                         newGauge.topAnchor.constraint(equalTo: self.gaugesView.topAnchor, constant: topAnchorVar),
                                          newGauge.heightAnchor.constraint(equalToConstant: gaugeHeight)])
             switch i {
             case 1:
@@ -95,11 +94,11 @@ class ColorDetailControler: UIViewController {
             newLabel.text = "0"
             newLabel.textAlignment = .right
             newLabel.textColor = .white
-            newLabel.font = UIFont(name: "Digital-7", size: 14)
+            newLabel.font = UIFont(name: "system", size: 11)
             self.view.addSubview(newLabel)
             
             newLabel.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([newLabel.trailingAnchor.constraint(equalTo: gauges[i].trailingAnchor, constant: -5),
+            NSLayoutConstraint.activate([newLabel.trailingAnchor.constraint(equalTo: gauges[i].trailingAnchor, constant: -6),
                                          newLabel.topAnchor.constraint(equalTo: gauges[i].topAnchor, constant: 0),
                                          newLabel.bottomAnchor.constraint(equalTo: gauges[i].bottomAnchor, constant: 0),
                                          newLabel.widthAnchor.constraint(equalToConstant: 50)])
@@ -111,7 +110,7 @@ class ColorDetailControler: UIViewController {
     }
     func animateGauges(gauge: NSLayoutConstraint, width: Double){
         if width > 34{
-            UIView.animate(withDuration: 1, delay: 0.0 ,animations: {
+            UIView.animate(withDuration: 1, delay: 0.0,options: .curveEaseInOut ,animations: {
                 gauge.constant = CGFloat(width) * 1.2
                 self.view.layoutIfNeeded()
             }, completion: nil)
@@ -139,7 +138,7 @@ class ColorDetailControler: UIViewController {
         secondColor2.backgroundColor = middleColor
         secondColor3.backgroundColor = rightColor
         lblHexaCode.text = hexaCode
-        lblHexaCode.textColor = mainColor
+        lblHexaCode.textColor = mainColor?.darken()
   
     }
     override func viewWillDisappear(_ animated: Bool) {

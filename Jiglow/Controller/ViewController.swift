@@ -128,11 +128,61 @@ class ViewController: UIViewController{
         btnReset.setButton()
         addConfirmationViews()
         addReturnButton()
+        animateTileToGiveIndications()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
         navigationController?.navigationBar.isHidden = false
+        
+    }
+    //MARK: - Indications
+    func animateTileToGiveIndications() {
+
+        let tile = self.pallet.secondTile!
+        
+        let rightArrow = UIImageView()
+        rightArrow.alpha = 0
+        rightArrow.image = UIImage(systemName: "arrow.left")
+        rightArrow.tintColor = .gray
+        
+        self.view.addSubview(rightArrow)
+        
+        rightArrow.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([rightArrow.leadingAnchor.constraint(equalTo: tile.trailingAnchor, constant: 10),
+                                     rightArrow.centerYAnchor.constraint(equalTo: tile.centerYAnchor),
+                                     rightArrow.widthAnchor.constraint(equalToConstant: 30),
+                                     rightArrow.heightAnchor.constraint(equalToConstant: 30),])
+        
+        let leftArrow = UIImageView()
+        leftArrow.alpha = 0
+        leftArrow.image = UIImage(systemName: "arrow.right")
+        leftArrow.tintColor = .gray
+        
+        self.view.addSubview(leftArrow)
+        
+        leftArrow.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([leftArrow.leadingAnchor.constraint(equalTo: tile.leadingAnchor, constant: -10),
+                                     leftArrow.centerYAnchor.constraint(equalTo: tile.centerYAnchor),
+                                     leftArrow.widthAnchor.constraint(equalToConstant: 30),
+                                     leftArrow.heightAnchor.constraint(equalToConstant: 30),])
+        
+        let comment = UILabel()
+        
+        UIView.animate(withDuration: 0.5, delay: 2, options: .curveEaseInOut, animations: {
+            tile.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
+            tile.contentView.layer.cornerRadius = 10
+            leftArrow.alpha = 1.0
+            rightArrow.alpha = 1.0
+        }) { (finished) in
+            UIView.animate(withDuration: 0.5, delay: 2, options: .curveEaseInOut, animations: {
+                tile.transform = CGAffineTransform(scaleX: 1.00, y: 1.00)
+                tile.contentView.layer.cornerRadius = 0
+                leftArrow.alpha = 0
+                rightArrow.alpha = 0
+            }, completion: nil)
+        }
+        
         
     }
     func animateLayoutToGiveIndications() {
@@ -255,6 +305,7 @@ class ViewController: UIViewController{
         
         
     }
+    
     //MARK: - Return Button
     func addReturnButton() {
         
@@ -287,6 +338,10 @@ class ViewController: UIViewController{
     }
     @IBAction func returnPressed(_ sender: UIButton){
         
+        let feedBack = UINotificationFeedbackGenerator()
+        
+        startTime = CFAbsoluteTimeGetCurrent()
+        
         returnTapCount += 1
         
         let notification = Notification.Name(rawValue: sliderBeganNotificationKey)
@@ -305,6 +360,16 @@ class ViewController: UIViewController{
         if returnTapCount > Double(colorSave.count) {
             returnTapCount = 0.0
             
+            feedBack.notificationOccurred(.error)
+            
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseIn, animations: {
+                self.returnButton?.backgroundColor = .red
+            }) { (finished) in
+                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+                    self.returnButton?.backgroundColor = .gray
+                }, completion: nil)
+            }
+            
             let anticlockAnimation = CABasicAnimation(keyPath: "transform.rotation")
             anticlockAnimation.fromValue = CGFloat.pi * 2
             anticlockAnimation.toValue = 0
@@ -316,6 +381,9 @@ class ViewController: UIViewController{
             
         }else{
             if let tile = pallet.activeTile {
+                
+                feedBack.notificationOccurred(.success)
+                
                 let color = colorSave[Int(returnTapCount)-1]
                 tile.contentView.backgroundColor = color
                 animateSliders(forTile: tile)
@@ -428,9 +496,7 @@ class ViewController: UIViewController{
         if let touchEvent = event.allTouches?.first {
             switch touchEvent.phase {
             case .began:
-                
-                let tile = pallet.activeTile!
-                print(pallet.activeTile)
+
                 let color = pallet.activeTile?.contentView.backgroundColor
                 colorSave.insert(color!, at: 0)
                 
@@ -860,7 +926,6 @@ extension ViewController: CollectionControllerDelegate{
     
     func collectionControllerDidDisapearWithNoSelection(editingMode: Bool){
         self.editingMode = editingMode
-//        btnReset.setButton()
     }
     
     func collectionControllerDidDisapearWithSeletion(topColor: String, secondColor: String, thirdColor: String, bottomColor: String, editingMode: Bool, palletName: String) {
@@ -874,8 +939,6 @@ extension ViewController: CollectionControllerDelegate{
         self.editingMode = editingMode
         
         self.palletName = palletName
-        
-//        btnReset.setButton()
         
     }
     func collectionViewAnimatePallet() {

@@ -68,13 +68,13 @@ class Tile: UIView {
     }
     //MARK: - Custom Methods
     func transformOn() {
-        UIView.animate(withDuration: 0.2, delay: 0,options: UIView.AnimationOptions.curveEaseOut,animations: {
+        UIView.animate(withDuration: 0.2, delay: 0,options: UIView.AnimationOptions.curveEaseInOut,animations: {
             self.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
             self.contentView.layer.cornerRadius = 10
         },completion: nil)
     }
     func transformOff(){
-        UIView.animate(withDuration: 0.2, delay: 0,options: UIView.AnimationOptions.curveEaseOut,animations: {
+        UIView.animate(withDuration: 0.2, delay: 0,options: UIView.AnimationOptions.curveEaseInOut,animations: {
             self.transform = CGAffineTransform(scaleX: 1, y: 1)
             self.contentView.layer.cornerRadius = 0
         },completion: nil)
