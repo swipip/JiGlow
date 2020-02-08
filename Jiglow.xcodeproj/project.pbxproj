@@ -12,6 +12,7 @@
 		4934472F23D096F000324F4A /* MiniPallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4934472D23D096F000324F4A /* MiniPallet.swift */; };
 		4934473023D096F000324F4A /* miniPallet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4934472E23D096F000324F4A /* miniPallet.xib */; };
 		495439C923EB5F5C0015AE3F /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495439C823EB5F5C0015AE3F /* RadialGradientView.swift */; };
+		4971ABF923EF154B008B6E00 /* K.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4971ABF823EF154B008B6E00 /* K.swift */; };
 		498998F623E8C33800C8FF61 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498998F523E8C33800C8FF61 /* Extensions.swift */; };
 		498E32D823D1E4E500D1203E /* SwipeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498E32D723D1E4E500D1203E /* SwipeController.swift */; };
 		498E32DB23D3398F00D1203E /* Lobster-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 498E32DA23D3398F00D1203E /* Lobster-Regular.ttf */; };
@@ -39,6 +40,7 @@
 		4934472D23D096F000324F4A /* MiniPallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniPallet.swift; sourceTree = "<group>"; };
 		4934472E23D096F000324F4A /* miniPallet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = miniPallet.xib; sourceTree = "<group>"; };
 		495439C823EB5F5C0015AE3F /* RadialGradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadialGradientView.swift; sourceTree = "<group>"; };
+		4971ABF823EF154B008B6E00 /* K.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = K.swift; sourceTree = "<group>"; };
 		498998F523E8C33800C8FF61 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		498E32D723D1E4E500D1203E /* SwipeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeController.swift; sourceTree = "<group>"; };
 		498E32DA23D3398F00D1203E /* Lobster-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lobster-Regular.ttf"; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				49C58A1F23C25645006A9D2D /* Jiglow.xcdatamodeld */,
+				4971ABF823EF154B008B6E00 /* K.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -248,6 +251,7 @@
 				49C58A1B23C25645006A9D2D /* ViewController.swift in Sources */,
 				49C58A3223C3C404006A9D2D /* GradientButton.swift in Sources */,
 				49D5B00523C7340000D9B146 /* Pallet.swift in Sources */,
+				4971ABF923EF154B008B6E00 /* K.swift in Sources */,
 				49C58A3623C4E7AE006A9D2D /* ColorLabel.swift in Sources */,
 				49D5B00123C62C9700D9B146 /* ColorDetailControler.swift in Sources */,
 				49C58A1723C25645006A9D2D /* AppDelegate.swift in Sources */,

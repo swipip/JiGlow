@@ -14,11 +14,13 @@ protocol PhotoViewControllerDelegte {
 }
 class PhotoViewController: UIViewController{
     
-    var session = AVCaptureSession()
-    var camera: AVCaptureDevice?
-    var cameraPreviewLayer: AVCaptureVideoPreviewLayer?
-    var cameraCaptureOutput: AVCapturePhotoOutput?
-    var gradientLayers = [String:CAGradientLayer]()
+    private var k = K()
+    private var session = AVCaptureSession()
+    private var camera: AVCaptureDevice?
+    private var cameraPreviewLayer: AVCaptureVideoPreviewLayer?
+    private var cameraCaptureOutput: AVCapturePhotoOutput?
+    private var gradientLayers = [String:CAGradientLayer]()
+    //delegate
     var delegate: PhotoViewControllerDelegte?
     //UI Elements
     private var optionButton = UIButton()
@@ -192,7 +194,7 @@ class PhotoViewController: UIViewController{
         
     }
     func addShotButton(){
-        shotButton.setTitle("Get Color", for: .normal)
+        shotButton.setTitle(k.cameraShotTitle, for: .normal)
         //        shotButton.setImage(UIImage(systemName:"camera.fill"), for: .normal)
         //        shotButton.tintColor = .white
         shotButton.titleLabel?.font = UIFont(name: "System", size: 17)

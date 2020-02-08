@@ -19,6 +19,7 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     private var action = UIAlertAction()
     @IBOutlet weak var collectionView: UICollectionView!
+    var k = K()
 
     //MARK: - Loading functions
     
@@ -26,6 +27,8 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
         super.viewDidLoad()
         
 //        loadMiniPallets()
+        
+        k.isFrench()
         
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -63,8 +66,8 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
     }
     func displayAlert() {
         var textField = UITextField()
-        let alert = UIAlertController(title: "Rename your pallet", message: "", preferredStyle: .alert)
-        action = UIAlertAction(title: "Rename", style: .default) { (action) in
+        let alert = UIAlertController(title: self.k.renamePalletMessage, message: "", preferredStyle: .alert)
+        action = UIAlertAction(title: k.rename, style: .default) { (action) in
             if let name = textField.text {
                 self.update(newName: name)
                 self.collectionView.reloadData()
@@ -74,7 +77,7 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
         action.isEnabled = true
         alert.addTextField { (field) in
             textField = field
-            textField.placeholder = "Your pallet's name"
+            textField.placeholder = self.k.renamePalletPlaceHolder
         }
         present(alert, animated: true, completion: nil)
     }
@@ -85,7 +88,7 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
         
         saveHintView.backgroundColor = .gray
         saveHintView.tintColor = .white
-        saveHintView.setTitle("Swipe right to add a new palette", for: .normal)
+        saveHintView.setTitle(k.addNewPalletHelper, for: .normal)
         saveHintView.alpha = 0
         
         
@@ -242,24 +245,24 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
 //MARK: - Extensions
 extension CollectionController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-                return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (Actions) -> UIMenu? in
-            let rename = UIAction(title: "Rename", image: UIImage(systemName: "pencil.circle")) { action in
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (Actions) -> UIMenu? in
+            let rename = UIAction(title: self.k.rename, image: UIImage(systemName: "pencil.circle")) { action in
                 self.miniPallet = self.miniPalletsCD[indexPath.row]
                 self.displayAlert()
             }
-            let confYes = UIAction(title: "Yes", image: UIImage(systemName: "trash")){ action in
+            let confYes = UIAction(title: self.k.yes, image: UIImage(systemName: "trash")){ action in
                 let selectedPalletFromContext = self.miniPalletsCD[indexPath.row]
                 self.delete(name: (selectedPalletFromContext.name)!)
                 self.collectionView.deleteItems(at: [indexPath])
             }
-            let confNo = UIAction(title: "No", image: UIImage(systemName: "checkmark.circle")){ action in
+            let confNo = UIAction(title: self.k.no, image: UIImage(systemName: "checkmark.circle")){ action in
                 
             }
-            let subMenu = UIMenu(title: "Delete", image: UIImage(systemName: "trash"), children: [confYes,confNo])
-                   
+            let subMenu = UIMenu(title: self.k.delete, image: UIImage(systemName: "trash"), children: [confYes,confNo])
+            
             // Create and return a UIMenu with the share action
             return UIMenu(title: "Options", children: [subMenu,rename])
         }
     }
-
+    
 }

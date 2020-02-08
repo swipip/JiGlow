@@ -21,6 +21,8 @@ class ViewController: UIViewController{
     
     let userDefault = UserDefaults.standard
     
+    private var k = K()
+    
     private var firstOpen = true
     
     private let sliderBegan = Notification.Name(sliderBeganNotificationKey)
@@ -94,9 +96,8 @@ class ViewController: UIViewController{
         if let _ = userDefault.object(forKey: "firstOpen") {
             firstOpen = userDefault.bool(forKey: "firstOpen")
         }
-        
-        print(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! as String)
-        print(firstOpen)
+
+        k.isFrench()
         
         swipeController = SwipeController(view: self.view)
         swipeController?.delegate = self
@@ -141,6 +142,7 @@ class ViewController: UIViewController{
         addConfirmationViews()
         addReturnButton()
         animateTileToGiveIndications()
+        btnReset.setTitle(k.resetButtonTitle, for: .normal)
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
@@ -185,7 +187,7 @@ class ViewController: UIViewController{
             comment.alpha = 0.0
             comment.textAlignment = .center
             comment.font = UIFont(name: "system", size: 5)
-            comment.text = "Tap a tile to Start"
+            comment.text = k.tileHelperMessage
             comment.layer.shadowOffset = CGSize(width: 0, height:  0)
             comment.layer.shadowRadius =  3.23
             comment.layer.shadowOpacity = 0.23
@@ -242,7 +244,7 @@ class ViewController: UIViewController{
         hintView.alpha = 0.0
         hintView.textAlignment = .center
         hintView.font = UIFont(name: "system", size: 11)
-        hintView.text = "Swipe right to save"
+        hintView.text = k.swipeHelperMessage
         hintView.layer.shadowOffset = CGSize(width: 0, height:  0)
         hintView.layer.shadowRadius =  3.23
         hintView.layer.shadowOpacity = 0.23

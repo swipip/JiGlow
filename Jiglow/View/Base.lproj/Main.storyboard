@@ -119,11 +119,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="OII-vE-326"/>
                     </view>
-                    <navigationItem key="navigationItem" title="JiGlow" id="EfG-xe-f1S">
-                        <barButtonItem key="rightBarButtonItem" image="person.circle" catalog="system" id="hLn-CN-85g">
-                            <color key="tintColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="JiGlow" id="EfG-xe-f1S"/>
                     <connections>
                         <outlet property="btnCamera" destination="8li-Rz-TIf" id="f7Z-wd-TOA"/>
                         <outlet property="btnReset" destination="71o-8g-jsV" id="zsy-l9-J8I"/>
@@ -312,7 +308,6 @@
     </scenes>
     <resources>
         <image name="camera.fill" catalog="system" width="64" height="48"/>
-        <image name="person.circle" catalog="system" width="64" height="60"/>
         <image name="rectangle.stack.fill" catalog="system" width="64" height="60"/>
         <namedColor name="Buttons">
             <color red="0.61176470588235299" green="0.61176470588235299" blue="0.61176470588235299" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
