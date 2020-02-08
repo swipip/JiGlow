@@ -18,7 +18,6 @@ class GradientButton: UIButton {
     private let tapTicResponse = UINotificationFeedbackGenerator()
     
     func setButton() {
-        
         setButtonGradient()
         
         self.layer.cornerRadius = 25

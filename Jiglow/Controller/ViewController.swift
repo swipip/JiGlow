@@ -1,6 +1,8 @@
 import UIKit
 import CoreData
 
+let sliderBeganNotificationKey = "co.billardgautier.sliderBegan"
+
 class ViewController: UIViewController{
     
     //MARK: - Outlets
@@ -16,6 +18,13 @@ class ViewController: UIViewController{
     //MARK: - Variables
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    private let sliderBegan = Notification.Name(sliderBeganNotificationKey)
+    private var returnTapCount = 0.0
+    private var sliderTimer = Timer()
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
     
     // variable the model looks to choose between C || U
     var editingMode = false{
@@ -49,7 +58,7 @@ class ViewController: UIViewController{
     
     private var callOutleadingConstraint: NSLayoutConstraint?
     private var returnButton: UIButton?
-    private var colorSave: UIColor?
+    private var colorSave = [UIColor]()
     
     private var timer: Timer?
     private var startTime: CFTimeInterval = CFAbsoluteTimeGetCurrent()
@@ -109,6 +118,8 @@ class ViewController: UIViewController{
         launchScreenAnimation()
         
         checkTime()
+        
+        addObservers()
 
     }
     override func viewDidAppear(_ animated: Bool) {
@@ -171,7 +182,32 @@ class ViewController: UIViewController{
         }
         
     }
-    //MARK: - Timer
+    //MARK: - Observers
+    func addObservers() {
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(updateSliderTimer(notification:)), name: sliderBegan, object: nil)
+        
+    }
+    @objc func updateSliderTimer(notification: NSNotification) {
+        
+        let start = notification.userInfo?["start"] as! Double
+        
+        sliderTimer.invalidate()
+        
+        sliderTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (timer) in
+            
+            let timeElapsed = CFAbsoluteTimeGetCurrent() - start
+            print(timeElapsed)
+            if timeElapsed > 5 {
+                self.returnButton?.animateAlphaOff()
+                self.returnButton?.isEnabled = false
+                timer.invalidate()
+                self.sliderTimer.invalidate()
+            }
+        }
+        
+    }
+    //MARK: - Timers
     func checkTime() {
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { (timer) in
             let endTime = CFAbsoluteTimeGetCurrent()
@@ -237,6 +273,7 @@ class ViewController: UIViewController{
         returnButton!.isEnabled = false
         returnButton!.tintColor = .white
         returnButton!.alpha = 0.0
+        returnButton!.addShadow()
         
         self.view.addSubview(returnButton!)
         
@@ -249,15 +286,47 @@ class ViewController: UIViewController{
         returnButton!.addTarget(self, action: #selector(returnPressed(_:)), for: .touchUpInside)
     }
     @IBAction func returnPressed(_ sender: UIButton){
-        if let tile = pallet.activeTile {
-            tile.contentView.backgroundColor = colorSave
-//            let color = colorSave
-            animateSliders(forTile: tile)
-            let red = (colorSave?.rgb.red)!
-            let green = (colorSave?.rgb.green)!
-            let blue = (colorSave?.rgb.blue)!
-            tile.hexaLabel.adjustTextColor(red: red, green: green, blue: blue)
+        
+        returnTapCount += 1
+        
+        let notification = Notification.Name(rawValue: sliderBeganNotificationKey)
+        let sliderStartTime = CFAbsoluteTimeGetCurrent()
+        NotificationCenter.default.post(name: notification, object: nil, userInfo: ["start":sliderStartTime])
+        
+
+        let animation = CABasicAnimation(keyPath: "transform.scale")
+        animation.duration = 0.2
+        animation.autoreverses = true
+        animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        animation.toValue = CGPoint(x: 1.1, y: 1.1)
+        
+        returnButton?.layer.add(animation, forKey: nil)
+        
+        if returnTapCount > Double(colorSave.count) {
+            returnTapCount = 0.0
+            
+            let anticlockAnimation = CABasicAnimation(keyPath: "transform.rotation")
+            anticlockAnimation.fromValue = CGFloat.pi * 2
+            anticlockAnimation.toValue = 0
+            anticlockAnimation.isAdditive = true
+            anticlockAnimation.duration = 0.6
+            anticlockAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+            self.returnButton?.layer.add(anticlockAnimation, forKey: "rotate")
+            colorSave = []
+            
+        }else{
+            if let tile = pallet.activeTile {
+                let color = colorSave[Int(returnTapCount)-1]
+                tile.contentView.backgroundColor = color
+                animateSliders(forTile: tile)
+                let red = (color.rgb.red)
+                let green = (color.rgb.green)
+                let blue = (color.rgb.blue)
+                tile.hexaLabel.adjustTextColor(red: red, green: green, blue: blue)
+            }
         }
+        
+
     }
     //MARK: - Data Management
     func saveTile(){
@@ -306,6 +375,7 @@ class ViewController: UIViewController{
             
         }else if let tile = pallet.topTile{
             pallet.activeTile = tile
+            animateSliders(forTile:tile)
             tile.transformOn()
             tile.animateLabelAlphaOn()
             manageSlideUponSliderSlide(tile: tile, sender: sender, coordinates: CGPoint(x: xCoordinate, y: yCoordinate))
@@ -358,15 +428,19 @@ class ViewController: UIViewController{
         if let touchEvent = event.allTouches?.first {
             switch touchEvent.phase {
             case .began:
-                colorSave = pallet.activeTile?.contentView.backgroundColor
+                
+                let tile = pallet.activeTile!
+                print(pallet.activeTile)
+                let color = pallet.activeTile?.contentView.backgroundColor
+                colorSave.insert(color!, at: 0)
+                
+                let notification = Notification.Name(rawValue: sliderBeganNotificationKey)
+                let sliderStartTime = CFAbsoluteTimeGetCurrent()
+                NotificationCenter.default.post(name: notification, object: nil, userInfo: ["start":sliderStartTime])   //(name: notification, object: nil)
+                
                 returnButton?.isEnabled = true
                 returnButton?.animateAlphaOn()
             case .ended:
-                
-                let _ = Timer.scheduledTimer(withTimeInterval: 4, repeats: false) { (timer) in
-                    self.returnButton?.animateAlphaOff()
-                    self.returnButton?.isEnabled = false
-                }
                 
                 UIView.animate(withDuration: 0.66 ,delay: 0.0, animations: {
                     self.sliderCallOut?.alpha = 0
@@ -542,6 +616,8 @@ class ViewController: UIViewController{
         swipeController!.currentS = self.currentS
 
         completionHandler?(true)
+        
+//        addParallaxToView(vw: pallet)
     }
     @objc func panHandler(recognizer: UIPanGestureRecognizer){
         swipeController?.handlePan(recognizer: recognizer)
@@ -679,7 +755,7 @@ class ViewController: UIViewController{
 
 //MARK: - General functions
 public func addParallaxToView(vw: UIView) {
-    let amount = 8
+    let amount = 15
     
     let horizontal = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
     horizontal.minimumRelativeValue = -amount
@@ -729,9 +805,10 @@ extension ViewController: UITextFieldDelegate{
 }
 extension ViewController: PalletDelegate {
     func tileTapped() {
-        if pallet.activeTile != nil{
-            animateSliders(forTile: pallet.activeTile!)
-            if let color = pallet.activeTile?.contentView.backgroundColor {
+        colorSave = []
+        if let tile = pallet.activeTile{
+            animateSliders(forTile: tile)
+            if let color = tile.contentView.backgroundColor {
                 self.btnReset.animateGradient(startColor: color)
             }
         }

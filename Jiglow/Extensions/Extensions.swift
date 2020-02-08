@@ -19,6 +19,12 @@ extension UIButton {
             self.alpha = 0.0
         }
     }
+    func addShadow(radius: CGFloat? = 3.23) {
+        let layer = self.layer
+        layer.shadowOffset = CGSize(width: 0, height: 0)
+        layer.shadowRadius = radius!
+        layer.shadowOpacity = 0.2
+    }
 }
 extension UIView {
 

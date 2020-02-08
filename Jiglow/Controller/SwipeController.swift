@@ -29,7 +29,7 @@ class SwipeController {
         
         UIView.animate(withDuration: 0.5,
                        delay: 0,
-                       options: UIView.AnimationOptions.curveEaseOut,
+                       options: UIView.AnimationOptions.curveEaseInOut,
                        animations: {
                         view.center = finalPoint },
                        completion: nil)

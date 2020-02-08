@@ -151,7 +151,6 @@ class Pallet: UIView, TileDelegate {
                     activeTile = nil
                 }else{
                     activeTile = Tiles[i]
-                    self.bringSubviewToFront(activeTile!) //activeTile
                     activeTile?.transformOn()
                     activeTile?.tileIsActive = false
                 }

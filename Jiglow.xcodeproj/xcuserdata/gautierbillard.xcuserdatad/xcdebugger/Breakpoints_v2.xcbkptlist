@@ -7,224 +7,96 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C05E255F-F5C4-4F53-9141-B4E443235191"
+            uuid = "30DF3708-6B9B-4DBE-B00B-0EF2D063CB02"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Jiglow/Controller/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "255"
-            endingLineNumber = "255"
-            landmarkName = "returnPressed(_:)"
+            startingLineNumber = "188"
+            endingLineNumber = "188"
+            landmarkName = "addObservers()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "7DF9E773-28C8-4616-8503-F01D0C4DD03D"
+            uuid = "1F92D459-65E7-470F-BD25-B0CB30375D70"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Jiglow/Controller/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "252"
-            endingLineNumber = "252"
-            landmarkName = "returnPressed(_:)"
+            startingLineNumber = "201"
+            endingLineNumber = "201"
+            landmarkName = "updateSliderTimer(notification:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B96193FD-02D8-42E6-B3F4-EC22B2D28021"
+            uuid = "1712AB04-0365-458D-87AA-6A2CB8F6C04B"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Jiglow/Controller/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "624"
-            endingLineNumber = "624"
-            landmarkName = "confirmationViewSetUp(position:)"
+            startingLineNumber = "202"
+            endingLineNumber = "202"
+            landmarkName = "updateSliderTimer(notification:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "DE5AA33C-CA9C-48FF-9F0D-B05342451172"
+            uuid = "B2416D87-BA0C-4EAC-97A5-E288B3C9AFF0"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Jiglow/Controller/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "23"
-            endingLineNumber = "23"
-            landmarkName = "editingMode"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "A6E02100-9C0B-486C-A5E9-A2121A1188D1"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Jiglow/View/GradientButton.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
-            landmarkName = "animateGradient(startColor:endColor:)"
+            startingLineNumber = "434"
+            endingLineNumber = "434"
+            landmarkName = "onSliderValChanged(slider:event:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "0DDED307-F808-4AC5-9FDD-68FE8BF22BD2"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Jiglow/View/GradientButton.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "50"
-            endingLineNumber = "50"
-            landmarkName = "animateGradient(startColor:endColor:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "0DDED307-F808-4AC5-9FDD-68FE8BF22BD2 - 38b62e7bbf99c186"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Jiglow.GradientButton.animateGradient(startColor: __C.UIColor, endColor: __C.UIColor) -&gt; ()"
-                  moduleName = "Jiglow"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/gautierbillard/Documents/Swift%20Course/Tests/JiGlow/Jiglow/View/GradientButton.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "49"
-                  endingLineNumber = "49"
-                  offsetFromSymbolStart = "688">
-               </Location>
-               <Location
-                  uuid = "0DDED307-F808-4AC5-9FDD-68FE8BF22BD2 - cf931653c0e38c07"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; () in Jiglow.GradientButton.animateGradient(startColor: __C.UIColor, endColor: __C.UIColor) -&gt; ()"
-                  moduleName = "Jiglow"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/gautierbillard/Documents/Swift%20Course/Tests/JiGlow/Jiglow/View/GradientButton.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "50"
-                  endingLineNumber = "50"
-                  offsetFromSymbolStart = "136">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "E0EF9868-7D15-43EA-8AC9-5E66BE5C09B6"
+            uuid = "08C78A3E-9CC2-47C7-811B-C7A5A13253E4"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Jiglow/Controller/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "232"
-            endingLineNumber = "232"
-            landmarkName = "addReturnButton()"
+            startingLineNumber = "435"
+            endingLineNumber = "435"
+            landmarkName = "onSliderValChanged(slider:event:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6274A933-47A7-42EB-B81B-3A91BEB4274A"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Jiglow/Controller/CollectionController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "162"
-            endingLineNumber = "162"
-            landmarkName = "collectionView(_:numberOfItemsInSection:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "F1036E4C-4C5A-425E-A646-60D10DD60064"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Jiglow/Controller/CollectionController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "111"
-            endingLineNumber = "111"
-            landmarkName = "saveHint()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "22B137F5-E0CF-404D-A7E5-189515F9F8C1"
+            uuid = "ABDDAE59-097A-4586-A43C-EECDE5917679"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Jiglow/Controller/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "179"
-            endingLineNumber = "179"
-            landmarkName = "checkTime()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "32BA1F2C-8D4D-41EF-8497-70F034140C27"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Jiglow/Controller/ViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "825"
-            endingLineNumber = "825"
-            landmarkName = "touchesBegan(_:with:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "75961C1B-C430-459D-9160-14EA1CE4C198"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Jiglow/Controller/ViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "817"
-            endingLineNumber = "817"
-            landmarkName = "gestureRecognizerShouldBegin(_:)"
+            startingLineNumber = "379"
+            endingLineNumber = "379"
+            landmarkName = "sliderSlide(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
