@@ -916,7 +916,7 @@ class ViewController: UIViewController{
 
 //MARK: - General functions
 public func addParallaxToView(vw: UIView) {
-    let amount = 15
+    let amount = 8
     
     let horizontal = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
     horizontal.minimumRelativeValue = -amount
@@ -1011,13 +1011,13 @@ extension ViewController: SwipeControllerDelegate{
     }
     func didUpdatePalletPosition(position: CGFloat, direction: Direction) {
         if direction == .right {
-            gradientConfirmations["green"]?.alpha = position
+            gradientConfirmations["green"]?.alpha = position * 2
 //            self.view.bringSubviewToFront(swipeValidationIndicator[0])
-            swipeValidationIndicator[0].alpha = position * 1.2
+            swipeValidationIndicator[0].alpha = position * 2
         }else{
-            gradientConfirmations["red"]?.alpha = position
+            gradientConfirmations["red"]?.alpha = position * 2
 //            self.view.bringSubviewToFront(swipeValidationIndicator[1])
-            swipeValidationIndicator[1].alpha = position * 1.2
+            swipeValidationIndicator[1].alpha = position * 2
         }
     }
 
