@@ -137,7 +137,7 @@
             </objects>
             <point key="canvasLocation" x="1912.8" y="-133.00492610837438"/>
         </scene>
-        <!--Jigs Collection-->
+        <!--Collection-->
         <scene sceneID="gmA-vH-JcP">
             <objects>
                 <viewController id="BsN-Yx-05h" customClass="CollectionController" customModule="Jiglow" customModuleProvider="target" sceneMemberID="viewController">
@@ -175,7 +175,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Xbj-Jr-u8h"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Jigs Collection" id="81b-qK-HIp">
+                    <navigationItem key="navigationItem" title="Collection" id="81b-qK-HIp">
                         <barButtonItem key="backBarButtonItem" title="b" id="bfb-qO-PWX"/>
                     </navigationItem>
                     <connections>

@@ -77,6 +77,7 @@ class ViewController: UIViewController{
         }
     }
     
+    private var swipeValidationIndicator = [UIView]()
     private var gradientConfirmations = [String:RadialGradientView]()
     //MARK: - Layout
     
@@ -133,6 +134,8 @@ class ViewController: UIViewController{
         checkTime()
         
         addObservers()
+        
+        
 
     }
     override func viewDidAppear(_ animated: Bool) {
@@ -140,6 +143,7 @@ class ViewController: UIViewController{
         palletLayout()
         btnReset.setButton()
         addConfirmationViews()
+        addConfirmationLogo()
         addReturnButton()
         animateTileToGiveIndications()
         btnReset.setTitle(k.resetButtonTitle, for: .normal)
@@ -267,6 +271,57 @@ class ViewController: UIViewController{
                 hintView.alpha = 0.0
             }, completion: nil)
         }
+        
+    }
+    func addConfirmationLogo(){
+        
+        let height:CGFloat = 40
+        
+        let sliderPosition = sliderRed.frame.origin.y
+        let palletPosition = pallet.frame.origin.y + pallet.frame.size.height
+        
+        let distanceFromPallet = (sliderPosition - palletPosition - height)/2
+
+        let marks = [UIImage(systemName: "checkmark"),UIImage(systemName: "xmark")]
+        let colors = [UIColor.systemGreen,UIColor.systemRed]
+        
+        for i in 0...1 {
+            
+            let newSwipeValidationIndicator = UIView()
+            
+            newSwipeValidationIndicator.backgroundColor = colors[i]
+            newSwipeValidationIndicator.layer.cornerRadius = height/2
+            
+            
+            self.view.addSubview(newSwipeValidationIndicator)
+            
+            newSwipeValidationIndicator.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([newSwipeValidationIndicator.bottomAnchor.constraint(equalTo: sliderRed.topAnchor, constant: -distanceFromPallet),
+                                         newSwipeValidationIndicator.centerXAnchor.constraint(equalTo: sliderRed.centerXAnchor, constant: 0),
+                                         newSwipeValidationIndicator.widthAnchor.constraint(equalToConstant: height),
+                                         newSwipeValidationIndicator.heightAnchor.constraint(equalToConstant: height)])
+            
+            let saved = UIImageView()
+            saved.tintColor = .white
+            saved.image = marks[i]
+            saved.contentMode = .center
+            saved.layer.masksToBounds = true
+            
+            newSwipeValidationIndicator.addSubview(saved)
+            
+            saved.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([saved.centerYAnchor.constraint(equalTo: newSwipeValidationIndicator.centerYAnchor, constant: 0),
+                                         saved.centerXAnchor.constraint(equalTo: newSwipeValidationIndicator.centerXAnchor, constant: 0),
+                                         saved.widthAnchor.constraint(equalToConstant: height),
+                                         saved.heightAnchor.constraint(equalToConstant: height)])
+            
+            
+            newSwipeValidationIndicator.alpha = 0.0
+            
+            swipeValidationIndicator.append(newSwipeValidationIndicator)
+        }
+
+        
         
     }
     //MARK: - Observers
@@ -813,6 +868,8 @@ class ViewController: UIViewController{
     func animateConfirmationOut() {
         UIView.animate(withDuration: 0.6) {
             self.gradientConfirmations["green"]?.alpha = 0.0
+            self.swipeValidationIndicator[0].alpha = 0.0
+            self.swipeValidationIndicator[1].alpha = 0.0
             self.gradientConfirmations["red"]?.alpha = 0.0
         }
     }
@@ -955,10 +1012,15 @@ extension ViewController: SwipeControllerDelegate{
     func didUpdatePalletPosition(position: CGFloat, direction: Direction) {
         if direction == .right {
             gradientConfirmations["green"]?.alpha = position
+//            self.view.bringSubviewToFront(swipeValidationIndicator[0])
+            swipeValidationIndicator[0].alpha = position * 1.2
         }else{
             gradientConfirmations["red"]?.alpha = position
+//            self.view.bringSubviewToFront(swipeValidationIndicator[1])
+            swipeValidationIndicator[1].alpha = position * 1.2
         }
     }
+
 }
 extension ViewController: CollectionControllerDelegate{
     

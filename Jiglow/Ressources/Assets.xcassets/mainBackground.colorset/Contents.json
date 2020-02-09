@@ -45,10 +45,10 @@
       "color" : {
         "color-space" : "srgb",
         "components" : {
-          "red" : "0.421",
+          "red" : "0.371",
           "alpha" : "1.000",
-          "blue" : "0.421",
-          "green" : "0.421"
+          "blue" : "0.371",
+          "green" : "0.371"
         }
       }
     }
