@@ -202,7 +202,7 @@ class ViewController: UIViewController{
             NSLayoutConstraint.activate([comment.centerXAnchor.constraint(equalTo: tile.centerXAnchor, constant: 0),
                                          comment.centerYAnchor.constraint(equalTo: tile.centerYAnchor),
                                          comment.widthAnchor.constraint(equalToConstant: 170),
-                                         comment.heightAnchor.constraint(equalToConstant: 30),])
+                                         comment.heightAnchor.constraint(equalToConstant: 40),])
             
             
             comment.layer.masksToBounds = true
@@ -242,7 +242,7 @@ class ViewController: UIViewController{
         }
         
         let hintView = UILabel()
-        let hintViewHeight:CGFloat = 30
+        let hintViewHeight:CGFloat = 40
         hintView.backgroundColor = .gray
         hintView.textColor = .white
         hintView.alpha = 0.0
@@ -1012,11 +1012,11 @@ extension ViewController: SwipeControllerDelegate{
     func didUpdatePalletPosition(position: CGFloat, direction: Direction) {
         if direction == .right {
             gradientConfirmations["green"]?.alpha = position * 2
-//            self.view.bringSubviewToFront(swipeValidationIndicator[0])
+            swipeValidationIndicator[1].alpha = 0
             swipeValidationIndicator[0].alpha = position * 2
         }else{
             gradientConfirmations["red"]?.alpha = position * 2
-//            self.view.bringSubviewToFront(swipeValidationIndicator[1])
+            swipeValidationIndicator[0].alpha = 0
             swipeValidationIndicator[1].alpha = position * 2
         }
     }
