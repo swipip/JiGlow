@@ -755,7 +755,15 @@ class ViewController: UIViewController{
 
         swipeController?.squares.append(newPallet)
         
-        let width = CGFloat(pallet.compoundedHeight * 0.88)
+        func setWidth() -> Double{
+            let ratio = Int((UIScreen.main.bounds.size.width / UIScreen.main.bounds.size.height)*100) //0,462 et 5,5 : 0,562
+            var factor = 0.0
+            factor = ratio > 46 ? 0.98 : 0.88
+            return factor
+        }
+
+        let widthFactor = setWidth()
+        let width = CGFloat(pallet.compoundedHeight * widthFactor)
         
         view.addSubview(newPallet)
         newPallet.translatesAutoresizingMaskIntoConstraints = false
