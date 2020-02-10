@@ -74,9 +74,21 @@ class Pallet: UIView, TileDelegate {
         }
         NSLayoutConstraint.activate([contentView.heightAnchor.constraint(equalToConstant: CGFloat(compoundedHeight))])
     }
+    func changeTilesColors(color: UIColor) {
+        let color = UIColor.orange
+        
+        UIView.animate(withDuration: 0.2) {
+            self.topTile.contentView.backgroundColor = color
+            self.secondTile.contentView.backgroundColor = color.lighten(by: 10)
+            self.thirdTile.contentView.backgroundColor = color.lighten(by: 20)
+            self.bottomTile.contentView.backgroundColor = color.lighten(by: 30)
+        }
+        
+
+    }
     private func layoutTiles() {
         
-        let tileColor:UIColor = .systemOrange
+        let tileColor:UIColor = .gray
 
         topTile.contentView.backgroundColor = tileColor
         topTile.hexaLabel.text = topTile.contentView.backgroundColor!.toHexString()

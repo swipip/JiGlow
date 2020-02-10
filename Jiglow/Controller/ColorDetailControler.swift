@@ -138,7 +138,10 @@ class ColorDetailControler: UIViewController {
         secondColor2.backgroundColor = middleColor
         secondColor3.backgroundColor = rightColor
         lblHexaCode.text = hexaCode
-        lblHexaCode.textColor = mainColor?.darken()
+        let red = (mainColor?.rgb.red)!
+        let green = (mainColor?.rgb.green)!
+        let blue = (mainColor?.rgb.blue)!
+        lblHexaCode.adjustTextColor(red: red, green: green, blue: blue)
   
     }
     override func viewWillDisappear(_ animated: Bool) {

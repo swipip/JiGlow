@@ -27,7 +27,7 @@ class K {
             //language is french
         }else{
             tileHelperMessage = "Tap to start"
-            swipeHelperMessage = "Start adding palettes"
+            swipeHelperMessage = "Swipez pour ajouter"
             resetButtonTitle = "New"
             cameraShotTitle = "Get Color"
             renamePalletMessage = "Rename your palette"

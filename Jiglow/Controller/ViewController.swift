@@ -115,6 +115,7 @@ class ViewController: UIViewController{
         
         palletSetUp()
         palletSetUp()
+        swipeController!.squares[1].changeTilesColors(color: UIColor.orange)
         
         longPressGestureStack = UILongPressGestureRecognizer(target: self, action: #selector(stackLongPress))
         longPressGestureStack?.minimumPressDuration = 0.0
@@ -135,7 +136,7 @@ class ViewController: UIViewController{
         
         addObservers()
         
-        
+       
 
     }
     override func viewDidAppear(_ animated: Bool) {
@@ -146,6 +147,7 @@ class ViewController: UIViewController{
         addConfirmationLogo()
         addReturnButton()
         animateTileToGiveIndications()
+        
         btnReset.setTitle(k.resetButtonTitle, for: .normal)
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -158,6 +160,8 @@ class ViewController: UIViewController{
     func animateTileToGiveIndications() {
         if firstOpen == true {
             let tile = self.pallet.secondTile!
+            
+            let height:CGFloat = 40
             
             let rightArrow = UIImageView()
             rightArrow.alpha = 0
@@ -185,43 +189,51 @@ class ViewController: UIViewController{
                                          leftArrow.widthAnchor.constraint(equalToConstant: 30),
                                          leftArrow.heightAnchor.constraint(equalToConstant: 30),])
             
-            let comment = UILabel()
-            comment.backgroundColor = .gray
-            comment.textColor = .white
-            comment.alpha = 0.0
-            comment.textAlignment = .center
-            comment.font = UIFont(name: "system", size: 5)
-            comment.text = k.tileHelperMessage
-            comment.layer.shadowOffset = CGSize(width: 0, height:  0)
-            comment.layer.shadowRadius =  3.23
-            comment.layer.shadowOpacity = 0.23
+            let containerView = UIView()
             
-            self.view.addSubview(comment)
+            containerView.backgroundColor = .gray
+            containerView.layer.cornerRadius = height/2
+            
+            self.view.addSubview(containerView)
+            
+            containerView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([containerView.centerXAnchor.constraint(equalTo: tile.centerXAnchor, constant: 0),
+                                         containerView.centerYAnchor.constraint(equalTo: tile.centerYAnchor),
+                                         containerView.widthAnchor.constraint(equalToConstant: 200),
+                                         containerView.heightAnchor.constraint(equalToConstant: height),])
+            
+            let comment = UILabel()
+
+            comment.textColor = .white
+            comment.textAlignment = .center
+            comment.text = k.tileHelperMessage
+            
+            containerView.addSubview(comment)
             
             comment.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([comment.centerXAnchor.constraint(equalTo: tile.centerXAnchor, constant: 0),
-                                         comment.centerYAnchor.constraint(equalTo: tile.centerYAnchor),
-                                         comment.widthAnchor.constraint(equalToConstant: 170),
-                                         comment.heightAnchor.constraint(equalToConstant: 40),])
+            NSLayoutConstraint.activate([comment.centerXAnchor.constraint(equalTo: containerView.centerXAnchor, constant: 0),
+                                         comment.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)])
             
-            
-            comment.layer.masksToBounds = true
-            comment.layer.cornerRadius = 15
+            containerView.alpha = 0.0
             
             UIView.animate(withDuration: 0.5, delay: 2, options: .curveEaseInOut, animations: {
                 tile.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
                 tile.contentView.layer.cornerRadius = 10
                 leftArrow.alpha = 1.0
                 rightArrow.alpha = 1.0
-                comment.alpha = 0.8
+                containerView.alpha = 0.8
             }) { (finished) in
                 UIView.animate(withDuration: 0.5, delay: 3, options: .curveEaseInOut, animations: {
                     tile.transform = CGAffineTransform(scaleX: 1.00, y: 1.00)
                     tile.contentView.layer.cornerRadius = 0
                     leftArrow.alpha = 0
                     rightArrow.alpha = 0
-                    comment.alpha = 0.0
-                }, completion: nil)
+                    containerView.alpha = 0.0
+                }, completion: {(ended) in
+                    containerView.removeFromSuperview()
+                    rightArrow.removeFromSuperview()
+                    leftArrow.removeFromSuperview()
+                })
             }
             firstOpen = false
             self.userDefault.set(firstOpen, forKey: "firstOpen")
@@ -233,11 +245,13 @@ class ViewController: UIViewController{
         UIView.animate(withDuration: 0.3,delay: 0.2,options: .curveEaseInOut, animations: {
             self.pallet.transform = CGAffineTransform(rotationAngle: angle).concatenating(CGAffineTransform(translationX: 70, y: -20))
             self.gradientConfirmations["green"]?.alpha = 1
+            self.swipeController?.squares[0].alpha = 0.8
             self.view.layoutIfNeeded()
         }) { (finished) in
             UIView.animate(withDuration: 0.5,delay: 0.0, options: .curveEaseInOut, animations: {
                 self.pallet.transform = CGAffineTransform(rotationAngle: 0)
                 self.gradientConfirmations["green"]?.alpha = 0.0
+                self.swipeController?.squares[0].alpha = 0.0
             })
         }
         
@@ -339,9 +353,11 @@ class ViewController: UIViewController{
         sliderTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (timer) in
             
             let timeElapsed = CFAbsoluteTimeGetCurrent() - start
+            print(timeElapsed)
             if timeElapsed > 5 {
+                
                 self.returnButton?.animateAlphaOff()
-                self.returnButton?.isEnabled = false
+                self.returnButton!.isEnabled = false
                 timer.invalidate()
                 self.sliderTimer.invalidate()
             }
@@ -421,7 +437,7 @@ class ViewController: UIViewController{
         
         returnButton!.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([returnButton!.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
-                                     returnButton!.topAnchor.constraint(equalTo: pallet.bottomAnchor, constant: distanceFromPallet),
+                                     returnButton!.bottomAnchor.constraint(equalTo: sliderRed.topAnchor, constant: -distanceFromPallet),
                                      returnButton!.widthAnchor.constraint(equalToConstant: buttonSize),
                                      returnButton!.heightAnchor.constraint(equalToConstant: buttonSize)])
         
@@ -548,7 +564,7 @@ class ViewController: UIViewController{
         case "sldRed":
             red = CGFloat(sender.value)
             
-            sliderRed.minimumTrackTintColor = UIColor(displayP3Red: red, green: 0.5 * red, blue: 0.5 * red, alpha: 1)
+            sliderRed.minimumTrackTintColor = .systemRed
             tile.redCode = Int(red * 255)
             
             manageTileUponSliderSlide(tile: tile, slider: sender)
@@ -556,7 +572,7 @@ class ViewController: UIViewController{
         case "sldGreen":
             green = CGFloat(sender.value)
             
-            sliderGreen.minimumTrackTintColor = UIColor(displayP3Red: 0.5*green, green: green, blue: 0.5 * red, alpha: 1)
+            sliderGreen.minimumTrackTintColor = .systemGreen
             tile.greenCode = Int(green * 255)
             
             manageTileUponSliderSlide(tile: tile, slider: sender)
@@ -564,7 +580,7 @@ class ViewController: UIViewController{
         case "sldBlue":
             self.blue = CGFloat(sender.value)
             
-            sliderBlue.minimumTrackTintColor = UIColor(displayP3Red: blue * 0.5, green: 0.5 * blue, blue: blue, alpha: 1)
+            sliderBlue.minimumTrackTintColor = .systemBlue
             tile.blueCode = Int(blue * 255)
             
             manageTileUponSliderSlide(tile: tile, slider: sender)
@@ -597,8 +613,11 @@ class ViewController: UIViewController{
                 let sliderStartTime = CFAbsoluteTimeGetCurrent()
                 NotificationCenter.default.post(name: notification, object: nil, userInfo: ["start":sliderStartTime])   //(name: notification, object: nil)
                 
-                returnButton?.isEnabled = true
-                returnButton?.animateAlphaOn()
+                if let returnButton = self.returnButton {
+                    returnButton.isEnabled = true
+                    returnButton.animateAlphaOn()
+                }
+
             case .ended:
                 
                 UIView.animate(withDuration: 0.66 ,delay: 0.0, animations: {
@@ -695,12 +714,11 @@ class ViewController: UIViewController{
             
             let color = UIColor.systemOrange
             
-            pallet.topTile.contentView.backgroundColor = color
-            pallet.secondTile.contentView.backgroundColor = color.lighten(by: 10)
-            pallet.thirdTile.contentView.backgroundColor = color.lighten(by: 20)
-            pallet.bottomTile.contentView.backgroundColor = color.lighten(by: 30)
+            pallet.changeTilesColors(color: color)
             
             btnReset.animateGradient(startColor: color, endColor: color.lighten()!)
+            
+            animateSliders(forTile: pallet.topTile)
             
             pallet.activeTile?.transformOff()
             pallet.activeTile?.animateLabelAlphaOff()
@@ -758,10 +776,11 @@ class ViewController: UIViewController{
     }
     private func palletLayout(completionHandler: CompletionHandler? = nil){
         pallet = (swipeController?.squares[1])!
+        
         pallet.delegate = self
         for pallet in swipeController!.squares{
-            pallet.topTile.roundCorners([.topRight, .topLeft], radius: 14)
-            pallet.bottomTile.roundCorners([.bottomRight, .bottomLeft], radius: 14)
+            pallet.topTile.roundCorners([.topRight, .topLeft], radius: 12)
+            pallet.bottomTile.roundCorners([.bottomRight, .bottomLeft], radius: 12)
             pallet.layer.shadowRadius = 5.23
             pallet.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
             pallet.layer.shadowOpacity = 0.23
@@ -776,7 +795,6 @@ class ViewController: UIViewController{
 
         completionHandler?(true)
         
-//        addParallaxToView(vw: pallet)
     }
     @objc func panHandler(recognizer: UIPanGestureRecognizer){
         swipeController?.handlePan(recognizer: recognizer)
@@ -1007,6 +1025,8 @@ extension ViewController: SwipeControllerDelegate{
         editingMode = false
         palletSetUp()
         palletLayout()
+        
+        pallet.changeTilesColors(color: UIColor.orange)
         
     }
     func didUpdatePalletPosition(position: CGFloat, direction: Direction) {

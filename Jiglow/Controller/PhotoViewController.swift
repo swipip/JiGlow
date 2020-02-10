@@ -30,6 +30,7 @@ class PhotoViewController: UIViewController{
     private var hexLabelContainer = UIView()
     private var color = UIColor()
     private var dismissButton = UIButton()
+    private var rgbLabels = [UILabel]()
     
     //UI Size Constants
     private var mainItemHeight:CGFloat = UIScreen.main.bounds.size.height * 0.25
@@ -109,7 +110,15 @@ class PhotoViewController: UIViewController{
         gradientLayers[viewName] = gradientLayer
         
     }
-    
+    func addSubViews(){
+        addPointer()
+        addColorPreviewView()
+        addHexLabel()
+        addShotButton()
+        addOptionButton()
+        addDismissButton()
+        addRGBLabels()
+    }
     func addPointer(){
         
         let pointer = UIView()
@@ -135,13 +144,31 @@ class PhotoViewController: UIViewController{
                                      target.widthAnchor.constraint(equalToConstant: 60)])
         
     }
-    func addSubViews(){
-        addPointer()
-        addColorPreviewView()
-        addHexLabel()
-        addShotButton()
-        addOptionButton()
-        addDismissButton()
+    func addRGBLabels() {
+        
+        var topAnchor:CGFloat = 10
+        
+        let spacing:CGFloat = 10
+        
+        for _ in 1...3 {
+            let newLabel = UILabel()
+            newLabel.textColor = .white
+            newLabel.text = ""
+            newLabel.alpha = 0
+            self.view.addSubview(newLabel)
+            
+            newLabel.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([newLabel.leadingAnchor.constraint(equalTo: self.colorPreview.leadingAnchor, constant: 10),
+                                         newLabel.topAnchor.constraint(equalTo: self.colorPreview.topAnchor, constant: topAnchor)])
+            
+            topAnchor += 15 + spacing
+            
+            self.rgbLabels.append(newLabel)
+            
+        }
+        
+
+        
     }
     func addColorPreviewView() {
         
@@ -271,14 +298,19 @@ class PhotoViewController: UIViewController{
     @objc func swipeDownHandler(sender: UISwipeGestureRecognizer) {
         
         let constant = colorPreviewHeight.constant
-        
+
         UIView.animate(withDuration: 0.567, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.1, options: .curveEaseInOut, animations: {
             self.colorPreviewHeight.constant = self.mainItemHeight < constant ? self.mainItemHeight : 0.0
             self.colorPreview.layer.cornerRadius = self.mainItemHeight < constant ? self.cornerRad : 3
             self.optionButton.alpha = self.mainItemHeight < constant ? 1 : 0
             self.hexLabel.text = self.mainItemHeight < constant ? self.hexLabel.text : nil
+            self.rgbLabels[0].alpha = self.mainItemHeight < constant ? 1 : 0
+            self.rgbLabels[1].alpha = self.mainItemHeight < constant ? 1 : 0
+            self.rgbLabels[2].alpha = self.mainItemHeight < constant ? 1 : 0
             self.view.layoutIfNeeded()
-        }, completion: nil)
+        }, completion: {(finished) in
+
+        })
 
         UIView.animate(withDuration: 0.567) {
             self.hexLabelContainer.alpha = self.mainItemHeight < constant ? 1 : 0
@@ -354,6 +386,7 @@ extension PhotoViewController: AVCapturePhotoCaptureDelegate{
                 
                 finalImageView.image = nil
                 self.hexLabel.text = self.color.toHexString()
+                self.updateRgbLabelsValues()
                 UIView.animate(withDuration: 0.32) {
                     self.colorPreview.backgroundColor = self.color
                     self.gradientLayers["optionButton"]!.colors = [color1,color2]
@@ -363,6 +396,26 @@ extension PhotoViewController: AVCapturePhotoCaptureDelegate{
                 }
             }
         }
+    }
+    func updateRgbLabelsValues() {
+        
+        let colorLabels = ["R ","G ","B "]
+        
+        let red = Int(color.rgb.red * 255)
+        let green = Int(color.rgb.green * 255)
+        let blue = Int(color.rgb.blue * 255)
+        
+        let values = [red, green, blue]
+        
+        for i in 0...2 {
+            animateRgbLabels(for: i,alpha: 1.0)
+            self.rgbLabels[i].text = String("\(colorLabels[i])\(values[i])")
+        }
+    }
+    func animateRgbLabels(for i: Int,alpha: CGFloat) {
+        UIView.animate(withDuration: 0.2) {
+             self.rgbLabels[i].alpha = 1.0
+         }
     }
     func getPixelColorAtPoint(point: CGPoint, sourceView: UIView) -> UIColor {
         let pixel = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: 4)

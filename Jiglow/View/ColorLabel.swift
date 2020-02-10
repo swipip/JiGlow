@@ -25,16 +25,6 @@ class ColorLabel: UILabel {
         }, completion: nil)
         
     }
-    func adjustTextColor(red: CGFloat, green: CGFloat, blue: CGFloat) {
-        
-        let color = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
-        
-        if color.getWhiteAndAlpha.white < 0.3 {
-            self.textColor = color.lighten()
-        }else{
-            self.textColor = color.darken(by: 20)
-        }
-        
-    }
+
     
 }

@@ -8,6 +8,18 @@
 
 import Foundation
 import UIKit
+extension UILabel {
+    func adjustTextColor(red: CGFloat, green: CGFloat, blue: CGFloat) {
+        
+        let color = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
+        
+        if color.getWhiteAndAlpha.white < 0.3 {
+            self.textColor = color.lighten()
+        }else{
+            self.textColor = color.darken(by: 20)
+        }
+    }
+}
 extension UIButton {
     func animateAlphaOn() {
         UIView.animate(withDuration: 1) {
