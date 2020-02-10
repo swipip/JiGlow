@@ -1014,10 +1014,12 @@ extension ViewController: SwipeControllerDelegate{
             gradientConfirmations["green"]?.alpha = position * 2
             swipeValidationIndicator[1].alpha = 0
             swipeValidationIndicator[0].alpha = position * 2
+            swipeController?.squares[0].alpha = position
         }else{
             gradientConfirmations["red"]?.alpha = position * 2
             swipeValidationIndicator[0].alpha = 0
             swipeValidationIndicator[1].alpha = position * 2
+            swipeController?.squares[0].alpha = position
         }
     }
 

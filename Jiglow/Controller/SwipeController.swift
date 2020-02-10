@@ -38,12 +38,12 @@ class SwipeController {
     func animateReload(view: UIView) {
         self.motherView.layoutIfNeeded()
         UIView.animate(withDuration: 0.3, animations: {
-            view.alpha = 1
-            view.transform = CGAffineTransform(scaleX: 1, y: 1)
+//            view.alpha = 1
+//            view.transform = CGAffineTransform(scaleX: 1, y: 1)
         }) { (Bool) in
             self.squares.remove(at: 1)
             self.delegate?.didFinishedAnimateReload()
-            
+
         }
         
     }
@@ -94,7 +94,7 @@ class SwipeController {
             
             squares[1].setAnchorPoint(CGPoint(x: 0.5,y: 0.5))
             squares[1].removeFromSuperview()
-            squares[0].transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
+//            squares[0].transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
             //
             let middleX = motherView.getCenter().x
 //            print("middle x \(middleX) current \(currentS.x)")
@@ -139,6 +139,7 @@ class SwipeController {
 //            let wayToGo = swipeLimit - currentS.x
             
             changeRotationDirection(recognizer: recognizer)
+            
         default:
             print("error")
         }
