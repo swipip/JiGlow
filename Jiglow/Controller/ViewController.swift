@@ -388,14 +388,12 @@ class ViewController: UIViewController{
                                      image.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0)])
         
         let logo = UIImageView(image: UIImage(named: "JiglowLogo"))
-        
+        logo.transform = CGAffineTransform(scaleX: 0.25, y: 0.25)
         self.view.addSubview(logo)
         
         logo.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([logo.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -5),
-                                     logo.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
-                                     logo.heightAnchor.constraint(equalToConstant: self.view.frame.size.height * 0.29947917),
-                                     logo.widthAnchor.constraint(equalToConstant: self.view.frame.size.width * 0.45813205)])
+        NSLayoutConstraint.activate([logo.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 0),
+                                     logo.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0)])
         
         UIView.animate(withDuration: 1, delay: 1 ,animations: {
             self.navigationController?.navigationBar.alpha = 1.0
@@ -904,10 +902,10 @@ class ViewController: UIViewController{
     func displayAlert() {
         
         var textField = UITextField()
-        let alert = UIAlertController(title: "Name your pallet", message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: k.nameYourPallet, message: "", preferredStyle: .alert)
         
-        let dismiss = UIAlertAction(title: "Cancel", style: .default) { (action) in
-            print("dissmissed")
+        let dismiss = UIAlertAction(title: k.cancel, style: .default) { (action) in
+            self.btnReset.animateGradient(startColor: UIColor.systemOrange)
             self.pallet.topTile.contentView.backgroundColor = UIColor(hexString: self.tilesColors.top!)
             self.pallet.secondTile.contentView.backgroundColor  = UIColor(hexString: self.tilesColors.second!)
             self.pallet.thirdTile.contentView.backgroundColor  = UIColor(hexString: self.tilesColors.third!)
@@ -917,7 +915,7 @@ class ViewController: UIViewController{
         }
         alert.addAction(dismiss)
 
-        action = UIAlertAction(title: "Add", style: .default) { (action) in
+        action = UIAlertAction(title: k.add, style: .default) { (action) in
             if let name = textField.text {
 
                 action.isEnabled = true
@@ -934,7 +932,7 @@ class ViewController: UIViewController{
         alert.addTextField { (field) in
             textField = field
             field.delegate = self
-            textField.placeholder = "Your pallet's name"
+            textField.placeholder = self.k.renamePalletPlaceHolder
         }
         present(alert, animated: true, completion: nil)
     }
@@ -961,6 +959,7 @@ extension ViewController: PhotoViewControllerDelegte {
     func PhotoVCDidDisapear(color: UIColor) {
         editingMode = false
         pallet.topTile.contentView.backgroundColor = color
+        btnReset.animateGradient(startColor: color)
         
         if color.getWhiteAndAlpha.white > 0.5 {
             pallet.secondTile.contentView.backgroundColor = color.darken(by: 10)
@@ -1033,7 +1032,7 @@ extension ViewController: SwipeControllerDelegate{
         editingMode = false
         palletSetUp()
         palletLayout()
-        
+        btnReset.animateGradient(startColor: UIColor.systemOrange)
         pallet.changeTilesColors(color: UIColor.orange)
         
     }

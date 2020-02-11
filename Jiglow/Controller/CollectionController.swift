@@ -182,7 +182,7 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
         cell.backgroundColor = .clear
         
         cell.layer.shadowOffset = CGSize(width: 0, height: 0)
-        cell.layer.shadowRadius = 6.1536
+        cell.layer.shadowRadius = 4.1536
         cell.layer.shadowColor = UIColor.lightGray.cgColor
         cell.layer.shadowOpacity = 0.2
         cell.layer.shadowColor = UIColor.black.cgColor
