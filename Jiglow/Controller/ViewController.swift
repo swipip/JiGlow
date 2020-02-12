@@ -499,6 +499,7 @@ class ViewController: UIViewController{
                 let green = (color.rgb.green)
                 let blue = (color.rgb.blue)
                 tile.hexaLabel.adjustTextColor(red: red, green: green, blue: blue)
+                tile.info?.adjustTextColor(color: color)
                 
             }
         }
@@ -596,6 +597,7 @@ class ViewController: UIViewController{
         tile.contentView.backgroundColor = color
         tile.hexaLabel.adjustTextColor(red: red, green: green, blue: blue)
         tile.hexaLabel.text = color.toHexString()
+        tile.info?.adjustTextColor(color: color)
         btnReset.animateGradient(startColor: color)
     }
     @objc func onSliderValChanged(slider: UISlider, event: UIEvent) {
@@ -976,6 +978,7 @@ extension ViewController: PhotoViewControllerDelegte {
 extension ViewController: ColorDetailControlerDelegate{
     func colorDetailDelegateDidDisapear() {
         pallet.activeTile?.transformOff()
+        pallet.activeTile?.animateLabelAlphaOff()
         pallet.activeTile?.tileIsActive = false
         pallet.activeTile = nil
     }
@@ -992,6 +995,7 @@ extension ViewController: UITextFieldDelegate{
 extension ViewController: PalletDelegate {
     func tileTapped() {
         colorSave = [UIColor]()
+        
         if let tile = pallet.activeTile{
             animateSliders(forTile: tile)
             if let color = tile.contentView.backgroundColor {
@@ -1012,6 +1016,15 @@ extension ViewController: PalletDelegate {
             safeTile.blueCode = Int((safeTile.contentView.backgroundColor?.rgb.blue)! * 255)
         }
         performSegue(withIdentifier: "mainToColorDetail", sender: Any?.self)
+    }
+    func infoButtonPressed() {
+        if let safeTile = pallet.activeTile {
+            safeTile.hexaCode = safeTile.contentView.backgroundColor?.toHexString()
+            safeTile.redCode = Int((safeTile.contentView.backgroundColor?.rgb.red)! * 255)
+            safeTile.greenCode = Int((safeTile.contentView.backgroundColor?.rgb.green)! * 255)
+            safeTile.blueCode = Int((safeTile.contentView.backgroundColor?.rgb.blue)! * 255)
+        }
+        performSegue(withIdentifier: "mainToColorDetail", sender: self)
     }
 }
 extension ViewController: SwipeControllerDelegate{

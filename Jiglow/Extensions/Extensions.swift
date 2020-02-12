@@ -37,6 +37,14 @@ extension UIButton {
         layer.shadowRadius = radius!
         layer.shadowOpacity = 0.2
     }
+    func adjustTextColor(color: UIColor) {
+        
+        if color.getWhiteAndAlpha.white < 0.3 {
+            self.tintColor = color.lighten()
+        }else{
+            self.tintColor = color.darken(by: 20)
+        }
+    }
 }
 extension UIView {
 

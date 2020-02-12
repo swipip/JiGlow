@@ -2,6 +2,7 @@ import UIKit
 protocol PalletDelegate {
     func tileTapped()
     func tileLongTapped()
+    func infoButtonPressed()
 }
 class Pallet: UIView, TileDelegate {    
     
@@ -14,6 +15,7 @@ class Pallet: UIView, TileDelegate {
     private (set) var compoundedHeight:Double = 0.0
     var rotated:(on: Bool,dir: rotatedCases) = (false,.right)
     
+    private var info: UIButton?
     private var Tiles = [Int: Tile]()
     
     var delegate: PalletDelegate?
@@ -152,7 +154,7 @@ class Pallet: UIView, TileDelegate {
         }
         
     }
-    
+
     //MARK: - Delegate methods
     func didTapTile() {
         //A tile got tapped
@@ -160,16 +162,19 @@ class Pallet: UIView, TileDelegate {
             if Tiles[i]?.tileIsActive == true {
                 if activeTile == Tiles[i] {
                     activeTile?.transformOff()
+//                    removeInfoButton()
                     activeTile?.tileIsActive = false
                     activeTile?.animateLabelAlphaOff()
                     activeTile = nil
                 }else{
                     activeTile = Tiles[i]
                     activeTile?.transformOn()
+                    activeTile?.info?.adjustTextColor(color: (activeTile?.contentView.backgroundColor)!)
                     activeTile?.tileIsActive = false
                 }
             }else if Tiles[i]?.tileIsActive == false{
                 Tiles[i]?.transformOff()
+//                removeInfoButton()
                 Tiles[i]?.animateLabelAlphaOff()
             }
         }
@@ -185,5 +190,8 @@ class Pallet: UIView, TileDelegate {
             }
         }
         delegate?.tileLongTapped()
+    }
+    func infoButtonPressed(sender: Tile) {
+        delegate?.infoButtonPressed()
     }
 }

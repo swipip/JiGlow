@@ -4,6 +4,7 @@ import UIKit
 protocol TileDelegate {
     func didTapTile()
     func didLongPress()
+    func infoButtonPressed(sender: Tile)
 }
 enum tapType {
     case short,long
@@ -19,6 +20,7 @@ class Tile: UIView {
     var delegate: TileDelegate?
     var tileWidth = 0.0
     var tileIsActive = false
+    var info: UIButton?
     
     @IBOutlet var contentView: UIView!
     @IBOutlet weak var hexaLabel: ColorLabel!
@@ -57,17 +59,68 @@ class Tile: UIView {
         
         self.hexaLabel.alpha = 0.0
         
+        addInfoButton()
+        
+    }
+    func addInfoButton() {
+        
+        info = UIButton()
+        info!.backgroundColor = .clear
+        info!.tintColor = .white
+        info!.addShadow()
+        info!.setImage(UIImage(systemName: "info.circle"), for: .normal)
+        info!.alpha = 0.0
+        
+        self.contentView.addSubview(info!)
+        
+        info!.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([info!.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: 5),
+                                     info!.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: 5),
+                                     info!.widthAnchor.constraint(equalToConstant: 40),
+                                     info!.heightAnchor.constraint(equalToConstant: 40)])
+        
+
+
+        
+        info?.addTarget(self, action: #selector(infoPressed), for: .touchUpInside)
+    }
+    @IBAction func infoPressed() {
+        delegate?.infoButtonPressed(sender: self)
+    }
+    func animateInfoButton() {
+        let circle = UIView()
+        
+        circle.backgroundColor = .clear
+        circle.layer.borderColor = UIColor.white.cgColor
+        circle.layer.borderWidth = 0.2
+        circle.layer.cornerRadius = 10
+        self.contentView.insertSubview(circle, at: 0)
+        
+        circle.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([circle.centerYAnchor.constraint(equalTo: self.info!.centerYAnchor, constant: 0),
+                                     circle.centerXAnchor.constraint(equalTo: self.info!.centerXAnchor, constant: 0),
+                                     circle.widthAnchor.constraint(equalToConstant: 20),
+                                     circle.heightAnchor.constraint(equalToConstant: 20)])
+        
+        UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseOut, animations: {
+            circle.transform = CGAffineTransform(scaleX: 5, y: 5)
+            circle.alpha = 0.0
+        }, completion: nil)
     }
     //MARK: - Custom Methods
     func transformOn() {
         UIView.animate(withDuration: 0.2, delay: 0,options: UIView.AnimationOptions.curveEaseInOut,animations: {
             self.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
+            self.info?.alpha = 1.0
             self.contentView.layer.cornerRadius = 10
         },completion: nil)
     }
     func transformOff(){
         UIView.animate(withDuration: 0.2, delay: 0,options: UIView.AnimationOptions.curveEaseInOut,animations: {
             self.transform = CGAffineTransform(scaleX: 1, y: 1)
+            self.info?.alpha = 0.0
             self.contentView.layer.cornerRadius = 0
         },completion: nil)
     }
@@ -86,6 +139,10 @@ class Tile: UIView {
         tileIsActive  = true
         self.hexaLabel.adjustTextColor(red: (contentView.backgroundColor?.rgb.red)!, green: (contentView.backgroundColor?.rgb.green)!, blue: (contentView.backgroundColor?.rgb.blue)!)
         animateLabelAlphaOn()
+        animateInfoButton()
+        let _ = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { (timer) in
+            self.animateInfoButton()
+        }
         delegate?.didTapTile()
     }
     @objc func longTapHandler(sender: AnyObject) {
