@@ -137,7 +137,7 @@ class Tile: UIView {
 //MARK: - Delegate Methods
     @objc func tapHandler() {
         tileIsActive  = true
-        self.hexaLabel.adjustTextColor(red: (contentView.backgroundColor?.rgb.red)!, green: (contentView.backgroundColor?.rgb.green)!, blue: (contentView.backgroundColor?.rgb.blue)!)
+        self.hexaLabel.adjustTextColor(color: contentView.backgroundColor!)
         animateLabelAlphaOn()
         animateInfoButton()
         let _ = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { (timer) in

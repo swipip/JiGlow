@@ -495,10 +495,7 @@ class ViewController: UIViewController{
                 let color = colorSave[Int(returnTapCount)-1]
                 tile.contentView.backgroundColor = color
                 animateSliders(forTile: tile)
-                let red = (color.rgb.red)
-                let green = (color.rgb.green)
-                let blue = (color.rgb.blue)
-                tile.hexaLabel.adjustTextColor(red: red, green: green, blue: blue)
+                tile.hexaLabel.adjustTextColor(color: color)
                 tile.info?.adjustTextColor(color: color)
                 
             }
@@ -595,7 +592,7 @@ class ViewController: UIViewController{
         animateSliderCallOut(slider: slider)
         sliderCallOutLabel?.text = String(Int(slider.value * 255))
         tile.contentView.backgroundColor = color
-        tile.hexaLabel.adjustTextColor(red: red, green: green, blue: blue)
+        tile.hexaLabel.adjustTextColor(color: color)
         tile.hexaLabel.text = color.toHexString()
         tile.info?.adjustTextColor(color: color)
         btnReset.animateGradient(startColor: color)
@@ -831,37 +828,7 @@ class ViewController: UIViewController{
         }
     }
     func prepareForDetails(with segue: UIStoryboardSegue,with sender: Any?){
-        if let viewController = segue.destination as? ColorDetailControler {
-            viewController.delegate = self
-            if let safeTile = pallet.activeTile {
-                viewController.mainColor = safeTile.contentView.backgroundColor ?? .black
-                viewController.hexaCode = safeTile.hexaCode
-                viewController.redCode = Int(safeTile.redCode!)
-                viewController.greenCode = Int(safeTile.greenCode!)
-                viewController.blueCode = Int(safeTile.blueCode!)
-                
-                switch safeTile.rank {
-                case 1:
-                    viewController.leftColor = pallet.secondTile.contentView.backgroundColor
-                    viewController.middleColor = pallet.thirdTile.contentView.backgroundColor
-                    viewController.rightColor = pallet.bottomTile.contentView.backgroundColor
-                case 2:
-                    viewController.leftColor = pallet.topTile.contentView.backgroundColor
-                    viewController.middleColor = pallet.thirdTile.contentView.backgroundColor
-                    viewController.rightColor = pallet.bottomTile.contentView.backgroundColor
-                case 3:
-                    viewController.leftColor = pallet.topTile.contentView.backgroundColor
-                    viewController.middleColor = pallet.secondTile.contentView.backgroundColor
-                    viewController.rightColor = pallet.bottomTile.contentView.backgroundColor
-                case 4:
-                    viewController.leftColor = pallet.topTile.contentView.backgroundColor
-                    viewController.middleColor = pallet.secondTile.contentView.backgroundColor
-                    viewController.rightColor = pallet.thirdTile.contentView.backgroundColor
-                default:
-                    break
-                }
-            }
-        }
+
     }
     //MARK: - Confirmation Views
     func addConfirmationViews() {
@@ -960,19 +927,17 @@ public func addParallaxToView(vw: UIView) {
 extension ViewController: PhotoViewControllerDelegte {
     func PhotoVCDidDisapear(color: UIColor) {
         editingMode = false
-        pallet.topTile.contentView.backgroundColor = color
+        pallet.topTile.contentView.backgroundColor = color.withHueOffset(offset: 1/12)
         btnReset.animateGradient(startColor: color)
+        pallet.secondTile.contentView.backgroundColor = color
+        pallet.thirdTile.contentView.backgroundColor = color.withHueOffset(offset: -1/12)
         
         if color.getWhiteAndAlpha.white > 0.5 {
-            pallet.secondTile.contentView.backgroundColor = color.darken(by: 10)
-            pallet.thirdTile.contentView.backgroundColor = color.darken(by: 20)
-            pallet.bottomTile.contentView.backgroundColor = color.darken(by: 30)
+            pallet.bottomTile.contentView.backgroundColor = color.darken(by: 10)
         }else{
-            pallet.secondTile.contentView.backgroundColor = color.lighten(by: 10)
-            pallet.thirdTile.contentView.backgroundColor = color.lighten(by: 20)
-            pallet.bottomTile.contentView.backgroundColor = color.lighten(by: 30)
+            pallet.bottomTile.contentView.backgroundColor = color.lighten(by: 10)
         }
-//        btnReset.setButton()
+        btnReset.setButton()
     }
 }
 extension ViewController: ColorDetailControlerDelegate{
@@ -1003,7 +968,7 @@ extension ViewController: PalletDelegate {
             }
         }
     }
-    func tileLongTapped() {
+    func goToColorDetail() {
         //Vibrate
         let notificationFeedbackGenerator = UINotificationFeedbackGenerator()
         notificationFeedbackGenerator.prepare()
@@ -1014,17 +979,34 @@ extension ViewController: PalletDelegate {
             safeTile.redCode = Int((safeTile.contentView.backgroundColor?.rgb.red)! * 255)
             safeTile.greenCode = Int((safeTile.contentView.backgroundColor?.rgb.green)! * 255)
             safeTile.blueCode = Int((safeTile.contentView.backgroundColor?.rgb.blue)! * 255)
+            
+            guard let destinationVC = storyboard?.instantiateViewController(identifier: "ColorDetailController") as? ColorDetailControler else {
+                return
+            }
+            
+            destinationVC.delegate = self
+            destinationVC.color = safeTile.contentView.backgroundColor
+            
+            let originPoint = safeTile.convert(safeTile.frame.origin, to: self.view)
+            
+            let tileRect = CGRect(origin: originPoint, size: safeTile.frame.size)
+            
+            destinationVC.originRect = tileRect
+            
+            self.addChild(destinationVC)
+            self.view.addSubview(destinationVC.view)
+            
         }
-        performSegue(withIdentifier: "mainToColorDetail", sender: Any?.self)
+    }
+    func tileLongTapped() {
+
+        goToColorDetail()
+
+        
     }
     func infoButtonPressed() {
-        if let safeTile = pallet.activeTile {
-            safeTile.hexaCode = safeTile.contentView.backgroundColor?.toHexString()
-            safeTile.redCode = Int((safeTile.contentView.backgroundColor?.rgb.red)! * 255)
-            safeTile.greenCode = Int((safeTile.contentView.backgroundColor?.rgb.green)! * 255)
-            safeTile.blueCode = Int((safeTile.contentView.backgroundColor?.rgb.blue)! * 255)
-        }
-        performSegue(withIdentifier: "mainToColorDetail", sender: self)
+        goToColorDetail()
+        
     }
 }
 extension ViewController: SwipeControllerDelegate{

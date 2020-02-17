@@ -121,7 +121,7 @@ class Pallet: UIView, TileDelegate {
     //MARK: - Rotation Handlers
     func rotateSquare(angle: CGFloat){
         
-        UIView.animate(withDuration: 0.2, animations: {
+        UIView.animate(withDuration: 0.3, animations: {
             self.transform = self.transform.rotated(by: angle)
         })
         

@@ -9,9 +9,7 @@
 import Foundation
 import UIKit
 extension UILabel {
-    func adjustTextColor(red: CGFloat, green: CGFloat, blue: CGFloat) {
-        
-        let color = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
+    func adjustTextColor(color: UIColor) {
         
         if color.getWhiteAndAlpha.white < 0.3 {
             self.textColor = color.lighten()
@@ -63,43 +61,29 @@ extension UIView {
 }
 extension UIColor {
     
+    func lighten(by percentage: CGFloat = 30.0) -> UIColor? {
+        return self.adjust(by: abs(percentage) )
+    }
+    
+    func darken(by percentage: CGFloat = 30.0) -> UIColor? {
+        return self.adjust(by: -1 * abs(percentage) )
+    }
+    func adjust(by percentage: CGFloat = 30.0) -> UIColor? {
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+        if self.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
+            return UIColor(red: min(red + percentage/100, 1.0),
+                           green: min(green + percentage/100, 1.0),
+                           blue: min(blue + percentage/100, 1.0),
+                           alpha: alpha)
+        } else {
+            return nil
+        }
+    }
     func toHexString() -> String {
-        var r:CGFloat = 0{
-            didSet{
-                if r > 1 {
-                    r = 1
-                }else if r < 0{
-                    r = 0
-                }
-            }
-        }
-        var g:CGFloat = 0{
-            didSet{
-                if g > 1 {
-                    g = 1
-                }else if g < 0{
-                    g = 0
-                }
-            }
-        }
-        var b:CGFloat = 0{
-            didSet{
-                if b > 1 {
-                    b = 1
-                }else if b < 0{
-                    b = 0
-                }
-            }
-        }
-        var a:CGFloat = 0{
-            didSet{
-                if a > 1 {
-                    a = 1
-                }else if a < 0{
-                    a = 0
-                }
-            }
-        }
+        var r:CGFloat = 0
+        var g:CGFloat = 0
+        var b:CGFloat = 0
+        var a:CGFloat = 0
         
         getRed(&r, green: &g, blue: &b, alpha: &a)
         
@@ -130,6 +114,14 @@ extension UIColor {
         
         getWhite(&white, alpha: &alpha)
         return(white, alpha)
+    }
+    func withHueOffset(offset: CGFloat) -> UIColor {
+        var h: CGFloat = 0
+        var s: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+        self.getHue(&h, saturation: &s, brightness: &b, alpha: &a)
+        return UIColor(hue: fmod(h + offset, 1), saturation: s, brightness: b, alpha: a)
     }
     convenience init(hexString: String) {
         let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)

@@ -128,7 +128,6 @@
                         <outlet property="sliderGreen" destination="neq-Pd-S3J" id="Vkd-vQ-vXW"/>
                         <outlet property="sliderRed" destination="VEQ-md-npY" id="FY9-KW-1TN"/>
                         <outlet property="superView" destination="8bC-Xf-vdC" id="nYP-0z-cqr"/>
-                        <segue destination="lHC-ky-R2q" kind="presentation" identifier="mainToColorDetail" id="F2Z-pl-myJ"/>
                         <segue destination="BsN-Yx-05h" kind="show" identifier="mainToCollection" id="HAF-ci-9XY"/>
                         <segue destination="Uoa-Rn-jj0" kind="show" identifier="mainToCamera" id="ruh-3j-iyj"/>
                     </connections>
@@ -219,67 +218,13 @@
         <!--Color Detail Controler-->
         <scene sceneID="Yx0-te-6id">
             <objects>
-                <viewController id="lHC-ky-R2q" customClass="ColorDetailControler" customModule="Jiglow" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ColorDetailController" id="lHC-ky-R2q" customClass="ColorDetailControler" customModule="Jiglow" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="xJR-at-awZ">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="758"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zoa-bG-7fZ">
-                                <rect key="frame" x="0.0" y="596" width="375" height="170"/>
-                                <color key="backgroundColor" name="mainBackground"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="170" id="GPs-7B-VTh"/>
-                                </constraints>
-                            </view>
-                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="3S1-DP-DyU">
-                                <rect key="frame" x="0.0" y="583" width="375" height="13"/>
-                                <subviews>
-                                    <view tag="2" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ovF-Sw-Nal">
-                                        <rect key="frame" x="0.0" y="0.0" width="125" height="13"/>
-                                        <color key="backgroundColor" systemColor="systemYellowColor" red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    </view>
-                                    <view tag="3" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1HB-5z-NJX">
-                                        <rect key="frame" x="125" y="0.0" width="125" height="13"/>
-                                        <color key="backgroundColor" systemColor="systemTealColor" red="0.35294117650000001" green="0.7843137255" blue="0.98039215690000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    </view>
-                                    <view tag="4" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jWu-xU-kRJ">
-                                        <rect key="frame" x="250" y="0.0" width="125" height="13"/>
-                                        <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    </view>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="13" id="7AT-ZU-US2"/>
-                                </constraints>
-                            </stackView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GUL-Q9-TFS">
-                                <rect key="frame" x="16" y="525" width="343" height="49.666666666666629"/>
-                                <fontDescription key="fontDescription" name="Galvji" family="Galvji" pointSize="42"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <color key="backgroundColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="WLi-xY-mrK" firstAttribute="trailing" secondItem="zoa-bG-7fZ" secondAttribute="trailing" id="1L3-vF-oEW"/>
-                            <constraint firstItem="GUL-Q9-TFS" firstAttribute="leading" secondItem="WLi-xY-mrK" secondAttribute="leading" constant="16" id="7UK-Ga-mca"/>
-                            <constraint firstItem="WLi-xY-mrK" firstAttribute="trailing" secondItem="3S1-DP-DyU" secondAttribute="trailing" id="8rk-Bb-1ZE"/>
-                            <constraint firstItem="3S1-DP-DyU" firstAttribute="leading" secondItem="WLi-xY-mrK" secondAttribute="leading" id="94g-SZ-og0"/>
-                            <constraint firstItem="WLi-xY-mrK" firstAttribute="trailing" secondItem="GUL-Q9-TFS" secondAttribute="trailing" constant="16" id="OTr-td-DAg"/>
-                            <constraint firstItem="3S1-DP-DyU" firstAttribute="top" secondItem="GUL-Q9-TFS" secondAttribute="bottom" constant="8.3300000000000001" id="Vc0-8I-30x"/>
-                            <constraint firstItem="zoa-bG-7fZ" firstAttribute="top" secondItem="3S1-DP-DyU" secondAttribute="bottom" id="dpB-Gk-w0M"/>
-                            <constraint firstItem="zoa-bG-7fZ" firstAttribute="leading" secondItem="WLi-xY-mrK" secondAttribute="leading" id="fIA-Xh-kwd"/>
-                            <constraint firstItem="WLi-xY-mrK" firstAttribute="bottom" secondItem="zoa-bG-7fZ" secondAttribute="bottomMargin" id="nWK-QU-iTQ"/>
-                        </constraints>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="WLi-xY-mrK"/>
                     </view>
-                    <connections>
-                        <outlet property="colorView" destination="xJR-at-awZ" id="9Lj-WN-ifM"/>
-                        <outlet property="gaugesView" destination="zoa-bG-7fZ" id="Ybv-ct-uWS"/>
-                        <outlet property="lblHexaCode" destination="GUL-Q9-TFS" id="CyQ-bB-WML"/>
-                        <outlet property="secondColor1" destination="ovF-Sw-Nal" id="xHa-4M-E3K"/>
-                        <outlet property="secondColor2" destination="1HB-5z-NJX" id="L7Z-AA-7YC"/>
-                        <outlet property="secondColor3" destination="jWu-xU-kRJ" id="h3N-b5-Ccv"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="j14-LF-FRR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
