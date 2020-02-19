@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		490F471F23FDE41700B4AF42 /* TwoSegmentControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 490F471E23FDE41700B4AF42 /* TwoSegmentControl.swift */; };
 		4934472A23D03D6E00324F4A /* Tile.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4934472923D03D6E00324F4A /* Tile.xib */; };
 		4934472C23D08D8F00324F4A /* CollectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4934472B23D08D8F00324F4A /* CollectionController.swift */; };
 		4934472F23D096F000324F4A /* MiniPallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4934472D23D096F000324F4A /* MiniPallet.swift */; };
@@ -35,6 +36,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		490F471E23FDE41700B4AF42 /* TwoSegmentControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoSegmentControl.swift; sourceTree = "<group>"; };
 		4934472923D03D6E00324F4A /* Tile.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Tile.xib; sourceTree = "<group>"; };
 		4934472B23D08D8F00324F4A /* CollectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionController.swift; sourceTree = "<group>"; };
 		4934472D23D096F000324F4A /* MiniPallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniPallet.swift; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 			children = (
 				49C58A1C23C25645006A9D2D /* Main.storyboard */,
 				4934472E23D096F000324F4A /* miniPallet.xib */,
+				490F471E23FDE41700B4AF42 /* TwoSegmentControl.swift */,
 				4934472D23D096F000324F4A /* MiniPallet.swift */,
 				49D5B00223C7327200D9B146 /* Pallet.xib */,
 				49D5B00423C7340000D9B146 /* Pallet.swift */,
@@ -262,6 +265,7 @@
 				4934472F23D096F000324F4A /* MiniPallet.swift in Sources */,
 				498998F623E8C33800C8FF61 /* Extensions.swift in Sources */,
 				49C58A2123C25645006A9D2D /* Jiglow.xcdatamodeld in Sources */,
+				490F471F23FDE41700B4AF42 /* TwoSegmentControl.swift in Sources */,
 				4934472C23D08D8F00324F4A /* CollectionController.swift in Sources */,
 				49C58A3423C4E1AB006A9D2D /* ColorSlider.swift in Sources */,
 				49D5010D23D4B6790017638D /* PhotoViewController.swift in Sources */,

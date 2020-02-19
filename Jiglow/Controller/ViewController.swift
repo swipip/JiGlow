@@ -24,7 +24,7 @@ class ViewController: UIViewController{
     private var k = K()
     
     private var firstOpen = true
-    
+    private var childPresenting = true
     private let sliderBegan = Notification.Name(sliderBeganNotificationKey)
     private var returnTapCount = 0.0
     private var sliderTimer = Timer()
@@ -279,7 +279,9 @@ class ViewController: UIViewController{
         hintView.layer.cornerRadius = hintViewHeight/2
         
         UIView.animate(withDuration: 0.3, animations: {
-            hintView.alpha = 1.0
+            if self.childPresenting == false {
+                hintView.alpha = 1.0
+            }
         }) { (finished) in
             UIView.animate(withDuration: 0.8, delay: 2, animations: {
                 hintView.alpha = 0.0
@@ -946,6 +948,7 @@ extension ViewController: ColorDetailControlerDelegate{
         pallet.activeTile?.animateLabelAlphaOff()
         pallet.activeTile?.tileIsActive = false
         pallet.activeTile = nil
+        childPresenting = false
     }
 }
 extension ViewController: UITextFieldDelegate{
@@ -970,6 +973,8 @@ extension ViewController: PalletDelegate {
     }
     func goToColorDetail() {
         //Vibrate
+        childPresenting = true
+        
         let notificationFeedbackGenerator = UINotificationFeedbackGenerator()
         notificationFeedbackGenerator.prepare()
         notificationFeedbackGenerator.notificationOccurred(.success)

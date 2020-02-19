@@ -24,6 +24,7 @@ class K {
     var cancel = "Annuler"
     var rename = "Renommer"
     var delete = "Supprimer"
+    let buttonHeight = 40
    
     func isFrench(){
         if NSLocale.preferredLanguages[0].range(of:"fr") != nil {

@@ -23,7 +23,7 @@ class PhotoViewController: UIViewController{
     //delegate
     var delegate: PhotoViewControllerDelegte?
     //UI Elements
-    private var optionButton = UIButton()
+    private var addButton = UIButton()
     private var shotButton = UIButton()
     private var colorPreview = UIView()
     private var hexLabel = UILabel()
@@ -31,6 +31,17 @@ class PhotoViewController: UIViewController{
     private var color = UIColor()
     private var dismissButton = UIButton()
     private var rgbLabels = [UILabel]()
+    private var infoButton = UIButton()
+    private var gauges = [UIView]()
+    private var gaugesBacks = [UIView]()
+    private var gaugesLabels = [UILabel]()
+    private var gaugesMiniWidth:CGFloat  = 0.0
+    private var gaugesWidth:CGFloat = 0.0{
+        willSet {
+            gaugesMiniWidth = 0.3 * newValue
+        }
+    }
+    private var gaugesConstraints = [NSLayoutConstraint]()
     
     //UI Size Constants
     private var mainItemHeight:CGFloat = UIScreen.main.bounds.size.height * 0.25
@@ -40,11 +51,13 @@ class PhotoViewController: UIViewController{
             return secondaryItemHeight/2
         }
     }
+    
     //Outlets
     @IBOutlet weak var finalImageView: UIImageView!
     //Constraints
-    private var widthConstraint: NSLayoutConstraint!
-    private var optionButtonWidthConstraint: NSLayoutConstraint!
+    private var buttonTrailling: NSLayoutConstraint!
+    //    private var widthConstraint: NSLayoutConstraint!
+    private var addButtonLeading: NSLayoutConstraint!
     private var labelContainerHeight: NSLayoutConstraint!
     private var colorPreviewHeight: NSLayoutConstraint!
     
@@ -54,6 +67,8 @@ class PhotoViewController: UIViewController{
         
         navigationController?.navigationBar.isHidden = true
         
+        gaugesWidth = 100
+        
         initializeCaptureSession()
         
         addSubViews()
@@ -61,31 +76,34 @@ class PhotoViewController: UIViewController{
         layoutViews()
         
     }
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        gradientLayers["shotButton"]?.frame = shotButton.bounds
+        
+    }
     func layoutViews(){
         self.view.layoutIfNeeded()
         
         shotButton.layer.cornerRadius = cornerRad
         dismissButton.layer.cornerRadius = dismissButton.frame.size.height/2
-        applyGradientToView(color1: .yellow, color2: .systemOrange, with: hexLabelContainer, viewName: "hexLabelContainer")
         applyGradientToView(color1: .yellow, color2: .systemOrange, with: shotButton, viewName: "shotButton")
-        applyGradientToView(color1: .blue, color2: .systemBlue, with: optionButton, viewName: "optionButton")
         
     }
     //MARK: - AddViews
     func revealOptionsAfterShot() {
         
-        UIView.animate(withDuration: 0.74, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.1, options: .curveEaseInOut, animations: {
+        UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.1, options: .curveEaseInOut, animations: {
+            self.buttonTrailling.constant = -147
+            self.addButtonLeading.constant = 10
+            self.addButton.alpha = 0.6
             self.colorPreviewHeight.constant = self.mainItemHeight
             self.colorPreview.layer.cornerRadius = self.cornerRad
-            self.optionButton.alpha = 1.0
+            self.colorPreview.alpha = 1.0
+            self.infoButton.alpha = 1.0
             self.view.layoutIfNeeded()
-        }, completion: nil)
-        
-        UIView.animate(withDuration: 0.45, delay: 0, usingSpringWithDamping: 2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
-            self.hexLabelContainer.alpha = 1.0
-            self.view.layoutIfNeeded()
-        }, completion: {(finished) in
-            
+        }, completion: {(ended) in
+            self.highlightInfoButton()
         })
         
     }
@@ -99,25 +117,30 @@ class PhotoViewController: UIViewController{
     }
     func applyGradientToView(color1: UIColor, color2: UIColor,with view: UIView,viewName: String){
         
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = [color1.cgColor, color2.cgColor]
-        gradientLayer.startPoint = CGPoint(x:0.0,y: 0)
-        gradientLayer.endPoint = CGPoint(x:1, y:0)
-        gradientLayer.frame = view.bounds
-        gradientLayer.cornerRadius = cornerRad //view.frame.size.height/2
-        view.layer.insertSublayer(gradientLayer, at: 0)
-        
-        gradientLayers[viewName] = gradientLayer
-        
+        if gradientLayers[viewName] == nil {
+            let gradientLayer = CAGradientLayer()
+            gradientLayer.colors = [color1.cgColor, color2.cgColor]
+            gradientLayer.startPoint = CGPoint(x:0.0,y: 1)
+            gradientLayer.endPoint = CGPoint(x:1, y:0)
+            gradientLayer.frame = view.bounds
+            gradientLayer.cornerRadius = cornerRad //view.frame.size.height/2
+            view.layer.insertSublayer(gradientLayer, at: 0)
+            
+            gradientLayers[viewName] = gradientLayer
+        }else{
+            //           gradientLayers[viewName]?.removeFromSuperlayer()
+        }
     }
     func addSubViews(){
         addPointer()
+        addShotButton()
         addColorPreviewView()
         addHexLabel()
-        addShotButton()
         addOptionButton()
         addDismissButton()
-        addRGBLabels()
+        addInfoButton()
+        addGauges()
+        //        addRGBLabels()
     }
     func addPointer(){
         
@@ -167,18 +190,19 @@ class PhotoViewController: UIViewController{
             
         }
         
-
+        
         
     }
     func addColorPreviewView() {
         
+        colorPreview.alpha = 0.0
         self.view.addSubview(colorPreview)
         
         //Constraints
         colorPreview.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([colorPreview.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 10),
-                                     colorPreview.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10),
-                                     colorPreview.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -100)])
+        NSLayoutConstraint.activate([colorPreview.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20),
+                                     colorPreview.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20),
+                                     colorPreview.bottomAnchor.constraint(equalTo: shotButton.topAnchor, constant: -10)])
         
         
         colorPreviewHeight = NSLayoutConstraint(item: colorPreview, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 0)
@@ -194,37 +218,27 @@ class PhotoViewController: UIViewController{
         colorPreview.addGestureRecognizer(swipeUp)
         
     }
-
+    //MARK: - HexLabel
     func addHexLabel(){
         
-        hexLabelContainer.alpha = 0.0
-        hexLabelContainer.layer.cornerRadius = cornerRad
-        self.view.insertSubview(hexLabelContainer, at: 1)
-        hexLabelContainer.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([hexLabelContainer.heightAnchor.constraint(equalToConstant: secondaryItemHeight * 1.5),
-                                     hexLabelContainer.bottomAnchor.constraint(equalTo: colorPreview.topAnchor, constant: 40),
-                                     hexLabelContainer.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 10),
-                                     hexLabelContainer.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50)])
-        
-        //        labelContainerHeight = NSLayoutConstraint(item: hexLabelContainer, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 0)
-        
-        //        self.view.addConstraint(labelContainerHeight)
-        
-        self.view.addSubview(hexLabel)
+        self.colorPreview.addSubview(hexLabel)
         hexLabel.backgroundColor = .clear
-        hexLabel.textColor = .white
+        hexLabel.textColor = .clear
+        hexLabel.text = "#123456"
+        hexLabel.font = UIFont.systemFont(ofSize: 30)
         hexLabel.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([hexLabel.topAnchor.constraint(equalTo: hexLabelContainer.topAnchor,constant: 10),
-                                     //                                     hexLabel.bottomAnchor.constraint(equalTo: labelContainer.bottomAnchor, constant: 0),
-            hexLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 35),
-            hexLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50)])
+        NSLayoutConstraint.activate([
+            hexLabel.leadingAnchor.constraint(equalTo: self.colorPreview.leadingAnchor, constant: 15),
+            hexLabel.bottomAnchor.constraint(equalTo: self.colorPreview.bottomAnchor, constant: -15)])
         
     }
+    //MARK: - ShotButton
     func addShotButton(){
-        shotButton.setTitle(k.cameraShotTitle, for: .normal)
-        //        shotButton.setImage(UIImage(systemName:"camera.fill"), for: .normal)
-        //        shotButton.tintColor = .white
-        shotButton.titleLabel?.font = UIFont(name: "System", size: 17)
+        //        shotButton.setTitle(k.cameraShotTitle, for: .normal)
+        shotButton.setImage(UIImage(systemName:"camera.fill"), for: .normal)
+        shotButton.tintColor = .white
+        shotButton.backgroundColor = .clear
+        shotButton.titleLabel?.font = UIFont.systemFont(ofSize: 22)
         shotButton.backgroundColor = .systemGreen
         
         self.view.addSubview(shotButton)
@@ -232,43 +246,149 @@ class PhotoViewController: UIViewController{
         shotButton.translatesAutoresizingMaskIntoConstraints = false
         
         //Constraints
-        NSLayoutConstraint.activate([shotButton.topAnchor.constraint(equalTo: colorPreview.bottomAnchor, constant: 5),
-                                     shotButton.leadingAnchor.constraint(equalTo: colorPreview.leadingAnchor, constant: 0),
+        NSLayoutConstraint.activate([shotButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -45),
+                                     shotButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20),
                                      shotButton.heightAnchor.constraint(equalToConstant: secondaryItemHeight)])
         
-        widthConstraint = NSLayoutConstraint(item: shotButton, attribute: .width, relatedBy: .equal, toItem: colorPreview, attribute: .width, multiplier: 1, constant: 0)
+        buttonTrailling = NSLayoutConstraint(item: shotButton, attribute: .trailing, relatedBy: .equal, toItem: self.view, attribute: .trailing, multiplier: 1, constant: -20)
         
-        view.addConstraints([widthConstraint])
+        view.addConstraints([buttonTrailling])
         
         //Gesture Recognizer
         shotButton.addTarget(self, action: #selector(shotButtonPressed(sender:)), for: .touchUpInside)
         
     }
-    func addOptionButton(){
-        
-        optionButton.backgroundColor = .clear
-        optionButton.layer.cornerRadius = cornerRad
-        optionButton.alpha = 0.0
-        optionButton.isEnabled = false
-        let config = UIImage.SymbolConfiguration(weight: .light)
-        let image = UIImage(systemName: "plus", withConfiguration: config)
-        optionButton.setImage(image, for: .normal)
-        optionButton.contentMode = .scaleAspectFit
-        optionButton.tintColor = .white
-        self.view.addSubview(optionButton)
-        optionButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([optionButton.trailingAnchor.constraint(equalTo: colorPreview.trailingAnchor, constant: -12),
-                                     optionButton.bottomAnchor.constraint(equalTo: colorPreview.bottomAnchor, constant: -12),
-                                     optionButton.heightAnchor.constraint(equalToConstant: secondaryItemHeight),
-                                     optionButton.widthAnchor.constraint(equalToConstant: secondaryItemHeight)])
-        
-        optionButton.addTarget(self, action: #selector(optionPressed(sender:)), for: .touchUpInside)
+    @IBAction func shotButtonPressed(sender: UIButton){
+        takePicture()
+        revealOptionsAfterShot()
+        //        optionButton.isEnabled = true
         
     }
+    //MARK: - add Button
+    func addOptionButton(){
+        
+        addButton.backgroundColor = .darkGray
+        addButton.alpha = 0.6
+        addButton.layer.cornerRadius = cornerRad
+        addButton.alpha = 0.0
+        addButton.isEnabled = true
+        addButton.tintColor = .white
+        addButton.setTitle(" Ajouter", for: .normal)
+        addButton.titleLabel?.font = UIFont.systemFont(ofSize: 17)
+        //        let config = UIImage.SymbolConfiguration(weight: .light)
+        let image = UIImage(systemName: "plus", withConfiguration: nil)
+        addButton.setImage(image, for: .normal)
+        //        addButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 60, bottom: 0, right: 0)
+        addButton.contentMode = .scaleAspectFit
+        self.view.addSubview(addButton)
+        addButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            addButton.bottomAnchor.constraint(equalTo: shotButton.bottomAnchor, constant: 0),
+            addButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20),
+            addButton.topAnchor.constraint(equalTo: shotButton.topAnchor, constant: 0)])
+        
+        addButtonLeading = NSLayoutConstraint(item: addButton, attribute: .leading, relatedBy: .equal, toItem: shotButton, attribute: .trailing, multiplier: 1, constant: 0)
+        
+        self.view.addConstraints([addButtonLeading])
+        
+        addButton.addTarget(self, action: #selector(optionPressed(sender:)), for: .touchUpInside)
+        
+    }
+    @IBAction func optionPressed(sender: UIButton){
+        delegate?.PhotoVCDidDisapear(color: self.color)
+        self.navigationController?.popToRootViewController(animated: true)
+    }
+    //MARK: - Info Button
+    func addInfoButton() {
+        
+        infoButton.setImage(UIImage(systemName: "info.circle.fill"), for: .normal)
+        infoButton.tintColor = .white
+        infoButton.alpha = 0.0
+        
+        self.view.addSubview(infoButton)
+        
+        infoButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            infoButton.centerYAnchor.constraint(equalTo: hexLabel.centerYAnchor, constant: 0),
+            infoButton.trailingAnchor.constraint(equalTo: colorPreview.trailingAnchor, constant: -10),
+            infoButton.widthAnchor.constraint(equalToConstant: secondaryItemHeight),
+            infoButton.heightAnchor.constraint(equalToConstant: secondaryItemHeight)])
+        
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(infoPressed(_:)))
+        longPress.minimumPressDuration = 0.0
+        infoButton.addGestureRecognizer(longPress)
+        
+    }
+    func highlightInfoButton(factor: CGFloat? = 1.0) {
+        
+        var delayForAnimation = 0.0
+        
+        for _ in 1...2 {
+            
+            let circle = UIView()
+            
+            circle.transform = CGAffineTransform(scaleX: factor!, y: factor!)
+            circle.backgroundColor = .clear
+            circle.layer.borderColor = UIColor.white.cgColor
+            circle.layer.borderWidth = 0.2
+            circle.layer.cornerRadius = 10
+            self.infoButton.insertSubview(circle, at: 0)
+            
+            circle.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([circle.centerYAnchor.constraint(equalTo: self.infoButton.centerYAnchor, constant: 0),
+                                         circle.centerXAnchor.constraint(equalTo: self.infoButton.centerXAnchor, constant: 0),
+                                         circle.widthAnchor.constraint(equalToConstant: 20),
+                                         circle.heightAnchor.constraint(equalToConstant: 20)])
+            
+            UIView.animate(withDuration: 1.0, delay: delayForAnimation, options: .curveEaseOut, animations: {
+                circle.transform = CGAffineTransform(scaleX: 5, y: 5)
+                circle.alpha = 0.0
+            }, completion: nil)
+            
+            delayForAnimation += 0.2
+            
+        }
+        
+    }
+    @objc func infoPressed(_ recognizer: UILongPressGestureRecognizer) {
+        
+        func animateButton(toState: gaugesState){
+            
+            let toScale:CGFloat = toState == .on ? 1.2 : 1
+            
+            UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.12, options: .curveEaseInOut, animations: {
+                self.infoButton.transform = CGAffineTransform(scaleX: toScale, y: toScale)
+            }, completion: {(ended) in
+                if toState == .on {
+                    self.highlightInfoButton(factor: 1.2)
+                }
+            })
+        }
+        
+        let color = colorPreview.backgroundColor
+        if let color = color {
+            
+            let red = Double(color.rgb.red)
+            let green = Double(color.rgb.green)
+            let blue = Double(color.rgb.blue)
+            
+            switch recognizer.state {
+            case .began:
+                animateButton(toState: .on)
+                animateGaugesOnOff(red: red, green: green, blue: blue, toState: .on)
+            case .ended:
+                animateButton(toState: .off)
+                animateGaugesOnOff(red: red, green: green, blue: blue, toState: .off)
+            default:
+                break
+            }
+        }
+
+    }
+    //MARK: - Dismiss Button
     func addDismissButton() {
-        
-        
-//        dismissButton.frame.size = CGSize(width: 50, height: 50)
         
         dismissButton.backgroundColor = .darkGray
         dismissButton.setImage(UIImage(systemName: "arrow.left"), for: .normal)
@@ -278,15 +398,142 @@ class PhotoViewController: UIViewController{
         
         dismissButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([dismissButton.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 50),
-                                 dismissButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 10),
-                                 dismissButton.heightAnchor.constraint(equalToConstant: secondaryItemHeight),
-                                 dismissButton.widthAnchor.constraint(equalToConstant: secondaryItemHeight)])
+                                     dismissButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20),
+                                     dismissButton.heightAnchor.constraint(equalToConstant: secondaryItemHeight),
+                                     dismissButton.widthAnchor.constraint(equalToConstant: secondaryItemHeight)])
         
         dismissButton.addTarget(self, action: #selector(dismissButtonPressed(sender: )), for: .touchUpInside)
         
     }
     @IBAction func dismissButtonPressed(sender: UIButton) {
         navigationController?.popToRootViewController(animated:true)
+    }
+    //MARK: - Gauges
+    func addGauges() {
+        
+        let indentHeight:CGFloat = 8
+        var compoundedHeight:CGFloat = indentHeight
+        
+        let gaugesHeight = gaugesMiniWidth//(100-2*compoundedHeight)/3
+        let colors = [UIColor.systemBlue, UIColor.systemGreen, UIColor.systemRed]
+        var delayForAnimation = 0.2
+        let gaugesWidth = self.gaugesWidth + gaugesMiniWidth
+        
+        for i in 0...2 {
+            let newGaugeBack = UIView()
+            newGaugeBack.backgroundColor = .lightGray
+            newGaugeBack.layer.cornerRadius = gaugesHeight/2
+            newGaugeBack.alpha = 0.0
+            
+            self.view.addSubview(newGaugeBack)
+            
+            newGaugeBack.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([newGaugeBack.bottomAnchor.constraint(equalTo: self.colorPreview.topAnchor, constant: -compoundedHeight),
+                                         newGaugeBack.widthAnchor.constraint(equalToConstant: gaugesWidth),
+                                         newGaugeBack.heightAnchor.constraint(equalToConstant: gaugesHeight),
+                                         newGaugeBack.leadingAnchor.constraint(equalTo: colorPreview.leadingAnchor, constant: 0)])
+            
+            
+            
+            //gauges
+            
+            let newGauge = UIView()
+            newGauge.backgroundColor = colors[i]
+            newGauge.alpha = 0.0
+            newGauge.layer.cornerRadius = gaugesHeight/2
+            newGauge.layer.shadowRadius = 2
+            newGauge.layer.shadowOpacity = 0.2
+            newGauge.layer.shadowOffset = CGSize(width: 0.2, height: 0)
+            
+            self.view.addSubview(newGauge)
+            
+            newGauge.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([newGauge.leadingAnchor.constraint(equalTo: colorPreview.leadingAnchor, constant: 0),
+                                         newGauge.bottomAnchor.constraint(equalTo: colorPreview.topAnchor, constant: -compoundedHeight),
+                                         newGauge.heightAnchor.constraint(equalToConstant: gaugesHeight)])
+            
+            let constraint = NSLayoutConstraint(item: newGauge, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: gaugesMiniWidth )
+            
+            gaugesConstraints.append(constraint)
+            self.view.addConstraint(constraint)
+            
+            
+            gaugesBacks.append(newGaugeBack)
+            gauges.append(newGauge)
+            
+            
+            compoundedHeight += gaugesHeight + indentHeight
+            
+            newGaugeBack.transform = CGAffineTransform(scaleX: 0, y: 0)
+            
+            
+            UIView.animate(withDuration: 0.3, delay: delayForAnimation, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.12, options: .curveEaseOut, animations: {
+                newGaugeBack.transform = CGAffineTransform(scaleX: 1, y: 1)
+            }) { (ended) in
+                
+            }
+            delayForAnimation += 0.1
+            
+            let newLabel = UILabel()
+            newLabel.text = "0"
+            newLabel.font = UIFont.systemFont(ofSize: 10)
+            
+            
+            newLabel.textColor = .white
+            
+            newGauge.addSubview(newLabel)
+            
+            gaugesLabels.append(newLabel)
+            
+            newLabel.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([newLabel.trailingAnchor.constraint(equalTo: newGauge.trailingAnchor, constant: -8),
+                                         newLabel.centerYAnchor.constraint(equalTo: newGauge.centerYAnchor, constant: 0)])
+        }
+    }
+    private enum gaugesState {
+        case on, off
+    }
+
+    private func animateGaugesOnOff(red: Double,green: Double, blue: Double, toState: gaugesState) {
+        
+        let widths = [blue,green,red]
+        
+        func animateGauges(toState: gaugesState, for i: Int) {
+            
+            let width:CGFloat = toState == .on ? CGFloat(widths[i] * Double(gaugesWidth)) : gaugesMiniWidth
+            let toAlpha:CGFloat = toState == .on ? 1.0 : 0.0
+            
+            UIView.animate(withDuration: 0.2) {
+                self.gauges[i].alpha = toAlpha
+                self.gaugesBacks[i].alpha = toAlpha * 0.6
+            }
+            
+            UIView.animate(withDuration: 1, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.1, options: .curveEaseOut, animations: {
+                self.gaugesConstraints[i].constant = width + self.gaugesMiniWidth
+                self.view.layoutIfNeeded()
+            }, completion: nil)
+        }
+        
+        for i in 0...2 {
+            
+            animateGauges(toState: toState, for: i)
+            
+            let target = min(255,widths[i] * 255)
+            let indent:Double = (target) * 1/60
+            var number:Double = 0.0
+            
+            let _ = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { (timer) in
+                number += indent
+                if number >= target {
+                    self.gaugesLabels[i].text = String(Int(target))
+                    timer.invalidate()
+                }else{
+                    self.gaugesLabels[i].text = String(Int(number))
+                }
+            }
+        }
+
     }
     //MARK: - Actions & Gestures
     @objc func swipeUpHandler() {
@@ -298,36 +545,27 @@ class PhotoViewController: UIViewController{
     @objc func swipeDownHandler(sender: UISwipeGestureRecognizer) {
         
         let constant = colorPreviewHeight.constant
-
+        
         UIView.animate(withDuration: 0.567, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.1, options: .curveEaseInOut, animations: {
             self.colorPreviewHeight.constant = self.mainItemHeight < constant ? self.mainItemHeight : 0.0
             self.colorPreview.layer.cornerRadius = self.mainItemHeight < constant ? self.cornerRad : 3
-            self.optionButton.alpha = self.mainItemHeight < constant ? 1 : 0
+            self.addButton.alpha = self.mainItemHeight < constant ? 0.6 : 0
+            self.infoButton.alpha = self.mainItemHeight < constant ? 1 : 0
             self.hexLabel.text = self.mainItemHeight < constant ? self.hexLabel.text : nil
-            self.rgbLabels[0].alpha = self.mainItemHeight < constant ? 1 : 0
-            self.rgbLabels[1].alpha = self.mainItemHeight < constant ? 1 : 0
-            self.rgbLabels[2].alpha = self.mainItemHeight < constant ? 1 : 0
+            self.buttonTrailling.constant = self.mainItemHeight < constant ? -147 : -20
             self.view.layoutIfNeeded()
         }, completion: {(finished) in
-
+            
         })
-
+        
         UIView.animate(withDuration: 0.567) {
             self.hexLabelContainer.alpha = self.mainItemHeight < constant ? 1 : 0
             self.view.layoutIfNeeded()
         }
         
-        optionButton.isEnabled = mainItemHeight < constant ? true : false
     }
-    @IBAction func shotButtonPressed(sender: UIButton){
-        takePicture()
-        revealOptionsAfterShot()
-        optionButton.isEnabled = true
-    }
-    @IBAction func optionPressed(sender: UIButton){
-        delegate?.PhotoVCDidDisapear(color: self.color)
-        self.navigationController?.popToRootViewController(animated: true)
-    }
+    
+    
     //MARK: - Camera Session
     func initializeCaptureSession(){
         session.sessionPreset = AVCaptureSession.Preset.high
@@ -380,42 +618,20 @@ extension PhotoViewController: AVCapturePhotoCaptureDelegate{
                 finalImageView.image = finalImage
                 
                 color = getPixelColorAtPoint(point: CGPoint(x: self.view.frame.size.width/2,y: 200/812*finalImageView.frame.height), sourceView: self.finalImageView)
-                let color1 = self.color.darken(by: 20)?.cgColor ?? UIColor.red.cgColor
-                let color2 = self.color.darken(by: 10)?.cgColor ?? UIColor.red.cgColor
-                let color3 = self.color.darken(by: 5)?.cgColor ?? UIColor.red.cgColor
+                let color1 = self.color
+                let color2 = self.color.withHueOffset(offset: 1/12)
                 
                 finalImageView.image = nil
                 self.hexLabel.text = self.color.toHexString()
-                self.updateRgbLabelsValues()
                 UIView.animate(withDuration: 0.32) {
                     self.colorPreview.backgroundColor = self.color
-                    self.gradientLayers["optionButton"]!.colors = [color1,color2]
-                    self.gradientLayers["hexLabelContainer"]!.colors = [color1,color2]
-                    self.gradientLayers["shotButton"]!.colors = [color1,color3]
+                    self.gradientLayers["shotButton"]!.colors = [color1.cgColor,color2.cgColor]
+                    self.hexLabel.adjustTextColor(color: self.color)
+                    self.infoButton.adjustTextColor(color: self.color)
                     self.view.layoutIfNeeded()
                 }
             }
         }
-    }
-    func updateRgbLabelsValues() {
-        
-        let colorLabels = ["R ","G ","B "]
-        
-        let red = Int(color.rgb.red * 255)
-        let green = Int(color.rgb.green * 255)
-        let blue = Int(color.rgb.blue * 255)
-        
-        let values = [red, green, blue]
-        
-        for i in 0...2 {
-            animateRgbLabels(for: i,alpha: 1.0)
-            self.rgbLabels[i].text = String("\(colorLabels[i])\(values[i])")
-        }
-    }
-    func animateRgbLabels(for i: Int,alpha: CGFloat) {
-        UIView.animate(withDuration: 0.2) {
-             self.rgbLabels[i].alpha = 1.0
-         }
     }
     func getPixelColorAtPoint(point: CGPoint, sourceView: UIView) -> UIColor {
         let pixel = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: 4)
@@ -434,22 +650,4 @@ extension PhotoViewController: AVCapturePhotoCaptureDelegate{
         return color
     }
 }
-extension UIImage {
-    func getPixelColor2(pos: CGPoint) -> UIColor {
-        let cgImage : CGImage = self.cgImage!
-        guard let pixelData = CGDataProvider(data: (cgImage.dataProvider?.data)!)?.data else {
-            return UIColor.clear
-        }
-        let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
-        
-        let pixelInfo: Int = ((Int(self.size.width) * Int(pos.y)) + Int(pos.x)) * 4
-        
-        let r = CGFloat(data[pixelInfo]) / CGFloat(255.0)
-        let g = CGFloat(data[pixelInfo+1]) / CGFloat(255.0)
-        let b = CGFloat(data[pixelInfo+2]) / CGFloat(255.0)
-        let a = CGFloat(data[pixelInfo+3]) / CGFloat(255.0)
-        
-        return UIColor(red: r, green: g, blue: b, alpha: a)
-    }
-    
-}
+
