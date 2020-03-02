@@ -7,41 +7,49 @@
 //
 
 import UIKit
-
-class TwoegmentedControl: UIView {
+protocol TwoSegmentControlDelegate {
+    func didChoose(option: String)
+}
+class TwoSegmentControl: UIView {
 
     private var buttonTitles: [String]!
     private var buttons: [UIButton]!
     private var selectorView: UIView!
-    private var leadingConstraint: NSLayoutConstraint!
-    private var trailingConstraint: NSLayoutConstraint!
     private var selectorWidth: CGFloat = 0
     private var opposedConstraint: CGFloat = 0
-    private var isRight = false
     
     var inset:CGFloat = 5
-    var textColor: UIColor = .black
+    var textColor: UIColor = .white
     var selectorViewColor: UIColor = .systemYellow
     var backgroudViewColor: UIColor = .systemRed
     var selectorTextCOlor: UIColor = .white
     
+    var delegate: TwoSegmentControlDelegate?
+    
     convenience init(frame: CGRect, buttonTitles: [String]) {
         self.init(frame: frame)
         self.buttonTitles = buttonTitles
-        selectorWidth = frame.width / CGFloat(self.buttonTitles.count)
-        opposedConstraint = frame.width - selectorWidth
+    }
+    convenience init(buttonTitles: [String]) {
+        self.init(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
+        self.buttonTitles = buttonTitles
     }
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         updateView()
     }
+    override func layoutSubviews() {
+        super.layoutSubviews()
 
+    }
     private func configStackView() {
         
         let backgroundView = UIView()
-        backgroundView.backgroundColor = backgroudViewColor
+        backgroundView.backgroundColor = .clear
         backgroundView.layer.cornerRadius = frame.size.height / 2
-        
+        backgroundView.alpha = 0.6
+        backgroundView.layer.borderWidth = 1
+        backgroundView.layer.borderColor = UIColor.white.cgColor
         insertSubview(backgroundView, at: 0)
         
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
@@ -68,20 +76,12 @@ class TwoegmentedControl: UIView {
         
         let height = self.frame.size.height - inset*2
         
-        selectorView = UIView()//UIView(frame: CGRect(x: inset, y: inset, width: selectorWidth - inset*2, height: height))
+        selectorView = UIView(frame: CGRect(x: inset, y: inset, width: selectorWidth - inset*2, height: height))
         selectorView.layer.cornerRadius = height / 2
         selectorView.backgroundColor = selectorViewColor
+        selectorView.alpha = 0.9
         
         addSubview(selectorView)
-        
-        selectorView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([selectorView.topAnchor.constraint(equalTo: self.topAnchor, constant: inset),
-                                     selectorView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -inset)])
-        
-        leadingConstraint = NSLayoutConstraint(item: selectorView, attribute: .leading, relatedBy: .equal, toItem: self, attribute: .leading, multiplier: 1, constant: inset)
-        trailingConstraint = NSLayoutConstraint(item: selectorView, attribute: .trailing, relatedBy: .equal, toItem: self, attribute: .trailing, multiplier: 1, constant: -opposedConstraint)
-        
-        addConstraints([leadingConstraint,trailingConstraint])
 
     }
     private func createButton() {
@@ -99,40 +99,24 @@ class TwoegmentedControl: UIView {
         buttons[0].setTitleColor(selectorTextCOlor, for: .normal)
     }
     @objc func buttonAction(_ sender: UIButton!) {
-        for btn in buttons {
+        for (buttonIndex, btn) in buttons.enumerated() {
             btn.setTitleColor(textColor, for: .normal)
             if btn == sender {
-//                let selectorPosition = frame.width/CGFloat(buttonTitles.count) * CGFloat(buttonIndex)
+                let selectorPosition = frame.width/CGFloat(buttonTitles.count) * CGFloat(buttonIndex)
                 
-                let animationTime = 0.3
-                
-                UIView.animate(withDuration: animationTime/2, delay: 0, options: .curveEaseIn, animations: {
-                    self.leadingConstraint.constant = self.isRight == true ? self.inset : self.inset + 30
-                    self.trailingConstraint.constant = self.isRight == true ? -self.inset - 30: -self.inset
-                    self.layoutIfNeeded()
-                }) { (ended) in
-                    UIView.animate(withDuration: animationTime/2, delay: 0, options: .curveEaseOut, animations:  {
-                        self.leadingConstraint.constant = self.isRight == true ? self.opposedConstraint  : -self.inset*0.8
-                        self.trailingConstraint.constant = self.isRight == true ? self.inset*0.8 : -self.opposedConstraint
-                        self.layoutIfNeeded()
-                    }) { (ended) in
-                        UIView.animate(withDuration: 0.08, delay: 0, options: .curveEaseOut, animations:  {
-                            self.leadingConstraint.constant = self.isRight == true ? self.opposedConstraint  : self.inset
-                            self.trailingConstraint.constant = self.isRight == true ? -self.inset : -self.opposedConstraint
-                            self.layoutIfNeeded()
-                        }) { (ended) in
-                            
-                        }
-                    }
-                }
-                
-                self.isRight.toggle()
+                UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.12, options: .curveEaseInOut, animations: {
+                    self.selectorView.frame.origin.x = selectorPosition + self.inset
+                }, completion: {(ended) in
+                    self.delegate?.didChoose(option: btn.titleLabel?.text ?? "error")
+                })
 
                 btn.setTitleColor(selectorTextCOlor, for: .normal)
             }
         }
     }
-    private func updateView() {
+    func updateView() {
+        selectorWidth = frame.width / CGFloat(self.buttonTitles.count)
+        opposedConstraint = frame.width - selectorWidth
         createButton()
         configSelectorView()
         configStackView()

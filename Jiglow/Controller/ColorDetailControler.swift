@@ -23,6 +23,9 @@ class ColorDetailControler: UIViewController {
     private var mainWidth: CGFloat?
     private var gaugesWidth: CGFloat?
     private var complView: UIView?
+    private var blurEffectView: UIVisualEffectView!
+    private var animator: UIViewPropertyAnimator!
+    private var animationOn = false
     
     var originRect: CGRect?
     var color:  UIColor?
@@ -30,7 +33,6 @@ class ColorDetailControler: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.isHidden = true
-        
         mainHeight = self.view.frame.size.height
         mainWidth = self.view.frame.size.width
         gaugesWidth =  (mainWidth! * 0.85)/2 - 10
@@ -41,12 +43,14 @@ class ColorDetailControler: UIViewController {
     override func viewDidLayoutSubviews() {
         dismissButton?.imageView?.contentMode = .scaleToFill
     }
+    
     func layoutViews() {
-        addMainSwipeGesture()
+        addMainPanGesture()
         addMainColorDisplay()
         addComplementaryColorView()
         addDismissButton()
         addGauges()
+        addAnimator()
         
         let _ = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false) { (timer) in
             
@@ -60,41 +64,143 @@ class ColorDetailControler: UIViewController {
         }
         
     }
-    func addMainSwipeGesture() {
+    func addMainPanGesture() {
         
-        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(swipeHandler))
-        swipeDown.direction = .down
+        let swipeDown = UIPanGestureRecognizer(target: self, action: #selector(panHandler(recognizer:)))
         self.view.addGestureRecognizer(swipeDown)
         
     }
-    @objc func swipeHandler() {
-        dismissController()
-    }
-    func dismissController() {
+    @objc func panHandler(recognizer: UIPanGestureRecognizer) {
         
-        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn, animations: {
-            self.mainColorDisplay?.frame.size.height = 0.0
-            self.mainColorDisplay?.alpha = 0.0
-            self.complView?.alpha = 0.0
-            self.dismissButton?.alpha = 0.0
+        let translation = recognizer.translation(in: self.view)
+        
+        let fractionComplete = translation.y/300
+        
+        switch recognizer.state {
+        case .ended:
+            if animator.fractionComplete < 0.6 {
+                
+                animator.stopAnimation(true)
+                animationOn = false
+                addAnimator()
+                animator.startAnimation()
+                animationOn = true
+                addAnimator()
+                
+            }else{
+                animator.startAnimation()
+                let _ = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { (timer) in
+                    self.removeFromParent()
+                    self.view.removeFromSuperview()
+                    timer.invalidate()
+                }
+                
+            }
+        default:
+            animationOn = true
+            animator.fractionComplete = fractionComplete
+            
+            if animator.fractionComplete == 1 {
+                animator.stopAnimation(true)
+                self.removeFromParent()
+                self.view.removeFromSuperview()
+            }
+        }
+        
+    }
+    func addAnimator() {
+        
+        let tempView = UIView(frame: originRect!)
+        
+        let height = tempView.frame.size.height
+        let width = tempView.frame.size.width
+        let top = self.view.center.y
+        
+        let color = self.color ?? .blue
+            let red = Double(color.rgb.red)
+            let green = Double(color.rgb.green)
+            let blue = Double(color.rgb.blue)
+        
+        animator = UIViewPropertyAnimator(duration: 0.5, curve: .easeInOut, animations: {
+            
+            if self.animationOn {
+                self.mainColorDisplayTop.constant = top
+                self.mainColorDisplayWidth.constant = width
+                self.mainColorDisplayHeight.constant = height
+                
+                self.animateGauges(red: 0, green: 0, blue: 0)
+
+                self.blurEffectView.effect = nil
+                
+                self.view.subviews.forEach({$0.alpha = 0.0})
+                
+                self.view.layoutIfNeeded()
+            }else{
+                self.mainColorDisplayTop.constant = 50
+                self.mainColorDisplayWidth.constant = self.mainWidth! * 0.85
+                self.mainColorDisplayHeight.constant = self.mainHeight! * 0.6
+                
+                self.view.subviews.forEach({$0.alpha = 1.0})
+                
+                self.animateGauges(red: red, green: green, blue: blue)
+                
+                self.blurEffectView.effect = UIBlurEffect(style: .regular)
+                self.view.layoutIfNeeded()
+            }
+
+        })
+        
+    }
+    func dismissAnimation(completionHandler: @escaping (_ success:Bool) -> Void) {
+        
+        completionHandler(false)
+
+        let tempView = UIView(frame: originRect!)
+        
+        let height = tempView.frame.size.height
+        let width = tempView.frame.size.width
+        let top = self.view.center.y
+        
+        animateGauges(red: 0.0, green: 0.0, blue: 0.0)
+        complView?.animateAlpha(on: false, withDuration: 0.3)
+        
+        var delay = 0.0
+        for (index,gauge) in gaugesBacks.enumerated() {
+            UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear, animations: {
+                gauge.alpha = 0.0
+                self.gauges[index].alpha = 0.0
+            }, completion: nil)
+            delay += 0.25
+        }
+        
+        UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.1, options: .curveEaseOut, animations: {
+            self.mainColorDisplayTop.constant = top
+            self.mainColorDisplayWidth.constant = width
+            self.mainColorDisplayHeight.constant = height
+            self.mainColorDisplay?.alpha = 0
+            self.hexLabel?.alpha = 0
+            self.dismissButton?.alpha = 0
+            self.blurEffectView.effect = nil
             self.view.layoutIfNeeded()
         }, completion: {(ended) in
-            self.removeFromParent()
-            self.view.removeFromSuperview()
+            completionHandler(true)
         })
+ 
+        
     }
+
+    //MARK: - Main Color Display
     func addMainColorDisplay(){
         
-        let blurView = UIBlurEffect(style: .light)
-        let blurEffectView = UIVisualEffectView(effect: blurView)
+        blurEffectView = UIVisualEffectView(effect: nil)
+        blurEffectView.effect = nil
         blurEffectView.frame = self.view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth,.flexibleHeight]
         view.insertSubview(blurEffectView, at: 0)
-        blurEffectView.alpha = 1.0
         
-        //        UIView.animate(withDuration: 0.5) {
-        //            blurEffectView.alpha = 1.0
-        //        }
+        UIView.animate(withDuration: 0.8) {
+            self.blurEffectView.effect = UIBlurEffect(style: .regular)
+        }
         
         mainColorDisplay = UIView()
         mainColorDisplay!.frame = originRect ?? CGRect(x: 50, y: 50, width: 100, height: 100)
@@ -106,11 +212,9 @@ class ColorDetailControler: UIViewController {
             mainColorDisplay.backgroundColor = color
             mainColorDisplay.layer.cornerRadius = 12
             
-            
-            
             let height = mainColorDisplay.frame.size.height
             let width = mainColorDisplay.frame.size.width
-            let top = mainColorDisplay.frame.origin.y + height
+            let top = mainColorDisplay.frame.origin.y
             
             mainColorDisplay.translatesAutoresizingMaskIntoConstraints = false
             
@@ -161,13 +265,14 @@ class ColorDetailControler: UIViewController {
             
         }
     }
+    //MARK: - Dismiss Button
     func addDismissButton() {
         
         dismissButton = UIButton()
         
         if let dismissButton = self.dismissButton {
             
-            dismissButton.backgroundColor = .gray
+            dismissButton.backgroundColor = .systemRed
             dismissButton.titleLabel?.font = UIFont.systemFont(ofSize: 30)
             dismissButton.setImage(UIImage(systemName: "xmark"), for: .normal)
             dismissButton.tintColor = .white
@@ -198,13 +303,17 @@ class ColorDetailControler: UIViewController {
     }
     @IBAction func dismissPressed(_ sender: UIButton!){
         
-        
-        //        self.dismiss(animated: true, completion: nil)
-        self.removeFromParent()
-        self.view.removeFromSuperview()
-        
-        
+        animationOn = true
+        addAnimator()
+        animator.startAnimation()
+        let _ = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { (timer) in
+            self.removeFromParent()
+            self.view.removeFromSuperview()
+            self.animator = nil
+            timer.invalidate()
+        }
     }
+    //MARK: - Complementary View
     func addComplementaryColorView() {
         
         let red = 1 - color!.rgb.red
@@ -225,7 +334,7 @@ class ColorDetailControler: UIViewController {
             complView.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([complView.topAnchor.constraint(equalTo: self.mainColorDisplay!.bottomAnchor, constant: 10),
                                          complView.trailingAnchor.constraint(equalTo: self.mainColorDisplay!.trailingAnchor, constant: 0),
-                                         complView.heightAnchor.constraint(equalToConstant: 100),
+                                         complView.heightAnchor.constraint(equalToConstant: 110),
                                          complView.widthAnchor.constraint(equalToConstant: self.mainColorDisplay!.frame.size.width / 2 - 5)])
             
             let backgroundView = UIView()
@@ -278,13 +387,11 @@ class ColorDetailControler: UIViewController {
             case .began:
                 animateComplView(factor: 1.05)
                 animateGauges(red: red.compl, green: green.compl, blue: blue.compl)
-                //            case .:
-                
             case .ended:
                 animateComplView(factor: 1.0)
                 animateGauges(red: red.initial, green: green.initial, blue: blue.initial)
             default:
-                print("default")
+                break
             }
         }
         
@@ -295,11 +402,12 @@ class ColorDetailControler: UIViewController {
             self.complView?.transform = CGAffineTransform(scaleX: factor, y: factor)
         }, completion: nil)
     }
+    //MARK: - Gauges
     typealias CompletionHandler = (_ success:Bool) -> Void
     func addGauges(completionHandler: CompletionHandler? = nil) {
         
         var compoundedHeight:CGFloat = 10
-        let gaugesHeight = (100-2*compoundedHeight)/3
+        let gaugesHeight = (110-2*compoundedHeight)/3
         let colors = [UIColor.systemRed, UIColor.systemGreen, UIColor.systemBlue]
         var delayForAnimation = 0.2
         
@@ -307,6 +415,7 @@ class ColorDetailControler: UIViewController {
             let newGaugeBack = UIView()
             newGaugeBack.backgroundColor = .lightGray
             newGaugeBack.layer.cornerRadius = gaugesHeight/2
+            newGaugeBack.alpha = 0.6
             
             self.view.addSubview(newGaugeBack)
             

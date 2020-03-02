@@ -15,10 +15,12 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
     var miniPalletsCD = [MiniPalletModel]()
     var miniPallet: MiniPalletModel?
     var delegate: CollectionControllerDelegate?
-    var navBar: UINavigationBar?
+    private var navBar: CustomNavBar!
+    private var titleBar: TitleBar!
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     private var action = UIAlertAction()
-    @IBOutlet weak var collectionView: UICollectionView!
+    private var collectionView: UICollectionView!
+    private var screenAdjustment: CGFloat = 0.0
     var k = K()
 
     //MARK: - Loading functions
@@ -26,25 +28,35 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        loadMiniPallets()
-        
         k.isFrench()
+        
+        screenAdjustment = k.checkScreenSize(view: self.view) < 2 ? 10.0 : 0.0
+        
+        navBar = CustomNavBar(frame: CGRect(x: -1, y: self.view.frame.height, width:  self.view.frame.width + 2, height:  90),
+                              buttonTitles: ["Photo","Main","Stack"],
+                              images: [UIImage(systemName: "camera.fill")!,UIImage(systemName: "slider.horizontal.3")!,UIImage(systemName: "rectangle.stack.fill")!])
+        self.view.addSubview(navBar)
+        navBar.delegate = self
+        
+        titleBar = TitleBar(frame: CGRect(x: 0, y: 0 - screenAdjustment, width: self.view.frame.size.width, height: 90))
+        self.view.addSubview(titleBar)
+        
+        addCollectionView()
         
         collectionView.dataSource = self
         collectionView.delegate = self
         
         collectionView.register(UINib(nibName: "miniPallet", bundle: nil), forCellWithReuseIdentifier: "ReusableCell")
         
-        navBar = navigationController!.navigationBar
-        navigationController?.setNavigationBarHidden(false, animated: true)
-        navBar?.backItem?.title = ""
-        navBar?.tintColor = .label
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-        let layout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
-        layout.minimumLineSpacing = spacing
-        layout.minimumInteritemSpacing = spacing
-        self.collectionView?.collectionViewLayout = layout
+        UIView.animate(withDuration: 0.4, animations: {
+            self.navBar.frame.origin.y -= 89 - self.screenAdjustment
+            self.collectionView.alpha = 1.0
+        }, completion: nil)
+        
         
     }
     override func viewWillDisappear(_ animated: Bool) {
@@ -80,6 +92,30 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
             textField.placeholder = self.k.renamePalletPlaceHolder
         }
         present(alert, animated: true, completion: nil)
+    }
+    //MARK: - Collection View
+    func addCollectionView() {
+        
+        collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: UICollectionViewFlowLayout.init())
+        
+        let layout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
+        layout.minimumLineSpacing = spacing
+        layout.minimumInteritemSpacing = spacing
+        
+        collectionView.collectionViewLayout = layout
+        collectionView.backgroundColor = .clear
+        collectionView.alpha = 0
+        
+        self.view.insertSubview(collectionView, at: 0)
+        
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([collectionView.topAnchor.constraint(equalTo: titleBar.bottomAnchor, constant: 0),
+                                     collectionView.bottomAnchor.constraint(equalTo: navBar.topAnchor, constant: 0),
+                                     collectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 10),
+                                     collectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10)])
+        
     }
     //MARK: - Add hint
     func saveHint() {
@@ -185,7 +221,7 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
         cell.layer.shadowRadius = 4.1536
         cell.layer.shadowColor = UIColor.lightGray.cgColor
         cell.layer.shadowOpacity = 0.2
-        cell.layer.shadowColor = UIColor.black.cgColor
+        cell.layer.shadowColor = UIColor(named: "ShadowColor")?.cgColor
         cell.layer.masksToBounds = false
         cell.layer.shadowPath = UIBezierPath(roundedRect: cell.bounds, cornerRadius: cell.cornerView.layer.cornerRadius).cgPath
         
@@ -207,8 +243,19 @@ class CollectionController: UIViewController,UICollectionViewDataSource {
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         miniPallet = miniPalletsCD[indexPath.row]
-        navigationController?.popViewController(animated: true)
+        animateOut()
         
+    }
+    private func animateOut() {
+        UIView.animate(withDuration: 0.2, animations: {
+            self.collectionView.alpha = 0.0
+            self.navBar.frame.origin.y += 90
+            self.view.layoutIfNeeded()
+        }) { (ended) in
+            self.navBar.frame.origin.y -= 90
+            self.collectionView.alpha = 1.0
+            self.navigationController?.popToRootViewController(animated: false)
+        }
     }
     //MARK: - Data Management
     func loadMiniPallets() {
@@ -264,5 +311,19 @@ extension CollectionController: UICollectionViewDelegateFlowLayout {
             return UIMenu(title: "Options", children: [subMenu,rename])
         }
     }
+    
+}
+extension CollectionController: CustomNavBarDelegate {
+    func navBarButtonPressed(index: Int) {
+
+        switch index {
+        case 1:
+            animateOut()
+        default:
+            break
+        }
+        
+    }
+    
     
 }

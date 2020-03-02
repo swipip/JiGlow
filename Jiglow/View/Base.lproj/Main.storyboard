@@ -5,7 +5,6 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -16,118 +15,11 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="neq-Pd-S3J">
-                                <rect key="frame" x="78" y="567" width="219" height="31"/>
-                                <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <accessibility key="accessibilityConfiguration" identifier="sldGreen"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="215" id="Lgb-JA-pZl"/>
-                                    <constraint firstAttribute="height" constant="30" id="Ti0-Sy-WAD"/>
-                                </constraints>
-                                <color key="minimumTrackTintColor" name="sliderMinTrack"/>
-                                <color key="maximumTrackTintColor" name="sliderMaxTrack"/>
-                                <connections>
-                                    <action selector="sliderSlide:" destination="BYZ-38-t0r" eventType="valueChanged" id="aIE-5g-mSM"/>
-                                </connections>
-                            </slider>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="pNV-AE-qvc">
-                                <rect key="frame" x="78" y="637" width="219" height="31"/>
-                                <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <accessibility key="accessibilityConfiguration" identifier="sldBlue"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="215" id="c1i-nt-gJM"/>
-                                    <constraint firstAttribute="height" constant="30" id="mJp-JW-3Ij"/>
-                                </constraints>
-                                <color key="minimumTrackTintColor" name="sliderMinTrack"/>
-                                <color key="maximumTrackTintColor" name="sliderMaxTrack"/>
-                                <connections>
-                                    <action selector="sliderSlide:" destination="BYZ-38-t0r" eventType="valueChanged" id="YsD-Nb-YVW"/>
-                                </connections>
-                            </slider>
-                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="17" translatesAutoresizingMaskIntoConstraints="NO" id="sD4-Fz-MqG">
-                                <rect key="frame" x="-24" y="717" width="423" height="50"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8li-Rz-TIf">
-                                        <rect key="frame" x="0.0" y="0.0" width="129.66666666666666" height="50"/>
-                                        <color key="backgroundColor" name="Buttons"/>
-                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="23" maxY="0.0"/>
-                                        <state key="normal" image="camera.fill" catalog="system">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="cameraPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Xez-lb-3HJ"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="71o-8g-jsV" customClass="GradientButton" customModule="Jiglow" customModuleProvider="target">
-                                        <rect key="frame" x="146.66666666666669" y="0.0" width="129.66666666666669" height="50"/>
-                                        <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <state key="normal" title="New Pal">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="17" scale="medium"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="resetClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="rX0-6t-pW0"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fxF-Ow-Y1D" customClass="GradientButton" customModule="Jiglow" customModuleProvider="target">
-                                        <rect key="frame" x="293.33333333333331" y="0.0" width="129.66666666666669" height="50"/>
-                                        <color key="backgroundColor" name="Buttons"/>
-                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <inset key="contentEdgeInsets" minX="23" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                        <state key="normal" image="rectangle.stack.fill" catalog="system">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="stackTouched:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7qG-6h-edW"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="PG7-9L-G2d"/>
-                                </constraints>
-                            </stackView>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="VEQ-md-npY">
-                                <rect key="frame" x="78" y="497" width="219" height="31"/>
-                                <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <accessibility key="accessibilityConfiguration" identifier="sldRed"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="TLq-9O-zAh"/>
-                                    <constraint firstAttribute="width" constant="215" id="f9M-DO-e00"/>
-                                </constraints>
-                                <color key="minimumTrackTintColor" name="sliderMinTrack"/>
-                                <color key="maximumTrackTintColor" name="sliderMaxTrack"/>
-                                <connections>
-                                    <action selector="sliderSlide:" destination="BYZ-38-t0r" eventType="valueChanged" id="f7B-e5-VEi"/>
-                                </connections>
-                            </slider>
-                        </subviews>
                         <color key="backgroundColor" name="mainBackground"/>
-                        <constraints>
-                            <constraint firstItem="sD4-Fz-MqG" firstAttribute="top" secondItem="pNV-AE-qvc" secondAttribute="bottom" constant="50" id="4KL-LT-Sag"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="sD4-Fz-MqG" secondAttribute="trailing" constant="-40" id="4X3-am-O0l"/>
-                            <constraint firstItem="neq-Pd-S3J" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="9M0-9t-TSS"/>
-                            <constraint firstItem="pNV-AE-qvc" firstAttribute="top" secondItem="neq-Pd-S3J" secondAttribute="bottom" constant="40" id="L4I-Kl-dFU"/>
-                            <constraint firstAttribute="bottom" secondItem="sD4-Fz-MqG" secondAttribute="bottom" constant="45" id="ZtN-kv-74A"/>
-                            <constraint firstItem="neq-Pd-S3J" firstAttribute="top" secondItem="VEQ-md-npY" secondAttribute="bottom" constant="40" id="a1q-sQ-zJC"/>
-                            <constraint firstItem="pNV-AE-qvc" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="nJi-XG-Amv"/>
-                            <constraint firstItem="sD4-Fz-MqG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-40" id="s2j-Wv-CbK"/>
-                            <constraint firstItem="VEQ-md-npY" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="set-UQ-O57"/>
-                        </constraints>
                         <viewLayoutGuide key="safeArea" id="OII-vE-326"/>
                     </view>
                     <navigationItem key="navigationItem" title="JiGlow" id="EfG-xe-f1S"/>
                     <connections>
-                        <outlet property="btnCamera" destination="8li-Rz-TIf" id="f7Z-wd-TOA"/>
-                        <outlet property="btnReset" destination="71o-8g-jsV" id="zsy-l9-J8I"/>
-                        <outlet property="btnStack" destination="fxF-Ow-Y1D" id="atm-hN-3fg"/>
-                        <outlet property="sliderBlue" destination="pNV-AE-qvc" id="7hJ-th-rmc"/>
-                        <outlet property="sliderGreen" destination="neq-Pd-S3J" id="Vkd-vQ-vXW"/>
-                        <outlet property="sliderRed" destination="VEQ-md-npY" id="FY9-KW-1TN"/>
-                        <outlet property="superView" destination="8bC-Xf-vdC" id="nYP-0z-cqr"/>
                         <segue destination="BsN-Yx-05h" kind="show" identifier="mainToCollection" id="HAF-ci-9XY"/>
                         <segue destination="Uoa-Rn-jj0" kind="show" identifier="mainToCamera" id="ruh-3j-iyj"/>
                     </connections>
@@ -139,47 +31,16 @@
         <!--Collection-->
         <scene sceneID="gmA-vH-JcP">
             <objects>
-                <viewController id="BsN-Yx-05h" customClass="CollectionController" customModule="Jiglow" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CollectionController" id="BsN-Yx-05h" customClass="CollectionController" customModule="Jiglow" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="TlI-ys-Ae9">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="RIQ-Du-7QB">
-                                <rect key="frame" x="10" y="98" width="355" height="680"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="JDp-7i-boH">
-                                    <size key="itemSize" width="50" height="50"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                                <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ReusableCell" id="Pw8-Db-I1B">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Mji-EB-n7s">
-                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </collectionViewCellContentView>
-                                    </collectionViewCell>
-                                </cells>
-                            </collectionView>
-                        </subviews>
                         <color key="backgroundColor" name="mainBackground"/>
-                        <constraints>
-                            <constraint firstItem="Xbj-Jr-u8h" firstAttribute="bottom" secondItem="RIQ-Du-7QB" secondAttribute="bottom" id="5DM-MS-8Ld"/>
-                            <constraint firstItem="Xbj-Jr-u8h" firstAttribute="trailing" secondItem="RIQ-Du-7QB" secondAttribute="trailing" constant="10" id="mz2-nd-UZx"/>
-                            <constraint firstItem="RIQ-Du-7QB" firstAttribute="top" secondItem="Xbj-Jr-u8h" secondAttribute="top" constant="10" id="oze-g1-ubB"/>
-                            <constraint firstItem="RIQ-Du-7QB" firstAttribute="leading" secondItem="Xbj-Jr-u8h" secondAttribute="leading" constant="10" id="xRf-be-g2Z"/>
-                        </constraints>
                         <viewLayoutGuide key="safeArea" id="Xbj-Jr-u8h"/>
                     </view>
                     <navigationItem key="navigationItem" title="Collection" id="81b-qK-HIp">
                         <barButtonItem key="backBarButtonItem" title="b" id="bfb-qO-PWX"/>
                     </navigationItem>
-                    <connections>
-                        <outlet property="collectionView" destination="RIQ-Du-7QB" id="WKl-fw-iAU"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YzY-YR-BmV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -225,6 +86,7 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="WLi-xY-mrK"/>
                     </view>
+                    <navigationItem key="navigationItem" id="bYa-tr-h92"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="j14-LF-FRR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -252,19 +114,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="camera.fill" catalog="system" width="64" height="48"/>
-        <image name="rectangle.stack.fill" catalog="system" width="64" height="60"/>
-        <namedColor name="Buttons">
-            <color red="0.61176470588235299" green="0.61176470588235299" blue="0.61176470588235299" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
         <namedColor name="mainBackground">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="sliderMaxTrack">
-            <color red="0.80000001192092896" green="0.80000001192092896" blue="0.80000001192092896" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="sliderMinTrack">
-            <color red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

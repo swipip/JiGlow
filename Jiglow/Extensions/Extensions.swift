@@ -1,13 +1,19 @@
 //
 //  Extensions.swift
-//  Jiglow
+//  JiglowRevised
 //
-//  Created by Gautier Billard on 03/02/2020.
+//  Created by Gautier Billard on 22/02/2020.
 //  Copyright © 2020 Gautier Billard. All rights reserved.
 //
 
 import Foundation
 import UIKit
+
+extension UISlider {
+    var thumbCenterX: CGFloat {
+        return thumbRect(forBounds: frame, trackRect: trackRect(forBounds: frame), value: value).midX
+    }
+}
 extension UILabel {
     func adjustTextColor(color: UIColor) {
         
@@ -33,6 +39,7 @@ extension UIButton {
         let layer = self.layer
         layer.shadowOffset = CGSize(width: 0, height: 0)
         layer.shadowRadius = radius!
+        layer.shadowColor = UIColor(named: "ShadowColor")?.cgColor
         layer.shadowOpacity = 0.2
     }
     func adjustTextColor(color: UIColor) {
@@ -44,8 +51,33 @@ extension UIButton {
         }
     }
 }
+
 extension UIView {
 
+    func applyGradient() {
+        
+        let k = K()
+        let color = UIColor(named: k.gradientColor)
+        let colors = [color!,color!.withHueOffset(offset: 1/16)]
+        
+        let gradient = CAGradientLayer()
+        gradient.colors = [colors[0].cgColor, colors[1].cgColor]
+        gradient.startPoint = CGPoint(x:0.0, y: 1.0)
+        gradient.endPoint = CGPoint(x:1.0, y: 0.0)
+        gradient.frame = bounds
+        gradient.cornerRadius = 12
+        
+        layer.addSublayer(gradient)//(gradient, at: 1)
+    }
+    
+    func animateAlpha(on: Bool? = true ,withDuration duration: Double? = 0.2) {
+        
+        UIView.animate(withDuration: duration!) {
+            self.alpha = on == true ? 1.0 : 0.0
+        }
+        
+    }
+    
     func roundCorners(_ corners: UIRectCorner, radius: CGFloat) {
         if #available(iOS 11.0, *) {
             clipsToBounds = true
@@ -58,25 +90,6 @@ extension UIView {
             layer.mask = mask
         }
     }
-}
-extension UIImage {
-    func getPixelColor2(pos: CGPoint) -> UIColor {
-        let cgImage : CGImage = self.cgImage!
-        guard let pixelData = CGDataProvider(data: (cgImage.dataProvider?.data)!)?.data else {
-            return UIColor.clear
-        }
-        let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
-        
-        let pixelInfo: Int = ((Int(self.size.width) * Int(pos.y)) + Int(pos.x)) * 4
-        
-        let r = CGFloat(data[pixelInfo]) / CGFloat(255.0)
-        let g = CGFloat(data[pixelInfo+1]) / CGFloat(255.0)
-        let b = CGFloat(data[pixelInfo+2]) / CGFloat(255.0)
-        let a = CGFloat(data[pixelInfo+3]) / CGFloat(255.0)
-        
-        return UIColor(red: r, green: g, blue: b, alpha: a)
-    }
-    
 }
 extension UIColor {
     

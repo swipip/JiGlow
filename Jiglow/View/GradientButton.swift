@@ -5,7 +5,6 @@
 //  Created by Gautier Billard on 06/01/2020.
 //  Copyright © 2020 Gautier Billard. All rights reserved.
 //
-
 import Foundation
 import UIKit
 
@@ -19,11 +18,6 @@ class GradientButton: UIButton {
     
     func setButton() {
         setButtonGradient()
-        
-        self.layer.cornerRadius = 25
-        self.layer.shadowOpacity = 0.2
-        self.layer.shadowRadius = 5
-        
     }
     private func setButtonGradient() {
         
@@ -42,9 +36,6 @@ class GradientButton: UIButton {
     func animateGradient(startColor: UIColor, endColor: UIColor = .systemOrange){
         
         let color1 = startColor.cgColor
-//        let red = 255 - Int(startColor.rgb.red*255)
-//        let green = 255 - Int(startColor.rgb.green*255)
-//        let blue = 255 - Int(startColor.rgb.blue*255)
         
         let color2 = startColor.withHueOffset(offset: 1/12).cgColor
         
@@ -56,25 +47,6 @@ class GradientButton: UIButton {
             
         }
     }
-    func animateSizeOn() {
-        
-        tapTicResponse.notificationOccurred(.success)
-        
-        UIView.animate(withDuration: 0.2, delay: 0,options: UIView.AnimationOptions.curveEaseOut,animations: {
-            self.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
-                   },completion: nil)
-        
-        
-    }
-    func animateSizeOff() {
-        
-        UIView.animate(withDuration: 0.2, delay: 0,options: UIView.AnimationOptions.curveEaseOut,animations: {
-            self.transform = CGAffineTransform(scaleX: 1, y: 1)
-                   },completion: nil)
-        
-    }
+
 
 }
-
-
-

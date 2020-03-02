@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class K {
     
@@ -25,7 +26,11 @@ class K {
     var rename = "Renommer"
     var delete = "Supprimer"
     let buttonHeight = 40
+    var analog = "Analogue"
+    var gradient = "Dégradé"
    
+    let gradientColor = "NavigationColor"
+    
     func isFrench(){
         if NSLocale.preferredLanguages[0].range(of:"fr") != nil {
             //language is french
@@ -43,7 +48,16 @@ class K {
             cancel = "Cancel"
             rename = "rename"
             delete = "delete"
+            analog = "Analog"
+            gradient = "Gradient"
         }
+    }
+    func checkScreenSize(view: UIView) -> CGFloat{
+        
+        let size = view.frame.size
+        let ratio = size.height/size.width
+        return ratio
+        
     }
 }
 

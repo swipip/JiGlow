@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 
 protocol PhotoViewControllerDelegte {
-    func PhotoVCDidDisapear(color: UIColor)
+    func PhotoVCDidDisapear(color: UIColor, option: String)
 }
 class PhotoViewController: UIViewController{
     
@@ -41,6 +41,7 @@ class PhotoViewController: UIViewController{
             gaugesMiniWidth = 0.3 * newValue
         }
     }
+    private var segment: TwoSegmentControl?
     private var gaugesConstraints = [NSLayoutConstraint]()
     
     //UI Size Constants
@@ -56,8 +57,9 @@ class PhotoViewController: UIViewController{
     @IBOutlet weak var finalImageView: UIImageView!
     //Constraints
     private var buttonTrailling: NSLayoutConstraint!
-    //    private var widthConstraint: NSLayoutConstraint!
+    private var shotButtonTraillingConstant = (s1: -20.0,s2: -150.0,s3: -220.0)
     private var addButtonLeading: NSLayoutConstraint!
+    private var addButtonTrailing: NSLayoutConstraint!
     private var labelContainerHeight: NSLayoutConstraint!
     private var colorPreviewHeight: NSLayoutConstraint!
     
@@ -94,7 +96,7 @@ class PhotoViewController: UIViewController{
     func revealOptionsAfterShot() {
         
         UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.1, options: .curveEaseInOut, animations: {
-            self.buttonTrailling.constant = -147
+            self.buttonTrailling.constant = CGFloat(self.shotButtonTraillingConstant.s2)
             self.addButtonLeading.constant = 10
             self.addButton.alpha = 0.6
             self.colorPreviewHeight.constant = self.mainItemHeight
@@ -140,7 +142,6 @@ class PhotoViewController: UIViewController{
         addDismissButton()
         addInfoButton()
         addGauges()
-        //        addRGBLabels()
     }
     func addPointer(){
         
@@ -167,32 +168,7 @@ class PhotoViewController: UIViewController{
                                      target.widthAnchor.constraint(equalToConstant: 60)])
         
     }
-    func addRGBLabels() {
-        
-        var topAnchor:CGFloat = 10
-        
-        let spacing:CGFloat = 10
-        
-        for _ in 1...3 {
-            let newLabel = UILabel()
-            newLabel.textColor = .white
-            newLabel.text = ""
-            newLabel.alpha = 0
-            self.view.addSubview(newLabel)
-            
-            newLabel.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([newLabel.leadingAnchor.constraint(equalTo: self.colorPreview.leadingAnchor, constant: 10),
-                                         newLabel.topAnchor.constraint(equalTo: self.colorPreview.topAnchor, constant: topAnchor)])
-            
-            topAnchor += 15 + spacing
-            
-            self.rgbLabels.append(newLabel)
-            
-        }
-        
-        
-        
-    }
+    //MARK: - Color Preview
     func addColorPreviewView() {
         
         colorPreview.alpha = 0.0
@@ -213,9 +189,61 @@ class PhotoViewController: UIViewController{
         let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(swipeDownHandler))
         swipeDown.direction = .down
         colorPreview.addGestureRecognizer(swipeDown)
-        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(swipeUpHandler))
-        swipeUp.direction = .up
-        colorPreview.addGestureRecognizer(swipeUp)
+        
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressHandler(recognizer:)))
+        longPress.minimumPressDuration = 0.1
+        colorPreview.addGestureRecognizer(longPress)
+    }
+    @objc func longPressHandler(recognizer: UILongPressGestureRecognizer) {
+        
+        func animateView(on: Bool) {
+            
+            let notif = UINotificationFeedbackGenerator()
+            notif.prepare()
+            if on {
+                notif.notificationOccurred(.success)
+            }
+            
+            let circle = UIView()
+            circle.backgroundColor = .red
+            circle.layer.borderWidth = 1
+            circle.layer.borderColor = UIColor.white.cgColor
+            circle.alpha = on == true ? 1 : 0
+            circle.layer.cornerRadius = cornerRad
+            
+//            self.view.addSubview(circle)
+//
+//            circle.translatesAutoresizingMaskIntoConstraints = false
+//            NSLayoutConstraint.activate([circle.bottomAnchor.constraint(equalTo: colorPreview.bottomAnchor, constant: 0),
+//                                         circle.centerXAnchor.constraint(equalTo: colorPreview.centerXAnchor, constant: 0)])
+//
+//            let height = NSLayoutConstraint(item: circle, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: self.mainItemHeight)
+//            let width = NSLayoutConstraint(item: circle, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: self.view.frame.size.width - 40)
+//            
+//            self.view.addConstraints([height,width])
+//
+            UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.13, options: .curveEaseInOut, animations: {
+                if on {
+//                    height.constant = self.mainItemHeight * 2.4
+//                    width.constant *= 1.1
+//                    circle.alpha = 0
+                }
+                self.colorPreviewHeight.constant = on == true ? self.mainItemHeight * 2.3 : self.mainItemHeight
+                self.view.layoutIfNeeded()
+            }, completion: {(ended) in
+                circle.removeFromSuperview()
+            })
+            
+        }
+        
+        switch recognizer.state {
+        case .began:
+            animateView(on: true)
+        case .ended:
+            animateView(on: false)
+        default:
+            break
+        }
         
     }
     //MARK: - HexLabel
@@ -259,9 +287,20 @@ class PhotoViewController: UIViewController{
         
     }
     @IBAction func shotButtonPressed(sender: UIButton){
+        
+        self.view.bringSubviewToFront(addButton)
+        addButton.animateAlphaOn()
+        
+        if let segment = self.segment {
+//            segment.animateAlpha(on: false)
+            segment.removeFromSuperview()
+        }
+        
+        buttonTrailling.constant = CGFloat(shotButtonTraillingConstant.s2)
+       
+        
         takePicture()
         revealOptionsAfterShot()
-        //        optionButton.isEnabled = true
         
     }
     //MARK: - add Button
@@ -284,19 +323,27 @@ class PhotoViewController: UIViewController{
         addButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             addButton.bottomAnchor.constraint(equalTo: shotButton.bottomAnchor, constant: 0),
-            addButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20),
             addButton.topAnchor.constraint(equalTo: shotButton.topAnchor, constant: 0)])
         
         addButtonLeading = NSLayoutConstraint(item: addButton, attribute: .leading, relatedBy: .equal, toItem: shotButton, attribute: .trailing, multiplier: 1, constant: 0)
+        addButtonTrailing = NSLayoutConstraint(item: addButton, attribute: .trailing, relatedBy: .equal, toItem: self.view, attribute: .trailing, multiplier: 1, constant: -20)
         
-        self.view.addConstraints([addButtonLeading])
+        self.view.addConstraints([addButtonLeading,addButtonTrailing])
         
         addButton.addTarget(self, action: #selector(optionPressed(sender:)), for: .touchUpInside)
         
     }
     @IBAction func optionPressed(sender: UIButton){
-        delegate?.PhotoVCDidDisapear(color: self.color)
-        self.navigationController?.popToRootViewController(animated: true)
+        
+        UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.1, options: .curveEaseInOut, animations: {
+            self.buttonTrailling.constant = CGFloat(self.shotButtonTraillingConstant.s3)
+            self.addButton.alpha = 0.0
+        }) { (ended) in
+            
+        }
+        self.addSegmentControler()
+        self.segment?.delegate = self
+
     }
     //MARK: - Info Button
     func addInfoButton() {
@@ -391,22 +438,36 @@ class PhotoViewController: UIViewController{
     func addDismissButton() {
         
         dismissButton.backgroundColor = .darkGray
-        dismissButton.setImage(UIImage(systemName: "arrow.left"), for: .normal)
+        dismissButton.setImage(UIImage(systemName: "arrow.right"), for: .normal)
         dismissButton.tintColor = .white
         dismissButton.alpha = 0.6
         self.view.addSubview(dismissButton)
         
         dismissButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([dismissButton.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 50),
-                                     dismissButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20),
+                                     dismissButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20),
                                      dismissButton.heightAnchor.constraint(equalToConstant: secondaryItemHeight),
                                      dismissButton.widthAnchor.constraint(equalToConstant: secondaryItemHeight)])
         
         dismissButton.addTarget(self, action: #selector(dismissButtonPressed(sender: )), for: .touchUpInside)
         
     }
-    @IBAction func dismissButtonPressed(sender: UIButton) {
+    func dismissController() {
+        let transition = CATransition.init()
+        transition.duration = 0.45
+        transition.timingFunction = CAMediaTimingFunction.init(name: CAMediaTimingFunctionName.default)
+        transition.type = CATransitionType.push //Transition you want like Push, Reveal
+        transition.subtype = CATransitionSubtype.fromRight // Direction like Left to Right, Right to Left
+        transition.delegate = self
+        view.window!.layer.add(transition, forKey: kCATransition)
+        
         navigationController?.popToRootViewController(animated:true)
+        
+    }
+    @IBAction func dismissButtonPressed(sender: UIButton) {
+        
+        dismissController()
+
     }
     //MARK: - Gauges
     func addGauges() {
@@ -535,33 +596,49 @@ class PhotoViewController: UIViewController{
         }
 
     }
-    //MARK: - Actions & Gestures
-    @objc func swipeUpHandler() {
-        UIView.animate(withDuration: 0.567, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.12, options: .curveEaseInOut, animations: {
-            self.colorPreviewHeight.constant = self.view.frame.size.height * 0.7
-            self.view.layoutIfNeeded()
-        }, completion: nil)
+    //MARK: - segment Controller
+    func addSegmentControler() {
+        
+        segment = TwoSegmentControl(buttonTitles: [k.analog,k.gradient])
+        if let segment = self.segment  {
+            segment.backgroundColor = .clear
+            segment.backgroudViewColor = .darkGray
+            segment.selectorViewColor = .darkGray
+            segment.selectorTextCOlor = .white
+            segment.inset = 4
+            segment.alpha = 0.0
+            self.view.insertSubview(segment, at: 1)
+            
+            segment.translatesAutoresizingMaskIntoConstraints = false
+            segment.topAnchor.constraint(equalTo: self.shotButton.topAnchor, constant: 0).isActive = true
+            segment.leadingAnchor.constraint(equalTo: self.shotButton.trailingAnchor ,constant: 10).isActive = true
+            segment.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
+            segment.bottomAnchor.constraint(equalTo: self.shotButton.bottomAnchor, constant: 0).isActive = true
+            
+            segment.animateAlpha(on: true, withDuration: 0.3)
+            
+        }
     }
+    
+    //MARK: - Actions & Gestures
+
     @objc func swipeDownHandler(sender: UISwipeGestureRecognizer) {
         
-        let constant = colorPreviewHeight.constant
-        
-        UIView.animate(withDuration: 0.567, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.1, options: .curveEaseInOut, animations: {
-            self.colorPreviewHeight.constant = self.mainItemHeight < constant ? self.mainItemHeight : 0.0
-            self.colorPreview.layer.cornerRadius = self.mainItemHeight < constant ? self.cornerRad : 3
-            self.addButton.alpha = self.mainItemHeight < constant ? 0.6 : 0
-            self.infoButton.alpha = self.mainItemHeight < constant ? 1 : 0
-            self.hexLabel.text = self.mainItemHeight < constant ? self.hexLabel.text : nil
-            self.buttonTrailling.constant = self.mainItemHeight < constant ? -147 : -20
+        UIView.animate(withDuration: 0.567, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.1, options: .curveEaseInOut, animations: {
+            self.colorPreviewHeight.constant =  0.0
+            self.colorPreview.layer.cornerRadius = 3
+            self.addButton.alpha = 0
+            self.addButtonLeading.constant = 0
+            self.infoButton.alpha = 0
+            self.hexLabel.text =  nil
+            self.buttonTrailling.constant = CGFloat(self.shotButtonTraillingConstant.s1)
+            if let segment = self.segment {
+                segment.removeFromSuperview()
+            }
             self.view.layoutIfNeeded()
         }, completion: {(finished) in
             
         })
-        
-        UIView.animate(withDuration: 0.567) {
-            self.hexLabelContainer.alpha = self.mainItemHeight < constant ? 1 : 0
-            self.view.layoutIfNeeded()
-        }
         
     }
     
@@ -602,14 +679,23 @@ class PhotoViewController: UIViewController{
         cameraCaptureOutput?.capturePhoto(with: settings, delegate: self)
         
     }
-    //        func displayCapturedPhoto(photo: UIImage){
-    //            let imagePreviewViewController = storyboard?.instantiateViewController(identifier: "ImagePreviewViewController") as! ImagePreviewViewController
-    //            imagePreviewViewController.captureImaged = photo
-    //            navigationController?.pushViewController(imagePreviewViewController, animated: true)
-    //        }
     
 }
 //MARK: - Extensions
+extension PhotoViewController: TwoSegmentControlDelegate {
+    func didChoose(option: String) {
+        switch option {
+        case k.analog:
+            delegate?.PhotoVCDidDisapear(color: self.color, option: option)
+            dismissController()
+        case k.gradient:
+            delegate?.PhotoVCDidDisapear(color: self.color, option: option)
+            dismissController()
+        default:
+            break
+        }
+    }
+}
 extension PhotoViewController: AVCapturePhotoCaptureDelegate{
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         if let imageData = photo.fileDataRepresentation() {
@@ -651,3 +737,6 @@ extension PhotoViewController: AVCapturePhotoCaptureDelegate{
     }
 }
 
+extension PhotoViewController: CAAnimationDelegate {
+    
+}

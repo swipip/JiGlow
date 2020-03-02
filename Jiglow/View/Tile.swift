@@ -1,159 +1,163 @@
-import Foundation
+//
+//  Tile.swift
+//  JiglowRevised
+//
+//  Created by Gautier Billard on 22/02/2020.
+//  Copyright © 2020 Gautier Billard. All rights reserved.
+//
+
 import UIKit
 
 protocol TileDelegate {
-    func didTapTile()
-    func didLongPress()
+    func didTapTile(sender: Tile)
+    func didLongPress(sender: Tile)
     func infoButtonPressed(sender: Tile)
 }
-enum tapType {
-    case short,long
-}
 class Tile: UIView {
+
+
+    private (set) var infoButton: UIButton!
     
-    var hexaCode: String?
-    var redCode: Int?
-    var blueCode: Int?
-    var greenCode: Int?
-    var color: UIColor?
-    var rank: Int?
     var delegate: TileDelegate?
-    var tileWidth = 0.0
-    var tileIsActive = false
-    var info: UIButton?
+    var hexLabelText: String?
+    var backColor: UIColor?
+    var redCode = 0,greenCode = 0,blueCode = 0
+    var hexaCode: String?
     
-    @IBOutlet var contentView: UIView!
-    @IBOutlet weak var hexaLabel: ColorLabel!
+    var back: UIView!
+    var label: UILabel!
+    private var height: NSLayoutConstraint!
+    private var width: NSLayoutConstraint!
     
-    //MARK: - Initialization
-    
+    func commonInit() {
+        addViews()
+    }
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         commonInit()
-        
     }
-    override class func awakeFromNib() {
-        super.awakeFromNib()
-        
+    required init?(coder: NSCoder) {
+        fatalError()
     }
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-//        fatalError("init(coder:) has not been implemented")
-    }
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        tileWidth = Double(self.frame.width)
-    }
-    func commonInit() {
-        Bundle.main.loadNibNamed("Tile", owner: self, options: nil)
-        addSubview(contentView)
-        contentView.frame = self.bounds
-        
-        let tapTile = UITapGestureRecognizer(target: self, action: #selector(tapHandler))
-        contentView.addGestureRecognizer(tapTile)
-        
-        let longTapTile = UILongPressGestureRecognizer(target: self, action: #selector(longTapHandler))
-        longTapTile.minimumPressDuration = 0.2
-        contentView.addGestureRecognizer(longTapTile)
-        
-        self.hexaLabel.alpha = 0.0
-        
+    private func addViews() {
+        addBack()
+        addLabel()
         addInfoButton()
+        addGestures()
+    }
+    private func addBack() {
+        
+        back = UIView()
+        
+        addSubview(back)
+        
+        back.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([back.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
+                                     back.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
+                                     back.topAnchor.constraint(equalTo: topAnchor ,constant: 0),
+                                     back.leadingAnchor.constraint(equalTo: leadingAnchor ,constant: 0)])
         
     }
-    func addInfoButton() {
+    private func addGestures() {
         
-        info = UIButton()
-        info!.backgroundColor = .clear
-        info!.tintColor = .white
-        info!.addShadow()
-        info!.setImage(UIImage(systemName: "info.circle"), for: .normal)
-        info!.alpha = 0.0
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapHandler))
+        addGestureRecognizer(tap)
+        let longTap = UILongPressGestureRecognizer(target: self, action: #selector(longTapHandler))
+        longTap.minimumPressDuration = 0.2
+        addGestureRecognizer(longTap)
         
-        self.contentView.addSubview(info!)
+    }
+    @objc func tapHandler() {
         
-        info!.translatesAutoresizingMaskIntoConstraints = false
+        delegate?.didTapTile(sender: self)
         
-        NSLayoutConstraint.activate([info!.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: 5),
-                                     info!.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: 5),
-                                     info!.widthAnchor.constraint(equalToConstant: 40),
-                                     info!.heightAnchor.constraint(equalToConstant: 40)])
+    }
+    @objc func longTapHandler(recognizer: UILongPressGestureRecognizer) {
+        if recognizer.state == .began {delegate?.didLongPress(sender: self)}
+    }
+    private func addLabel() {
+        
+        label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.textColor = .white
+        label.text = "#FFFFFF"
+        label.alpha = 0.0
+        
+        addSubview(label)
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5),
+                                     label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5)])
+    }
+    private func addInfoButton() {
+        
+        infoButton = UIButton()
+        infoButton.backgroundColor = .clear
+        infoButton.tintColor = .white
+        infoButton.setImage(UIImage(systemName: "info.circle"), for: .normal)
+        infoButton.alpha = 0.0
+        
+        addSubview(infoButton)
+        
+        infoButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([infoButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
+                                     infoButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 3),
+                                     infoButton.widthAnchor.constraint(equalToConstant: 40),
+                                     infoButton.heightAnchor.constraint(equalToConstant: 40)])
         
 
 
         
-        info?.addTarget(self, action: #selector(infoPressed), for: .touchUpInside)
+        infoButton.addTarget(self, action: #selector(infoButtonPressed), for: .touchUpInside)
     }
-    @IBAction func infoPressed() {
+    @IBAction func infoButtonPressed(_sender: UIButton!) {
         delegate?.infoButtonPressed(sender: self)
     }
-    func animateInfoButton() {
-        let circle = UIView()
-        
-        circle.backgroundColor = .clear
-        circle.layer.borderColor = UIColor.white.cgColor
-        circle.layer.borderWidth = 0.2
-        circle.layer.cornerRadius = 10
-        self.contentView.insertSubview(circle, at: 0)
-        
-        circle.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([circle.centerYAnchor.constraint(equalTo: self.info!.centerYAnchor, constant: 0),
-                                     circle.centerXAnchor.constraint(equalTo: self.info!.centerXAnchor, constant: 0),
-                                     circle.widthAnchor.constraint(equalToConstant: 20),
-                                     circle.heightAnchor.constraint(equalToConstant: 20)])
-        
-        UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseOut, animations: {
-            circle.transform = CGAffineTransform(scaleX: 5, y: 5)
-            circle.alpha = 0.0
-        }, completion: nil)
-    }
-    //MARK: - Custom Methods
-    func transformOn() {
-        UIView.animate(withDuration: 0.2, delay: 0,options: UIView.AnimationOptions.curveEaseInOut,animations: {
-            self.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
-            self.info?.alpha = 1.0
-            self.contentView.layer.cornerRadius = 10
-        },completion: nil)
-    }
-    func transformOff(){
-        UIView.animate(withDuration: 0.2, delay: 0,options: UIView.AnimationOptions.curveEaseInOut,animations: {
-            self.transform = CGAffineTransform(scaleX: 1, y: 1)
-            self.info?.alpha = 0.0
-            self.contentView.layer.cornerRadius = 0
-        },completion: nil)
-    }
-    func animateLabelAlphaOn(){
-        UIView.animate(withDuration: 0.2, animations: {
-            self.hexaLabel.alpha = 1.0
-        }, completion: nil)
-    }
-    func animateLabelAlphaOff(){
-        UIView.animate(withDuration: 0.2, animations: {
-            self.hexaLabel.alpha = 0.0
-        }, completion: nil)
-    }
-//MARK: - Delegate Methods
-    @objc func tapHandler() {
-        tileIsActive  = true
-        self.hexaLabel.adjustTextColor(color: contentView.backgroundColor!)
-        animateLabelAlphaOn()
-        animateInfoButton()
-        let _ = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { (timer) in
-            self.animateInfoButton()
+    private func animateInfoButton() {
+        var delay = 0.0
+        for _ in 1...2 {
+            let circle = UIView()
+            
+            circle.backgroundColor = .clear
+            circle.layer.borderColor = UIColor.white.cgColor
+            circle.layer.borderWidth = 0.2
+            circle.layer.cornerRadius = 10
+            self.insertSubview(circle, at: 1)
+            
+            circle.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([circle.centerYAnchor.constraint(equalTo: self.infoButton.centerYAnchor, constant: 0),
+                                         circle.centerXAnchor.constraint(equalTo: self.infoButton.centerXAnchor, constant: 0),
+                                         circle.widthAnchor.constraint(equalToConstant: 20),
+                                         circle.heightAnchor.constraint(equalToConstant: 20)])
+            
+            UIView.animate(withDuration: 1.0, delay: delay, options: .curveEaseOut, animations: {
+                circle.transform = CGAffineTransform(scaleX: 5, y: 5)
+                circle.alpha = 0.0
+            }, completion: {(ended) in
+                circle.removeFromSuperview()
+            })
+            delay += 0.1
         }
-        delegate?.didTapTile()
+
     }
-    @objc func longTapHandler(sender: AnyObject) {
-        tileIsActive = true
-        if let safeSender = sender as? UILongPressGestureRecognizer{
-            if safeSender.state == .began{
-                delegate?.didLongPress()
-            }
-        }
+    func animateElements(on: Bool) {
+        
+        let alphaValue:CGFloat = on == true ? 1.0 : 0.0
+        
+        let color = back.backgroundColor
+        
+        if on == true {animateInfoButton()}
+        
+        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.12, options: .curveEaseInOut, animations: {
+            self.infoButton.adjustTextColor(color: color ?? .white)
+            self.infoButton.alpha = alphaValue
+            self.label.alpha = alphaValue
+            self.label.adjustTextColor(color: color ?? .white)
+        }, completion: nil)
+        
     }
+
 }
-//MARK: - Extensions
-
-
