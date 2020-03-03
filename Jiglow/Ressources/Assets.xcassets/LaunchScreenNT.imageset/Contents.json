@@ -2,7 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "JiglowLaunchScreenNoText.png"
+      "filename" : "LightBG.png"
+    },
+    {
+      "idiom" : "universal",
+      "filename" : "DarkBG.png",
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ]
     }
   ],
   "info" : {

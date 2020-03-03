@@ -90,6 +90,10 @@ class ViewController: UIViewController {
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        sliderTimer.invalidate()
+        self.returnIsPresenting = false
+        self.returnButton!.isEnabled = false
+        self.animateInteractionButtons(on: false)
         swipeValidationIndicator.forEach({$0.removeFromSuperview()})
         swipeValidationIndicator.removeAll()
         validationButtonsCenterConstraint.removeAll()
@@ -121,12 +125,13 @@ class ViewController: UIViewController {
         self.animator.startAnimation()
         
         
-        
         UIView.animate(withDuration: 0.4, animations: {
             self.navBar.frame.origin.y -= 89
             self.resetButton.alpha = 1
         }, completion: {(ended) in
-            
+            var resetBtnColor = UIColor.systemOrange
+            if self.traitCollection.userInterfaceStyle == .dark {resetBtnColor = .systemPurple}
+            self.resetButton.animateGradient(startColor: resetBtnColor)
         })
     }
     
@@ -610,6 +615,7 @@ class ViewController: UIViewController {
     func addValidationButtons(){
 
         swipeValidationIndicator.forEach({$0.removeFromSuperview()})
+        swipeValidationIndicator.removeAll()
         validationButtonsCenterConstraint.removeAll()
         
         let height:CGFloat = 40
@@ -655,7 +661,7 @@ class ViewController: UIViewController {
                                          newSwipeValidationIndicator.widthAnchor.constraint(equalToConstant: height),
                                          newSwipeValidationIndicator.heightAnchor.constraint(equalToConstant: height)])
 
-            let centerYConsraint = NSLayoutConstraint(item: newSwipeValidationIndicator, attribute: .centerX, relatedBy: .equal, toItem: slider, attribute: .centerX, multiplier: 1, constant: xPosition[i])
+            let centerYConsraint = NSLayoutConstraint(item: newSwipeValidationIndicator, attribute: .centerX, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1, constant: xPosition[i])
             
             self.view.addConstraint(centerYConsraint)
             
@@ -727,13 +733,14 @@ class ViewController: UIViewController {
         returnButton.isEnabled = false
         returnButton.tintColor = .white
         returnButton.layer.shadowOffset = CGSize(width: 0, height: 0)
-        returnButton.layer.shadowRadius = 6
-        returnButton.layer.shadowColor = UIColor.white.cgColor
-        returnButton.layer.shadowOpacity = 1
+        if traitCollection.userInterfaceStyle == .dark {
+            returnButton.layer.shadowRadius = 6
+            returnButton.layer.shadowColor = UIColor.white.cgColor
+            returnButton.layer.shadowOpacity = 0.5
+        }
         returnButton.alpha = 0.0
-        returnButton.addShadow()
         
-        self.view.addSubview(returnButton!)
+        self.view.addSubview(returnButton)
         
         returnButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([returnButton.centerYAnchor.constraint(equalTo: slider.centerYAnchor, constant: -distanceFromPallet),
@@ -935,6 +942,7 @@ extension ViewController: CustomNavBarDelegate {
         }
     }
     func addAnimator(on: Bool? = true) {
+        
         animator = nil
         animator = UIViewPropertyAnimator(duration: 0.34, curve: .easeInOut) {
             if on! {
@@ -960,6 +968,10 @@ extension ViewController: CustomNavBarDelegate {
     }
 }
 extension ViewController: CollectionControllerDelegate{
+    func photoVCDidDisapearFromCollectionVC(color: UIColor, option: String) {
+        PhotoVCDidDisapear(color: color, option: option)
+    }
+    
 
     func collectionControllerDidDisapearWithNoSelection(editingMode: Bool){
         self.editingMode = editingMode

@@ -5,6 +5,7 @@ protocol CollectionControllerDelegate {
     func collectionControllerDidDisapearWithSeletion(topColor: String, secondColor: String, thirdColor: String, bottomColor: String, editingMode: Bool, palletName: String)
     func collectionControllerDidDisapearWithNoSelection(editingMode: Bool)
     func collectionViewAnimatePallet()
+    func photoVCDidDisapearFromCollectionVC(color: UIColor, option: String)
 }
 
 class CollectionController: UIViewController,UICollectionViewDataSource {
@@ -319,10 +320,36 @@ extension CollectionController: CustomNavBarDelegate {
         switch index {
         case 1:
             animateOut()
+        case 0:
+            guard let destinationVC = storyboard?.instantiateViewController(identifier: "PhotoViewController") as? PhotoViewController else {
+                print("no VC")
+                return
+            }
+            destinationVC.delegate = self
+            
+            let transition = CATransition.init()
+            transition.duration = 0.45
+            transition.timingFunction = CAMediaTimingFunction.init(name: CAMediaTimingFunctionName.default)
+            transition.type = CATransitionType.push //Transition you want like Push, Reveal
+            transition.subtype = CATransitionSubtype.fromLeft // Direction like Left to Right, Right to Left
+            transition.delegate = self
+            view.window!.layer.add(transition, forKey: kCATransition)
+            
+            self.navigationController?.pushViewController(destinationVC, animated: true)
         default:
             break
         }
         
+    }
+    
+    
+}
+extension CollectionController: CAAnimationDelegate {
+    
+}
+extension CollectionController: PhotoViewControllerDelegte {
+    func PhotoVCDidDisapear(color: UIColor, option: String) {
+        delegate?.photoVCDidDisapearFromCollectionVC(color: color, option: option)
     }
     
     
