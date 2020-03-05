@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     private var sliderCallOutLabel: UILabel?
     private var returnButton: UIButton!
     //MARK: - Layout Elements
-    private let margins: CGFloat = 80
+    private var margins: CGFloat = 80
     private var validationButtonsCenterConstraint = [NSLayoutConstraint]()
     private var paletteOriginPoint: CGPoint?
     private var animator: UIViewPropertyAnimator!
@@ -61,6 +61,8 @@ class ViewController: UIViewController {
         navigationController?.navigationBar.isHidden = true
         
         screenAdjustment = k.checkScreenSize(view: self.view) < 2 ? 10.0 : 0.0
+        
+        margins += screenAdjustment*1.7
         
         navBar = CustomNavBar(frame: CGRect(x: -1, y: self.view.frame.height,width:  self.view.frame.width + 2, height:  90),
                               buttonTitles: ["Photo","Stack"],
@@ -512,7 +514,7 @@ class ViewController: UIViewController {
         let height:CGFloat = self.view.frame.height * 0.083
         let x:CGFloat = margins - 10
         let y:CGFloat = 120 - screenAdjustment * 1.2
-        let width:CGFloat = self.view.frame.size.width - screenAdjustment - (margins - 5) * 2
+        let width:CGFloat = self.view.frame.size.width - (margins - 5) * 2
         for _ in 0...qty-1 {
             
             let newPalette = Palette(frame: CGRect(origin: CGPoint(x: x, y: y), size: CGSize(width: width, height: height * 4)))
@@ -784,7 +786,10 @@ class ViewController: UIViewController {
                 UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
                     self.returnButton?.backgroundColor = .gray
                 }, completion: {(ended) in
+                    self.sliderTimer.invalidate()
+                    self.returnIsPresenting = false
                     self.animateInteractionButtons(on: false)
+                    self.colorSave = [UIColor]() //empty the array
                 })
             }
             
@@ -795,9 +800,9 @@ class ViewController: UIViewController {
             anticlockAnimation.duration = 0.6
             anticlockAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
             self.returnButton?.layer.add(anticlockAnimation, forKey: "rotate")
-            colorSave = [UIColor]()
             
             
+ 
         }else{
             if let tile = palettes.last?.activeTile {
                 
@@ -867,7 +872,10 @@ class ViewController: UIViewController {
 //MARK: - Extensions
 extension ViewController: PaletteDelegate {
     func tileLongTapped(tile: Tile) {
-        if palettes.last?.activeTile != nil {palettes.last?.animateTile(on: false)}
+        if palettes.last?.activeTile != nil {
+            palettes.last?.animateTile(on: false)
+            colorSave = [UIColor]() //empty the array
+        }
         palettes.last?.activeTile = tile
         palettes.last?.animateTile(on: true)
         palettes.last?.activeTile?.layer.removeAllAnimations()
@@ -877,6 +885,7 @@ extension ViewController: PaletteDelegate {
         goToColorDetail()
     }
     func tileTapped(tile: Tile) {
+        colorSave = [UIColor]() //empty the array
         animateSliders(forTile: tile)
         resetButton.animateGradient(startColor: tile.back.backgroundColor!)
     }

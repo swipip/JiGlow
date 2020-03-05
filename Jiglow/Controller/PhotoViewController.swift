@@ -20,6 +20,8 @@ class PhotoViewController: UIViewController{
     private var cameraPreviewLayer: AVCaptureVideoPreviewLayer?
     private var cameraCaptureOutput: AVCapturePhotoOutput?
     private var gradientLayers = [String:CAGradientLayer]()
+    private var infoIsDisplaying = false
+    private var infoTimer: Timer?
     //delegate
     var delegate: PhotoViewControllerDelegte?
     //UI Elements
@@ -362,9 +364,7 @@ class PhotoViewController: UIViewController{
             infoButton.widthAnchor.constraint(equalToConstant: secondaryItemHeight),
             infoButton.heightAnchor.constraint(equalToConstant: secondaryItemHeight)])
         
-        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(infoPressed(_:)))
-        longPress.minimumPressDuration = 0.0
-        infoButton.addGestureRecognizer(longPress)
+        infoButton.addTarget(self, action: #selector(infoPressed(_:)), for: .touchUpInside)
         
     }
     func highlightInfoButton(factor: CGFloat? = 1.0) {
@@ -394,12 +394,24 @@ class PhotoViewController: UIViewController{
                 circle.alpha = 0.0
             }, completion: nil)
             
-            delayForAnimation += 0.2
+            delayForAnimation += 0.1
             
         }
         
     }
-    @objc func infoPressed(_ recognizer: UILongPressGestureRecognizer) {
+    @IBAction func infoPressed(_ sender: UIButton!) {
+        
+
+        guard let color = colorPreview.backgroundColor else{
+            print("no color")
+            return
+        }
+        
+        let red = Double(color.rgb.red)
+        let green = Double(color.rgb.green)
+        let blue = Double(color.rgb.blue)
+        
+
         
         func animateButton(toState: gaugesState){
             
@@ -413,25 +425,31 @@ class PhotoViewController: UIViewController{
                 }
             })
         }
-        
-        let color = colorPreview.backgroundColor
-        if let color = color {
-            
-            let red = Double(color.rgb.red)
-            let green = Double(color.rgb.green)
-            let blue = Double(color.rgb.blue)
-            
-            switch recognizer.state {
-            case .began:
-                animateButton(toState: .on)
-                animateGaugesOnOff(red: red, green: green, blue: blue, toState: .on)
-            case .ended:
+        func startTimer() {
+            infoTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { (timer) in
                 animateButton(toState: .off)
-                animateGaugesOnOff(red: red, green: green, blue: blue, toState: .off)
-            default:
-                break
+                self.animateGaugesOnOff(red: red, green: green, blue: blue, toState: .off)
+                self.infoIsDisplaying = false
             }
         }
+        
+        if infoIsDisplaying {
+            animateButton(toState: .on)
+            infoTimer?.invalidate()
+            startTimer()
+            return
+            
+        }else{
+            animateButton(toState: .on)
+            self.animateGaugesOnOff(red: red, green: green, blue: blue, toState: .on)
+            startTimer()
+            infoIsDisplaying = true
+        }
+            
+            
+
+            
+        
 
     }
     //MARK: - Dismiss Button
